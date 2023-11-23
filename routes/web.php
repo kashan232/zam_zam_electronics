@@ -23,17 +23,17 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// Kashan
-// Aiman
-// kashan here
 Route::get('/', function () {
     return view('welcome');
 });
 Route::get('/login', [LoginController::class, 'login'])->name('login');
+Route::post('/admin-logged', [LoginController::class, 'admin_logged'])->name('admin-logged');
+Route::get('/admin-logout', [LoginController::class, 'admin_logout'])->name('admin-logout');
 Route::get('/dashboard', [LoginController::class, 'dashboard'])->name('dashboard');
 
 //User
 Route::get('/add-user', [UserController::class, 'add_user'])->name('add-user');
+Route::post('/store-user', [UserController::class, 'store_user'])->name('store-user');
 Route::get('/all-user', [UserController::class, 'all_user'])->name('all-user');
 Route::get('/edit-user', [UserController::class, 'edit_user'])->name('edit-user');
 
