@@ -23,6 +23,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+// Kashan
 Route::get('/', function () {
     return view('welcome');
 });
