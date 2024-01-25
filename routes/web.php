@@ -23,6 +23,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+// welcome back
 Route::get('/', function () {
     return view('welcome');
 });
@@ -39,6 +40,7 @@ Route::get('/edit-user', [UserController::class, 'edit_user'])->name('edit-user'
 
 //category
 Route::get('/add-category', [CategoryController::class, 'add_category'])->name('add-category');
+Route::post('/store-category', [CategoryController::class, 'store_category'])->name('store-category');
 Route::get('/all-category', [CategoryController::class, 'all_category'])->name('all-category');
 Route::get('/edit-category', [CategoryController::class, 'edit_category'])->name('edit-category');
 
