@@ -24,7 +24,9 @@ class HomeController extends Controller
         }
         else
         {
-            return redirect()->back();
+            // return redirect()->back();
+
+            return Redirect()->route('login');
         }
     }
     public function adminpage()
