@@ -52,7 +52,7 @@
                                         </a>
                                     </li>
                                     <li class="sidebar-menu-item  ">
-                                        <a href="unit.html" class="nav-link">
+                                        <a href="{{ route('unit') }}" class="nav-link">
                                             <i class="menu-icon la la-dot-circle"></i>
                                             <span class="menu-title">Units</span>
                                         </a>
