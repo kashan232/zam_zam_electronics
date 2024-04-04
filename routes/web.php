@@ -34,7 +34,7 @@ Route::get('/admin-page', [HomeController::class, 'adminpage'])->middleware(['au
 
 Route::get('/category', [CategoryController::class, 'category'])->middleware(['auth','admin'])->name('category');
 Route::post('/store-category', [CategoryController::class, 'store_category'])->name('store-category');
-Route::post('/update-category/{id}', [CategoryController::class, 'update_category'])->name('update-category');
+Route::post('/update-category', [CategoryController::class, 'update_category'])->name('update-category');
 
 
 //brand

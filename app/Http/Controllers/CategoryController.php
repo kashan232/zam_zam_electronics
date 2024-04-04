@@ -39,15 +39,23 @@ class CategoryController extends Controller
             return redirect()->back();
         }
     }
-    public function update_category(Request $request, $id)
+    public function update_category(Request $request)
     {
-        Category::where('id', $id)->update([
-            // 'ProjectName'    => $request->ProjectName,
-            // 'Projectyear' => $request->Projectyear,
-            'updated_at' => Carbon::now(),
-        ]);
+        if (Auth::id()) {
+            $usertype = Auth()->user()->usertype;
+            $userId = Auth::id();
+            // dd($request);
+            $update_id = $request->input('category_id');
+            $category = $request->input('category_name');
 
-        return Redirect()->back()->with('success-message-updte', 'Project Updated successfully!');
+            Category::where('id', $update_id)->update([
+                'category'   => $category,
+                'updated_at' => Carbon::now(),
+            ]);
+            return redirect()->back()->with('Category-updte', 'Category Updated Successfully');
+        } else {
+            return redirect()->back();
+        }
     }
 
 }
