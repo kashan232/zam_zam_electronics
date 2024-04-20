@@ -44,7 +44,7 @@ class CategoryController extends Controller
         if (Auth::id()) {
             $usertype = Auth()->user()->usertype;
             $userId = Auth::id();
-            // dd($request);
+            // dd($reques   t);
             $update_id = $request->input('category_id');
             $category = $request->input('category_name');
 
