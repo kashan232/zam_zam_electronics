@@ -56,9 +56,8 @@
                                                 <td>
                                                     <div class="button--group">
                                                         <button type="button"
-                                                            class="btn btn-sm btn-outline--primary cuModalBtn"
-                                                            data-resource="{&quot;id&quot;:9,&quot;name&quot;:&quot;bag&quot;,&quot;status&quot;:1,&quot;type&quot;:1,&quot;task_by&quot;:null,&quot;created_at&quot;:&quot;2022-10-22T10:13:17.000000Z&quot;,&quot;updated_at&quot;:&quot;2022-10-22T10:13:17.000000Z&quot;,&quot;products_count&quot;:2}"
-                                                            data-modal_title="Update Unit" data-has_status="1">
+                                                            class="btn btn-sm btn-outline--primary editunitBtn" data-toggle="modal" data-modal_title="Edit Unit"
+                                                             data-has_status="1" data-target="#editunit" data-unit-id="{{ $unit->id }}" data-unit-name="{{ $unit->unit }}">
                                                             <i class="la la-pencil"></i>Edit </button>
                                                         {{-- <button type="button"
                                                             class="btn btn-sm btn-outline-danger  disabled  confirmationBtn"
@@ -102,6 +101,35 @@
                         </div>
                     </div>
                 </div>
+
+                 <!-- Edit Unit -->
+            <div class="modal fade" id="editunit" tabindex="-1" aria-labelledby="editunitLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="editunitLabel">Edit Brand</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <form action="{{ route('update-unit') }}" method="POST">
+                            @csrf
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <label>Name</label>
+                                    <input type="hidden" id="editUnitId" name="unit_id" class="form-control" required>
+                                    <input type="text" id="editUnitName" name="unit_name" class="form-control">
+                                </div>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn--primary h-45 w-100">Update</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
                 <div class="modal fade" id="importModal" tabindex="-1" role="dialog">
                     <div class="modal-dialog modal-lg">
                         <div class="modal-content">
@@ -178,3 +206,17 @@
         </div><!-- body-wrapper end -->
     </div>
     @include('admin_panel.include.footer_include')
+
+    <script>
+        $(document).ready(function() {
+            // Edit category button click event
+            $('.editunitBtn').click(function() {
+                // Extract category ID and name from data attributes
+                var unitId = $(this).data('unit-id');
+                var unitName = $(this).data('unit-name');
+                // Set the extracted values in the modal fields
+                $('#editUnitId').val(unitId);
+                $('#editUnitName').val(unitName);
+            });
+        });
+    </script>

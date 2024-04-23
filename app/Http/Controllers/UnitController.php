@@ -37,4 +37,22 @@ class UnitController extends Controller
             return redirect()->back();
         }
     }
+    public function update_unit(Request $request)
+    {
+        if (Auth::id()) {
+            $usertype = Auth()->user()->usertype;
+            $userId = Auth::id();
+            // dd($reques   t);
+            $update_id = $request->input('unit_id');
+            $unit = $request->input('unit_name');
+
+            Unit::where('id', $update_id)->update([
+                'unit'   => $unit,
+                'updated_at' => Carbon::now(),
+            ]);
+            return redirect()->back()->with('unit-updte', 'unit Updated Successfully');
+        } else {
+            return redirect()->back();
+        }
+    }
 }

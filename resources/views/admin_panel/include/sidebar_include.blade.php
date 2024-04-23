@@ -58,7 +58,7 @@
                                         </a>
                                     </li>
                                     <li class="sidebar-menu-item  ">
-                                        <a href="product_all.html"
+                                        <a href="{{ route('all-product') }}"
                                             class="nav-link">
                                             <i class="menu-icon la la-dot-circle"></i>
                                             <span class="menu-title">Products</span>
