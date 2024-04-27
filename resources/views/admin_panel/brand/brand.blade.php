@@ -56,10 +56,11 @@
                                                 <td>
                                                     <div class="button--group">
                                                         <button type="button"
-                                                            class="btn btn-sm btn-outline--primary cuModalBtn"
-                                                            data-resource="{&quot;id&quot;:8,&quot;name&quot;:&quot;Canon&quot;,&quot;status&quot;:1,&quot;type&quot;:1,&quot;task_by&quot;:null,&quot;created_at&quot;:&quot;2022-10-20T18:03:34.000000Z&quot;,&quot;updated_at&quot;:&quot;2022-10-20T18:03:34.000000Z&quot;,&quot;products_count&quot;:3}"
-                                                            data-modal_title="Edit Brand" data-has_status="1">
+                                                            class="btn btn-sm btn-outline--primary editbrandBtn" data-toggle="modal"
+                                                            data-modal_title="Edit Brand" data-has_status="1"
+                                                            data-target="#editbrand" data-brand-id="{{ $brand->id }}" data-brand-name="{{ $brand->brand }}">
                                                             <i class="la la-pencil"></i>Edit </button>
+
                                                         {{-- <button type="button"
                                                             class="btn btn-sm btn-outline-danger  disabled  confirmationBtn"
                                                             data-question="Are you sure to delete this brand?"
@@ -78,7 +79,7 @@
                 </div>
 
                 <!--Create Update Modal -->
-                <div id="cuModal" class="modal fade" tabindex="-1" role="dialog">
+                <div id="cuModal"  class="modal fade" tabindex="-1" role="dialog">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
@@ -102,6 +103,35 @@
                         </div>
                     </div>
                 </div>
+
+                 <!-- Edit Brand -->
+            <div class="modal fade" id="editbrand" tabindex="-1" aria-labelledby="editbrandLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="editbrandLabel">Edit Brand</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <form action="{{ route('update-brand') }}" method="POST">
+                            @csrf
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <label>Name</label>
+                                    <input type="hidden" id="editbrandId" name="brand_id" class="form-control" required>
+                                    <input type="text" id="editbrandName" name="brand_name" class="form-control">
+                                </div>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn--primary h-45 w-100">Update</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
                 <div class="modal fade" id="importModal" tabindex="-1" role="dialog">
                     <div class="modal-dialog modal-lg">
                         <div class="modal-content">
@@ -168,3 +198,17 @@
         </div><!-- body-wrapper end -->
     </div>
     @include('admin_panel.include.footer_include')
+
+    <script>
+        $(document).ready(function() {
+            // Edit category button click event
+            $('.editbrandBtn').click(function() {
+                // Extract category ID and name from data attributes
+                var brandId = $(this).data('brand-id');
+                var brandName = $(this).data('brand-name');
+                // Set the extracted values in the modal fields
+                $('#editbrandId').val(brandId);
+                $('#editbrandName').val(brandName);
+            });
+        });
+    </script>

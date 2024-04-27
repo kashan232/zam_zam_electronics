@@ -61,7 +61,8 @@
                                                             data-modal_title="Edit Category">
                                                             <i class="la la-pencil"></i>Edit </button> --}}
 
-                                                        <button type="button" class="btn btn-sm btn-outline-primary editCategoryBtn" data-toggle="modal" data-target="#editcategory" data-category-id="{{ $categories->id }}" data-category-name="{{ $categories->category }}">
+                                                        <button type="button" class="btn btn-sm btn-outline-primary editCategoryBtn"  data-toggle="modal" 
+                                                        data-target="#editcategory" data-category-id="{{ $categories->id }}" data-category-name="{{ $categories->category }}">
                                                             <i class="la la-pencil"></i>Edit
                                                         </button>
 

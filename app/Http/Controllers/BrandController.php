@@ -38,4 +38,22 @@ class BrandController extends Controller
             return redirect()->back();
         }
     }
+    public function update_brand(Request $request)
+    {
+        if (Auth::id()) {
+            $usertype = Auth()->user()->usertype;
+            $userId = Auth::id();
+            // dd($reques   t);
+            $update_id = $request->input('brand_id');
+            $brand = $request->input('brand_name');
+
+            Brand::where('id', $update_id)->update([
+                'brand'   => $brand,
+                'updated_at' => Carbon::now(),
+            ]);
+            return redirect()->back()->with('Category-updte', 'Category Updated Successfully');
+        } else {
+            return redirect()->back();
+        }
+    }
 }
