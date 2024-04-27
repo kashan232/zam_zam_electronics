@@ -3,7 +3,7 @@
             <div class="sidebar__inner">
                 <div class="sidebar__logo">
                     <a href="#" class="sidebar__main-logo">
-                        <img src="https://script.viserlab.com/torylab/assets/images/logoIcon/logo.png" alt="image">
+                        <img src="assets/admin/images/1.png" alt="image">
                     </a>
                 </div>
                 <div class="sidebar__menu-wrapper" id="sidebar__menuWrapper">
