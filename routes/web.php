@@ -32,14 +32,11 @@ Route::get('/admin-page', [HomeController::class, 'adminpage'])->middleware(['au
 
 
 //category
-
 Route::get('/category', [CategoryController::class, 'category'])->middleware(['auth','admin'])->name('category');
 Route::post('/store-category', [CategoryController::class, 'store_category'])->name('store-category');
 Route::post('/update-category', [CategoryController::class, 'update_category'])->name('update-category');
 
-
 //brand
-
 Route::get('/brand', [BrandController::class, 'brand'])->middleware(['auth','admin'])->name('brand');
 Route::post('/store-brand', [BrandController::class, 'store_brand'])->name('store-brand');
 Route::post('/update-brand', [BrandController::class, 'update_brand'])->name('update-brand');
