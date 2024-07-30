@@ -16,7 +16,7 @@
                     aria-haspopup="true" aria-expanded="false">
                     <span class="navbar-user">
                         <span class="navbar-user__thumb">
-                            <img src="https://script.viserlab.com/torylab/assets/admin/images/profile/6353ef7e9631b1666445182.jpg"
+                            <img src="#"
                                 alt="image"></span>
                         <span class="navbar-user__info">
                             <span class="navbar-user__name">Super Admin</span>

@@ -30,16 +30,12 @@ Route::get('/', function () {
 Route::get('/home', [HomeController::class, 'home'])->middleware(['auth'])->name('home');
 Route::get('/admin-page', [HomeController::class, 'adminpage'])->middleware(['auth','admin'])->name('admin-page');
 
-
 //category
-
 Route::get('/category', [CategoryController::class, 'category'])->middleware(['auth','admin'])->name('category');
 Route::post('/store-category', [CategoryController::class, 'store_category'])->name('store-category');
 Route::post('/update-category', [CategoryController::class, 'update_category'])->name('update-category');
 
-
 //brand
-
 Route::get('/brand', [BrandController::class, 'brand'])->middleware(['auth','admin'])->name('brand');
 Route::post('/store-brand', [BrandController::class, 'store_brand'])->name('store-brand');
 Route::post('/update-brand', [BrandController::class, 'update_brand'])->name('update-brand');
@@ -56,10 +52,10 @@ Route::post('/store-product', [ProductController::class, 'store_product'])->name
 Route::get('/edit-product/{id}', [ProductController::class, 'edit_product'])->middleware(['auth','admin'])->name('edit-product');
 Route::post('/update-product/{id}', [ProductController::class, 'update_product'])->name('update-product');
 
-
-
-
-
+//warehouse
+Route::get('/category', [CategoryController::class, 'category'])->middleware(['auth','admin'])->name('category');
+Route::post('/store-category', [CategoryController::class, 'store_category'])->name('store-category');
+Route::post('/update-category', [CategoryController::class, 'update_category'])->name('update-category');
 
 
 

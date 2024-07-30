@@ -3,7 +3,7 @@
             <div class="sidebar__inner">
                 <div class="sidebar__logo">
                     <a href="#" class="sidebar__main-logo">
-                        <img src="assets/admin/images/1.png" alt="image">
+                        <img src="assets/admin/images/dashbord_logo.png" alt="image">
                     </a>
                 </div>
                 <div class="sidebar__menu-wrapper" id="sidebar__menuWrapper">
@@ -23,7 +23,7 @@
                             <div class="sidebar-submenu ">
                                 <ul>
                                     <li class="sidebar-menu-item ">
-                                        <a class="nav-link" href="staff.html">
+                                        <a class="nav-link" href="#">
                                             <i class="menu-icon las la-dot-circle"></i>
                                             <span class="menu-title">All Staff</span>
                                         </a>
