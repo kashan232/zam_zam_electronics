@@ -8,6 +8,37 @@
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js" integrity="sha384-+sLIOodYLS7CIrQpBjl+C7nPvqq+FbNUBDunl/OZv93DB7Ln/533i8e/mZXLi/P+" crossorigin="anonymous"></script>
     <script>
+        (function ($) {
+            "use strict";
+            $('.generatePassword').on('click', function () {
+                $(this).siblings('[name=password]').val(generatePassword());
+            });
+
+            $('.cuModalBtn').on('click', function () {
+                let passwordField = $('#cuModal').find($('[name=password]'));
+                let label = passwordField.parents('.form-group').find('label')
+                if ($(this).data('resource')) {
+                    passwordField.removeAttr('required');
+                    label.removeClass('required')
+                } else {
+                    passwordField.attr('required', 'required');
+                    label.addClass('required')
+                }
+            });
+
+            function generatePassword(length = 12) {
+                let charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+<>?/";
+                let password = '';
+
+                for (var i = 0, n = charset.length; i < length; ++i) {
+                    password += charset.charAt(Math.floor(Math.random() * n));
+                }
+
+                return password
+            }
+        })(jQuery);
+    </script>
+    <script>
         "use strict";
         function notify(status, message) {
             if (typeof message == 'string') {

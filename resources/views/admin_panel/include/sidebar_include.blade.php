@@ -23,11 +23,19 @@
                             <div class="sidebar-submenu ">
                                 <ul>
                                     <li class="sidebar-menu-item ">
-                                        <a class="nav-link" href="#">
+                                        <a class="nav-link" href="{{ route('staff') }}">
                                             <i class="menu-icon las la-dot-circle"></i>
                                             <span class="menu-title">All Staff</span>
                                         </a>
                                     </li>
+
+                                    <li class="sidebar-menu-item ">
+                                        <a class="nav-link" href="{{ route('StaffSalary') }}">
+                                            <i class="menu-icon las la-dot-circle"></i>
+                                            <span class="menu-title">Staff Salary</span>
+                                        </a>
+                                    </li>
+
                                 </ul>
                             </div>
                         </li>

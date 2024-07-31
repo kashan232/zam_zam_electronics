@@ -5,6 +5,8 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\StaffController;
+use App\Http\Controllers\StaffSalaryController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\UnitController;
 use App\Http\Controllers\WarehouseController;
@@ -63,6 +65,16 @@ Route::post('/update-warehouse', [WarehouseController::class, 'update_warehouse'
 Route::get('/supplier', [SupplierController::class, 'supplier'])->middleware(['auth','admin'])->name('supplier');
 Route::post('/store-supplier', [SupplierController::class, 'store_supplier'])->name('store-supplier');
 Route::post('/update-supplier', [SupplierController::class, 'update_supplier'])->name('update-supplier');
+
+//Staff
+Route::get('/staff', [StaffController::class, 'staff'])->middleware(['auth','admin'])->name('staff');
+Route::post('/store-staff', [StaffController::class, 'store_staff'])->name('store-staff');
+Route::post('/update-staff', [StaffController::class, 'update_staff'])->name('update-staff');
+
+//Staff Salary 
+Route::get('/StaffSalary', [StaffSalaryController::class, 'StaffSalary'])->middleware(['auth','admin'])->name('StaffSalary');
+Route::post('/store-StaffSalary', [StaffSalaryController::class, 'store_StaffSalary'])->name('store-StaffSalary');
+Route::post('/update-StaffSalary', [StaffSalaryController::class, 'update_StaffSalary'])->name('update-StaffSalary');
 
 
 

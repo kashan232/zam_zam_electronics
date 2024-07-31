@@ -64,12 +64,7 @@
                                                 <td>0</td>
                                                 <td>
                                                     <div class="button--group">
-                                                        <button type="button" class="btn btn-sm btn-outline--primary editCategoryBtn" data-toggle="modal" data-target="#exampleModal"
-                                                        data-supplier-id="{{ $Supplier->id }}" data-supplier-name="{{ $Supplier->name }}" data-supplier-email="{{ $Supplier->email }}"
-                                                        data-supplier-mobile="{{ $Supplier->mobile }}"
-                                                        data-supplier-company="{{ $Supplier->company_name }}"
-                                                        data-supplier-address="{{ $Supplier->address }}"
-                                                        >
+                                                        <button type="button" class="btn btn-sm btn-outline--primary editCategoryBtn" data-toggle="modal" data-target="#exampleModal" data-supplier-id="{{ $Supplier->id }}" data-supplier-name="{{ $Supplier->name }}" data-supplier-email="{{ $Supplier->email }}" data-supplier-mobile="{{ $Supplier->mobile }}" data-supplier-company="{{ $Supplier->company_name }}" data-supplier-address="{{ $Supplier->address }}">
                                                             <i class="la la-pencil"></i>Edit </button>
 
                                                         <a href="#" class="btn btn-sm btn-outline--info">
@@ -144,8 +139,8 @@
                     </div>
                 </div>
 
-               <!-- Modal -->
-               <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <!-- Modal -->
+                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div class="modal-dialog modal-lg">
                         <div class="modal-content">
                             <div class="modal-header">
@@ -157,12 +152,12 @@
                             <form action="{{ route('update-supplier') }}" method="POST">
                                 @csrf
                                 <div class="modal-body">
-                                <div class="row">
+                                    <div class="row">
                                         <div class="col-lg-6">
                                             <div class="form-group">
                                                 <label>Name</label>
                                                 <input type="hidden" name="supplier_id" id="supplier_id">
-                                                <input type="text" name="name" id="suplier_name" class="form-control" autocomplete="off" >
+                                                <input type="text" name="name" id="suplier_name" class="form-control" autocomplete="off">
                                             </div>
                                         </div>
                                         <div class="col-lg-6">
@@ -221,7 +216,7 @@
                 var suppliercompany = $(this).data('supplier-company');
                 var supplieraddress = $(this).data('supplier-address');
 
-              
+
                 $('#supplier_id').val(supplierId);
                 $('#suplier_name').val(suppliername);
                 $('#suplier_email').val(supplieremail);
