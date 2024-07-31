@@ -69,12 +69,19 @@
                         </li>
 
                         <li class="sidebar-menu-item ">
-                            <a href="warehouse.html" class="nav-link ">
+                            <a href="{{ route('warehouse') }}" class="nav-link ">
                                 <i class="menu-icon la la-warehouse"></i>
                                 <span class="menu-title">Warehouse</span>
                             </a>
                         </li>
 
+                        <li class="sidebar-menu-item  ">
+                            <a href="{{ route('supplier') }}" class="nav-link">
+                                <i class="menu-icon la la-user-friends"></i>
+                                <span class="menu-title">Supplier</span>
+                            </a>
+                        </li>
+                        
                         <li class="sidebar-menu-item  ">
                             <a href="customer.html" class="nav-link">
                                 <i class="menu-icon la la-users"></i>
@@ -82,12 +89,7 @@
                             </a>
                         </li>
 
-                        <li class="sidebar-menu-item  ">
-                            <a href="supplier.html" class="nav-link">
-                                <i class="menu-icon la la-user-friends"></i>
-                                <span class="menu-title">Supplier</span>
-                            </a>
-                        </li>
+                        
                         <li class="sidebar-menu-item sidebar-dropdown">
                             <a href="javascript:void(0)" class="">
                                 <i class="menu-icon la la-shopping-bag"></i>

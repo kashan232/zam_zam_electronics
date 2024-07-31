@@ -4133,6 +4133,7 @@ a {
     -o-border-radius: 5px;
     overflow: hidden;
     align-items: stretch;
+    padding: 15px 16px;
 }
 
 .alert button.close {

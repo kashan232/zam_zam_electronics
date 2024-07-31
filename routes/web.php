@@ -5,7 +5,9 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\UnitController;
+use App\Http\Controllers\WarehouseController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -53,9 +55,14 @@ Route::get('/edit-product/{id}', [ProductController::class, 'edit_product'])->mi
 Route::post('/update-product/{id}', [ProductController::class, 'update_product'])->name('update-product');
 
 //warehouse
-Route::get('/category', [CategoryController::class, 'category'])->middleware(['auth','admin'])->name('category');
-Route::post('/store-category', [CategoryController::class, 'store_category'])->name('store-category');
-Route::post('/update-category', [CategoryController::class, 'update_category'])->name('update-category');
+Route::get('/warehouse', [WarehouseController::class, 'warehouse'])->middleware(['auth','admin'])->name('warehouse');
+Route::post('/store-warehouse', [WarehouseController::class, 'store_warehouse'])->name('store-warehouse');
+Route::post('/update-warehouse', [WarehouseController::class, 'update_warehouse'])->name('update-warehouse');
+
+//supplier
+Route::get('/supplier', [SupplierController::class, 'supplier'])->middleware(['auth','admin'])->name('supplier');
+Route::post('/store-supplier', [SupplierController::class, 'store_supplier'])->name('store-supplier');
+Route::post('/update-supplier', [SupplierController::class, 'update_supplier'])->name('update-supplier');
 
 
 

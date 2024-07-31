@@ -2,66 +2,72 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Warehouse;
+use App\Models\Supplier;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class WarehouseController extends Controller
+class SupplierController extends Controller
 {
-    
-    public function warehouse()
+    public function supplier()
     {
         if (Auth::id()) {
             $userId = Auth::id();
             // dd($userId);
-            $Warehousses = Warehouse::where('admin_or_user_id', '=', $userId)->get();
-            return view('admin_panel.warehouse.warehouse', [
-                'Warehousses' => $Warehousses
+            $Suppliers = Supplier::where('admin_or_user_id', '=', $userId)->get();
+            return view('admin_panel.supplier.supplier', [
+                'Suppliers' => $Suppliers
             ]);
         } else {
             return redirect()->back();
         }
     }
 
-    public function store_warehouse(Request $request)
+    public function store_supplier(Request $request)
     {
         if (Auth::id()) {
             $usertype = Auth()->user()->usertype;
             $userId = Auth::id();
-            Warehouse::create([
+            Supplier::create([
                 'admin_or_user_id'    => $userId,
                 'name'          => $request->name,
+                'email'          => $request->email,
+                'mobile'          => $request->mobile,
+                'company_name'          => $request->company_name,
                 'address'          => $request->address,
-                'status'          => 'Enabled',
                 'created_at'        => Carbon::now(),
                 'updated_at'        => Carbon::now(),
             ]);
-            return redirect()->back()->with('Warehouse-added', 'Warehouse Added Successfully');
+            return redirect()->back()->with('supplier-added', 'Supplier Added Successfully');
         } else {
             return redirect()->back();
         }
     }
-    public function update_warehouse(Request $request)
+    public function update_supplier(Request $request)
     {
         if (Auth::id()) {
             $usertype = Auth()->user()->usertype;
             $userId = Auth::id();
             // dd($request);
-            $update_id = $request->input('warehouse_id');
+            $update_id = $request->input('supplier_id');
             $name = $request->input('name');
+            $email = $request->input('email');
+            $mobile = $request->input('mobile');
+            $company_name = $request->input('company_name');
             $address = $request->input('address');
 
-            Warehouse::where('id', $update_id)->update([
+            Supplier::where('id', $update_id)->update([
                 'admin_or_user_id'    => $userId,
                 'name'          => $name,
+                'email'          => $email,
+                'mobile'          => $mobile,
+                'company_name'    => $company_name,
                 'address'          => $address,
                 'updated_at' => Carbon::now(),
             ]);
-            return redirect()->back()->with('Warehouse-added', 'Warehouse Updated Successfully');
+            return redirect()->back()->with('supplier-added', 'Warehouse Updated Successfully');
         } else {
             return redirect()->back();
         }
     }
-
 }
