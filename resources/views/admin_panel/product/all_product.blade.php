@@ -86,10 +86,10 @@
                                                     <span class="text--primary">{{ $product->brand }}</span>
                                                 </td>
                                                 <td>
-                                                    un defined
+                                                    {{ $product->stock }}
                                                 </td>
                                                 <td>
-                                                    un defined
+                                                    0
                                                     <br>
                                                     <span class="badge badge--warning">{{ $product->alert_quantity }}</span>
                                                 </td>

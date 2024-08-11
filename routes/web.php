@@ -5,6 +5,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\StaffController;
 use App\Http\Controllers\StaffSalaryController;
 use App\Http\Controllers\SupplierController;
@@ -75,6 +76,17 @@ Route::post('/update-staff', [StaffController::class, 'update_staff'])->name('up
 Route::get('/StaffSalary', [StaffSalaryController::class, 'StaffSalary'])->middleware(['auth','admin'])->name('StaffSalary');
 Route::post('/store-StaffSalary', [StaffSalaryController::class, 'store_StaffSalary'])->name('store-StaffSalary');
 Route::post('/update-StaffSalary', [StaffSalaryController::class, 'update_StaffSalary'])->name('update-StaffSalary');
+
+
+//Purchase 
+Route::get('/Purchase', [PurchaseController::class, 'Purchase'])->middleware(['auth','admin'])->name('Purchase');
+Route::get('/add-purchase', [PurchaseController::class, 'add_purchase'])->middleware(['auth','admin'])->name('add-purchase');
+Route::post('/store-Purchase', [PurchaseController::class, 'store_Purchase'])->name('store-Purchase');
+Route::post('/update-Purchase', [PurchaseController::class, 'update_Purchase'])->name('update-Purchase');
+Route::post('/purchases-payment', [PurchaseController::class, 'purchases_payment'])->name('purchases-payment');
+Route::get('/get-items-by-category/{categoryId}', [PurchaseController::class, 'getItemsByCategory']);
+Route::get('/purchase-view/{id}', [PurchaseController::class, 'view'])->name('purchase-view');
+Route::get('/purchase-return/{id}', [PurchaseController::class, 'purchase_return'])->name('purchase-return');
 
 
 

@@ -16,8 +16,7 @@
                     aria-haspopup="true" aria-expanded="false">
                     <span class="navbar-user">
                         <span class="navbar-user__thumb">
-                            <img src="#"
-                                alt="image"></span>
+                            <img src="#"alt="image"></span>
                         <span class="navbar-user__info">
                             <span class="navbar-user__name">Super Admin</span>
                         </span>
