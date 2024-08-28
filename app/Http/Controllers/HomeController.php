@@ -33,4 +33,9 @@ class HomeController extends Controller
     {
         return view('admin_panel.admin_page');
     }
+
+    public function dashboard()
+    {
+        return view('admin_panel.dashboard');
+    }
 }
