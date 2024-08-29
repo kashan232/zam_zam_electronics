@@ -24,6 +24,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+// code deploy 
 Route::get('/', function () {
     return view('welcome');
 });
