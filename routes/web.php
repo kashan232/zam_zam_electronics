@@ -25,6 +25,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 // code deploy 
+// pos start
 Route::get('/', function () {
     return view('welcome');
 });
