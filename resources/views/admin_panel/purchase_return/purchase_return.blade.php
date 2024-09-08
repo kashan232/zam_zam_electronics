@@ -62,7 +62,7 @@
                                             <tr>
                                                 <td>
                                                     <span class="fw-bold">
-                                                        {{ $PurchaseReturn->purchase->invoice_no ?? 'N/A' }}  <!-- Access invoice_no -->
+                                                        {{ $PurchaseReturn->purchase->invoice_no ?? 'N/A' }} <!-- Access invoice_no -->
                                                     </span>
                                                     <br>
                                                     <small>{{ $PurchaseReturn->return_date }}</small>
@@ -80,7 +80,7 @@
                                                 <td>
                                                     {{ $PurchaseReturn->discount }}
                                                     <br>
-                                                    <span class="fw-bold">{{ $PurchaseReturn->Payable_amount }}</span>
+                                                    <span class="fw-bold">{{ $PurchaseReturn->payable_amount }}</span>
                                                 </td>
                                                 <td>
                                                     {{ $PurchaseReturn->paid_amount }}
@@ -105,17 +105,13 @@
                                                             <a class="dropdown-item btn btn-sm btn-outline--primary ms-1 editBtn" href="#"> <i class="la la-pen"></i> Edit</a>
                                                             <a href="#" class="dropdown-item btn btn-sm btn-outline--primary ms-1 paymentBtn"
                                                                 data-id="{{ $PurchaseReturn->id }}"
-                                                                data-invoice_no="{{ $PurchaseReturn->invoice_no }}"
+                                                                data-invoice_no="{{ $PurchaseReturn->purchase->invoice_no }}"
                                                                 data-supplier="{{ $PurchaseReturn->supplier }}"
-                                                                data-payable_amount="{{ $PurchaseReturn->Payable_amount }}">
+                                                                data-payable_amount="{{ $PurchaseReturn->payable_amount }}">
                                                                 <i class="la la-money-bill-wave"></i>
                                                                 Pay
                                                             </a>
-                                                            <a class="dropdown-item btn btn-sm btn-outline--primary ms-1 editBtn" href="{{ route('purchase-view',['id' => $PurchaseReturn->id ]) }}
-                                                            "> <i class="la la-eye"></i> View</a>
-
-                                                            <a class="dropdown-item btn btn-sm btn-outline--primary ms-1 editBtn" href="{{ route('purchase-return',['id' => $PurchaseReturn->id ]) }}
-                                                            "> <i class="la la-undo"></i> View Return Details</a>
+                                                            <a class="dropdown-item btn btn-sm btn-outline--primary ms-1 editBtn" href="#"> <i class="la la-eye"></i> View</a>
                                                         </div>
                                                     </div>
                                                 </td>
@@ -139,10 +135,10 @@
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
-                                <form action="{{ route('purchases-payment') }}" method="POST">
+                                <form action="{{ route('purchase-return-payment') }}" method="POST">
                                     @csrf
                                     <div class="mb-3">
-                                        <label for="purchase_id" class="form-label">Purchase ID</label>
+                                        <label for="purchase_id" class="form-label">Purchase Return ID</label>
                                         <input type="text" class="form-control" id="purchase_id" name="purchase_id" readonly>
                                     </div>
                                     <div class="mb-3">
@@ -167,6 +163,7 @@
                         </div>
                     </div>
                 </div>
+
             </div><!-- bodywrapper__inner end -->
         </div><!-- body-wrapper end -->
 

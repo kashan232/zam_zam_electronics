@@ -383,12 +383,36 @@ class PurchaseController extends Controller
 
             // Retrieve all PurchaseReturns with their related Purchase data (including invoice_no)
             $PurchaseReturns = PurchaseReturn::with('purchase')->get();
-
+            // dd($PurchaseReturns);
             return view('admin_panel.purchase_return.purchase_return', [
                 'PurchaseReturns' => $PurchaseReturns,
             ]);
         } else {
             return redirect()->back();
+        }
+    }
+
+    public function purchase_return_payment(Request $request)
+    {
+        $purchaseReturn = PurchaseReturn::find($request->purchase_id);
+
+        if ($purchaseReturn) {
+            // Calculate the new paid and due amounts
+            $newPaidAmount = $purchaseReturn->paid_amount + $request->paid_amount;
+            $dueAmount = $purchaseReturn->payable_amount - $newPaidAmount;
+
+            // Update the PurchaseReturn record
+            $purchaseReturn->paid_amount = $newPaidAmount;
+            $purchaseReturn->due_amount = $dueAmount;
+
+            // Update the status based on payment completion
+            $purchaseReturn->status = $dueAmount <= 0 ? 'Paid' : 'Due';
+
+            $purchaseReturn->save();
+
+            return redirect()->back()->with('success', 'Payment made successfully.');
+        } else {
+            return redirect()->back()->with('error', 'Purchase Return not found.');
         }
     }
 }
