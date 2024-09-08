@@ -61,11 +61,14 @@
                                             @foreach($Purchases as $purchase)
                                             <tr>
                                                 <td>
+                                                    @if($purchase->is_return == 1)
+                                                    <small><i class="fa fa-circle text--danger" aria-hidden="true" aria-label="Returned" data-bs-original-title="Returned"></i></small>
+                                                    @endif
                                                     <span class="fw-bold">
-                                                        {{ $purchase->invoice_no}}
+                                                        {{ $purchase->invoice_no }}
                                                     </span>
                                                     <br>
-                                                    <small>{{ $purchase->purchase_date}}</small>
+                                                    <small>{{ $purchase->purchase_date }}</small>
                                                 </td>
 
                                                 <td>
@@ -114,8 +117,8 @@
                                                             <a class="dropdown-item btn btn-sm btn-outline--primary ms-1 editBtn" href="{{ route('purchase-view',['id' => $purchase->id ]) }}
                                                             "> <i class="la la-eye"></i> View</a>
 
-                                                            <!-- <a class="dropdown-item btn btn-sm btn-outline--primary ms-1 editBtn" href="{{ route('purchase-return',['id' => $purchase->id ]) }}
-                                                            "> <i class="la la-undo"></i> View Return Details</a> -->
+                                                            <a class="dropdown-item btn btn-sm btn-outline--primary ms-1 editBtn" href="{{ route('purchase-return',['id' => $purchase->id ]) }}
+                                                            "> <i class="la la-undo"></i> View Return Details</a>
                                                         </div>
                                                     </div>
                                                 </td>

@@ -16,7 +16,7 @@
             <div class="bodywrapper__inner">
 
                 <div class="d-flex mb-30 flex-wrap gap-3 justify-content-between align-items-center">
-                    <h6 class="page-title">All Purchases</h6>
+                    <h6 class="page-title">All Purchases Return</h6>
                     <div class="d-flex flex-wrap justify-content-end gap-2 align-items-center breadcrumb-plugins">
                         <form action="" method="GET" class="d-flex gap-2">
                             <div class="input-group w-auto">
@@ -58,39 +58,39 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach($Purchases as $purchase)
+                                            @foreach($PurchaseReturns as $PurchaseReturn)
                                             <tr>
                                                 <td>
                                                     <span class="fw-bold">
-                                                        {{ $purchase->invoice_no}}
+                                                        {{ $PurchaseReturn->purchase->invoice_no ?? 'N/A' }}  <!-- Access invoice_no -->
                                                     </span>
                                                     <br>
-                                                    <small>{{ $purchase->purchase_date}}</small>
+                                                    <small>{{ $PurchaseReturn->return_date }}</small>
                                                 </td>
 
                                                 <td>
-                                                    <span class="text--primary fw-bold"> {{ $purchase->supplier}} </span>
+                                                    <span class="text--primary fw-bold"> {{ $PurchaseReturn->supplier}} </span>
                                                 </td>
 
                                                 <td>
-                                                    <span class="fw-bold">{{ $purchase->total_price }} </span>
+                                                    <span class="fw-bold">{{ $PurchaseReturn->total_price }} </span>
                                                     <br>
-                                                    {{ $purchase->warehouse_id }}
+                                                    {{ $PurchaseReturn->warehouse_id }}
                                                 </td>
                                                 <td>
-                                                    {{ $purchase->discount }}
+                                                    {{ $PurchaseReturn->discount }}
                                                     <br>
-                                                    <span class="fw-bold">{{ $purchase->Payable_amount }}</span>
+                                                    <span class="fw-bold">{{ $PurchaseReturn->Payable_amount }}</span>
                                                 </td>
                                                 <td>
-                                                    {{ $purchase->paid_amount }}
+                                                    {{ $PurchaseReturn->paid_amount }}
                                                     <br>
                                                     <span class="fw-bold" title="Payable to Supplier">
-                                                        {{ $purchase->due_amount }}
+                                                        {{ $PurchaseReturn->due_amount }}
                                                     </span>
                                                 </td>
                                                 <td>
-                                                    @if($purchase->status == 'Paid')
+                                                    @if($PurchaseReturn->status == 'Paid')
                                                     <span class="badge badge--success bg-success text-white">Paid</span>
                                                     @else
                                                     <span class="badge badge--danger bg-danger text-white">Due</span>
@@ -104,17 +104,17 @@
                                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                                             <a class="dropdown-item btn btn-sm btn-outline--primary ms-1 editBtn" href="#"> <i class="la la-pen"></i> Edit</a>
                                                             <a href="#" class="dropdown-item btn btn-sm btn-outline--primary ms-1 paymentBtn"
-                                                                data-id="{{ $purchase->id }}"
-                                                                data-invoice_no="{{ $purchase->invoice_no }}"
-                                                                data-supplier="{{ $purchase->supplier }}"
-                                                                data-payable_amount="{{ $purchase->Payable_amount }}">
+                                                                data-id="{{ $PurchaseReturn->id }}"
+                                                                data-invoice_no="{{ $PurchaseReturn->invoice_no }}"
+                                                                data-supplier="{{ $PurchaseReturn->supplier }}"
+                                                                data-payable_amount="{{ $PurchaseReturn->Payable_amount }}">
                                                                 <i class="la la-money-bill-wave"></i>
                                                                 Pay
                                                             </a>
-                                                            <a class="dropdown-item btn btn-sm btn-outline--primary ms-1 editBtn" href="{{ route('purchase-view',['id' => $purchase->id ]) }}
+                                                            <a class="dropdown-item btn btn-sm btn-outline--primary ms-1 editBtn" href="{{ route('purchase-view',['id' => $PurchaseReturn->id ]) }}
                                                             "> <i class="la la-eye"></i> View</a>
 
-                                                            <a class="dropdown-item btn btn-sm btn-outline--primary ms-1 editBtn" href="{{ route('purchase-return',['id' => $purchase->id ]) }}
+                                                            <a class="dropdown-item btn btn-sm btn-outline--primary ms-1 editBtn" href="{{ route('purchase-return',['id' => $PurchaseReturn->id ]) }}
                                                             "> <i class="la la-undo"></i> View Return Details</a>
                                                         </div>
                                                     </div>

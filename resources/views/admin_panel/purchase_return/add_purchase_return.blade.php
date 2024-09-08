@@ -1,25 +1,18 @@
 @include('admin_panel.include.header_include')
 
 <body>
-    <!-- page-wrapper start -->
     <div class="page-wrapper default-version">
 
-        <!-- sidebar start -->
-
         @include('admin_panel.include.sidebar_include')
-        <!-- sidebar end -->
-
-        <!-- navbar-wrapper start -->
         @include('admin_panel.include.navbar_include')
-        <!-- navbar-wrapper end -->
+
         <div class="body-wrapper">
             <div class="bodywrapper__inner">
 
                 <div class="d-flex mb-30 flex-wrap gap-3 justify-content-between align-items-center">
-                    <h6 class="page-title">Purchase Return</h6>
+                    <h6 class="page-title">Add Purchase Return</h6>
                     <div class="d-flex flex-wrap justify-content-end gap-2 align-items-center breadcrumb-plugins">
-                        <a href="https://script.viserlab.com/torylab/admin/purchase/all"
-                            class="btn btn-sm btn-outline--primary">
+                        <a href="#" class="btn btn-sm btn-outline--primary">
                             <i class="la la-undo"></i> Back</a>
                     </div>
                 </div>
@@ -28,79 +21,85 @@
                     <div class="col-lg-12 col-md-12 mb-30">
                         <div class="card">
                             <div class="card-body">
-                                <form action="{{ route('store-Purchase') }}" method="POST">
+                                <form action="{{ route('store-purchase-return') }}" method="POST">
                                     @csrf
+                                    <!-- Invoice and Supplier Info -->
                                     <div class="row mb-3">
                                         <div class="col-xl-3 col-sm-6">
                                             <div class="form-group">
                                                 <label>Invoice No:</label>
-                                                <input type="text" name="invoice_no" class="form-control"
-                                                    required>
+                                                <input type="hidden" name="purchase_id" value="{{ $purchase->id }}">
+                                                <input type="text" name="invoice_no" class="form-control" value="{{ $purchase->invoice_no }}" readonly>
                                             </div>
                                         </div>
-
                                         <div class="col-xl-3 col-sm-6">
-                                            <div class="form-group" id="supplier-wrapper">
+                                            <div class="form-group">
                                                 <label class="form-label">Supplier</label>
-                                                <select name="supplier" class="select2-basic form-control" required>
-                                                    <option selected disabled>Select One</option>
-                                                    @foreach($Suppliers as $Supplier)
-                                                    <option value="{{ $Supplier->name }}"> {{ $Supplier->name }} </option>
-                                                    @endforeach
-                                                </select>
+                                                <input type="text" name="supplier" class="form-control" value="{{ $purchase->supplier }}" readonly>
                                             </div>
                                         </div>
-
                                         <div class="col-xl-3 col-sm-6">
                                             <div class="form-group">
                                                 <label>Date</label>
-                                                <input name="purchase_date" type="date" data-language="en"
-                                                    class="datepicker-here form-control bg--white"
-                                                    required>
+                                                <input name="return_date" type="date" class="form-control" required>
                                             </div>
                                         </div>
                                         <div class="col-xl-3 col-sm-6">
                                             <div class="form-group">
                                                 <label class="form-label">Warehouse</label>
-                                                <select name="warehouse_id" class="form-control " required>
-                                                    <option selected disabled>Select One</option>
-                                                    @foreach($Warehouses as $Warehouse)
-                                                    <option value="{{ $Warehouse->name }}">{{ $Warehouse->name }}</option>
-                                                    @endforeach
-                                                </select>
+                                                <input type="text" name="warehouse" class="form-control" value="{{ $purchase->warehouse_id }}" readonly>
                                             </div>
                                         </div>
                                     </div>
+
+                                    <!-- Product Items List -->
                                     <div class="row mb-3">
                                         <div class="table-responsive">
-                                            <table class="productTable table border">
+                                            <table class="table border">
                                                 <thead class="border bg--dark">
                                                     <tr>
                                                         <th>Name</th>
-                                                        <th>Purchase Qty</th>
-                                                        <th>Stock Qty</th>
-                                                        <th>Return Qty<span class="text--danger">*</span></th>
-                                                        <th>Price</th>
+                                                        <th>Purchase Quantity</th>
+                                                        <th>Stock Quantity</th>
+                                                        <th>Return Quantity</th>
+                                                        <th>Price (Per Unit)</th>
                                                         <th>Total</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody id="purchaseItems">
-                                                    @foreach($purchase->items as $item)
+                                                    @foreach($itemNames as $index => $itemName)
                                                     <tr>
-                                                        <td>{{ $item->product_name }}</td>
-                                                        <td>{{ $item->quantity }}</td>
-                                                        <td>{{ $item->stock_qty }}</td>
-                                                        <td><input type="number" name="return_quantity[]" class="form-control return-quantity" min="0" max="{{ $item->quantity }}"></td>
-                                                        <td>{{ $item->price }}</td>
-                                                        <td><input type="number" name="return_total[]" class="form-control return-total" readonly></td>
+                                                        <td>
+                                                            <input type="hidden" name="item_name[]" value="{{ $itemName }}">
+                                                            {{ $itemName }}
+                                                        </td> <!-- Item Name -->
+                                                        <td>{{ $quantities[$index] }}</td> <!-- Purchase Quantity -->
+                                                        <td>{{ $stocks[$index] }}</td> <!-- Stock Quantity -->
+                                                        <td>
+                                                            <input type="number" name="return_qty[]" class="form-control return-quantity" value="0" min="0" max="{{ $stocks[$index] }}">
+                                                        </td>
+                                                        <td>
+                                                            <input type="number" name="price[]" class="form-control price" value="{{ $prices[$index] }}" readonly>
+                                                        </td> <!-- Price per unit -->
+                                                        <td>
+                                                            <input type="number" name="total[]" class="form-control total" value="0" readonly>
+                                                        </td>
                                                     </tr>
                                                     @endforeach
                                                 </tbody>
+                                                <tfoot>
+                                                    <tr>
+                                                        <td colspan="5" class="text-end"><strong>Subtotal:</strong></td>
+                                                        <td>
+                                                            <input type="number" name="subtotal" class="form-control total_price" readonly>
+                                                        </td>
+                                                    </tr>
+                                                </tfoot>
                                             </table>
                                         </div>
                                     </div>
 
-
+                                    <!-- Final Calculation -->
                                     <div class="row">
                                         <div class="col-md-8 col-sm-6">
                                             <div class="form-group">
@@ -113,18 +112,7 @@
                                             <div class="row">
                                                 <div class="col-sm-12">
                                                     <div class="form-group">
-                                                        <label> Total Price</label>
-                                                        <div class="input-group">
-                                                            <span class="input-group-text">$</span>
-                                                            <input type="number" name="total_price" class="form-control total_price"
-                                                                required readonly>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-sm-12">
-                                                    <div class="form-group">
-                                                        <label> Discount</label>
+                                                        <label>Discount</label>
                                                         <div class="input-group">
                                                             <span class="input-group-text">$</span>
                                                             <input type="number" name="discount" class="form-control" step="any">
@@ -137,151 +125,53 @@
                                                         <label>Payable Amount</label>
                                                         <div class="input-group">
                                                             <span class="input-group-text">$</span>
-                                                            <input type="number" name="Payable_amount" class="form-control payable_amount"
-                                                                disabled>
+                                                            <input type="number" name="payable_amount" class="form-control payable_amount" readonly>
                                                         </div>
                                                     </div>
                                                 </div>
-
-
                                             </div>
                                         </div>
                                     </div>
 
-
-
-                                    <button type="submit" class="btn btn--primary w-100 h-45">Submit</button>
-
-
+                                    <button type="submit" class="btn btn--primary w-100 h-45">Submit Return</button>
                                 </form>
                             </div>
                         </div>
                     </div>
                 </div>
 
-
             </div><!-- bodywrapper__inner end -->
         </div><!-- body-wrapper end -->
 
     </div>
-    @include('admin_panel.include.footer_include')
 
+    @include('admin_panel.include.footer_include')
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const purchaseItems = document.getElementById('purchaseItems');
 
-            // Event listener for category selection
-            purchaseItems.addEventListener('change', function(e) {
-                if (e.target.classList.contains('item-category')) {
-                    const categoryId = e.target.value;
-                    const row = e.target.closest('tr');
-                    const itemSelect = row.querySelector('.item-name');
-
-                    if (categoryId) {
-                        fetch(`/get-items-by-category/${categoryId}`)
-                            .then(response => response.json())
-                            .then(items => {
-                                // Clear previous options
-                                itemSelect.innerHTML = '<option value="" disabled selected>Select Item</option>';
-
-                                // Populate new options
-                                items.forEach(item => {
-                                    const option = document.createElement('option');
-                                    option.value = item.product_name;
-                                    option.textContent = item.product_name;
-                                    itemSelect.appendChild(option);
-                                });
-                            })
-                            .catch(error => console.error('Error fetching items:', error));
-                    }
-                }
-            });
-
-            // Existing code for adding/removing rows and calculating total
-            const addRowButton = document.getElementById('addRow');
-            addRowButton.addEventListener('click', function() {
-                const newRow = `
-        <tr>
-            <td>
-                <select name="item_category[]" class="form-control item-category" required>
-                    <option value="" disabled selected>Select Category</option>
-                    @foreach($Category as $Categories)
-                    <option value="{{ $Categories->category }}">{{ $Categories->category }}</option>
-                    @endforeach
-                </select>
-            </td>
-            <td>
-                <select name="item_name[]" class="form-control item-name" required>
-                    <option value="" disabled selected>Select Item</option>
-                </select>
-            </td>
-            <td><input type="number" name="quantity[]" class="form-control quantity" required></td>
-            <td><input type="number" name="price[]" class="form-control price" required></td>
-            <td><input type="number" name="total[]" class="form-control total" readonly></td>
-            <td>
-                <button type="button" class="btn btn-danger remove-row">Delete</button>
-            </td>
-        </tr>`;
-                purchaseItems.insertAdjacentHTML('beforeend', newRow);
-            });
-
-            purchaseItems.addEventListener('click', function(e) {
-                if (e.target.classList.contains('remove-row')) {
-                    e.target.closest('tr').remove();
-                    calculateTotalPrice();
-                }
-            });
-
+            // Calculate total price and subtotal
             purchaseItems.addEventListener('input', function(e) {
-                if (e.target.classList.contains('quantity') || e.target.classList.contains('price')) {
+                if (e.target.classList.contains('return-quantity')) {
                     const row = e.target.closest('tr');
-                    const quantity = row.querySelector('.quantity').value;
-                    const price = row.querySelector('.price').value;
-                    const total = row.querySelector('.total');
+                    const returnQty = parseFloat(e.target.value) || 0;
+                    const price = parseFloat(row.querySelector('input[name="price[]"]').value) || 0;
+                    const total = row.querySelector('input[name="total[]"]');
 
-                    total.value = (quantity * price).toFixed(2);
+                    total.value = (returnQty * price).toFixed(2);
                     calculateTotalPrice();
                 }
             });
 
             function calculateTotalPrice() {
-                let totalPrice = 0;
-                document.querySelectorAll('.total').forEach(function(input) {
-                    totalPrice += parseFloat(input.value) || 0;
+                let subtotal = 0;
+                document.querySelectorAll('input[name="total[]"]').forEach(function(input) {
+                    subtotal += parseFloat(input.value) || 0;
                 });
-                document.querySelector('.total_price').value = totalPrice.toFixed(2);
-                document.querySelector('.payable_amount').value = totalPrice.toFixed(2);
+                document.querySelector('input[name="subtotal"]').value = subtotal.toFixed(2);
+                document.querySelector('input[name="payable_amount"]').value = subtotal.toFixed(2);
             }
         });
-
-
-        document.addEventListener('DOMContentLoaded', function() {
-    const purchaseItems = document.getElementById('purchaseItems');
-
-    purchaseItems.addEventListener('input', function(e) {
-        if (e.target.classList.contains('return-quantity')) {
-            const row = e.target.closest('tr');
-            const returnQty = parseFloat(e.target.value) || 0;
-            const price = parseFloat(row.querySelector('.price').textContent) || 0;
-            const totalField = row.querySelector('.return-total');
-
-            // Calculate the total for this row
-            totalField.value = (returnQty * price).toFixed(2);
-
-            calculateTotalReturnPrice();
-        }
-    });
-
-    function calculateTotalReturnPrice() {
-        let totalReturnPrice = 0;
-        document.querySelectorAll('.return-total').forEach(function(input) {
-            totalReturnPrice += parseFloat(input.value) || 0;
-        });
-
-        // Update total fields as needed
-        document.querySelector('.total_return_price').value = totalReturnPrice.toFixed(2);
-    }
-});
-
     </script>
+</body>

@@ -16,7 +16,7 @@ class StaffSalaryController extends Controller
         if (Auth::id()) {
             $userId = Auth::id();
             // dd($userId);
-            $staffs_salaires = StaffSalary::get();
+            $staffs_salaires = StaffSalary::where('admin_or_user_id', '=', $userId)->get();
             $staffs = User::where('usertype', '=', 'staff')->get();
             return view('admin_panel.staff_salary.staff_salary', [
                 'staffs_salaires' => $staffs_salaires,

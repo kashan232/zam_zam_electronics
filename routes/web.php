@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
@@ -89,6 +90,14 @@ Route::post('/purchases-payment', [PurchaseController::class, 'purchases_payment
 Route::get('/get-items-by-category/{categoryId}', [PurchaseController::class, 'getItemsByCategory']);
 Route::get('/purchase-view/{id}', [PurchaseController::class, 'view'])->name('purchase-view');
 Route::get('/purchase-return/{id}', [PurchaseController::class, 'purchase_return'])->name('purchase-return');
+Route::post('/store-purchase-return', [PurchaseController::class, 'store_purchase_return'])->name('store-purchase-return');
+Route::get('/all-purchase-return', [PurchaseController::class, 'all_purchase_return'])->name('all-purchase-return');
+
+
+//Customer
+Route::get('/customer', [CustomerController::class, 'customer'])->middleware(['auth','admin'])->name('customer');
+Route::post('/store-customer', [CustomerController::class, 'store_customer'])->name('store-customer');
+Route::post('/update-customer', [CustomerController::class, 'update_customer'])->name('update-customer');
 
 
 

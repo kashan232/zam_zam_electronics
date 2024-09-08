@@ -105,7 +105,7 @@
                                 </a>
                             </li>
                             <li class="sidebar-menu-item  ">
-                                <a href="purchase_return/purchase_return_all.html"
+                                <a href="{{ route('all-purchase-return') }}"
                                     class="nav-link">
                                     <i class="menu-icon la la-dot-circle"></i>
                                     <span class="menu-title">Purchases Return</span>
@@ -116,7 +116,7 @@
                 </li>
 
                 <li class="sidebar-menu-item">
-                    <a href="customer.html" class="nav-link">
+                    <a href="{{ route('customer') }}" class="nav-link">
                         <i class="menu-icon la la-users"></i>
                         <span class="menu-title">Customer</span>
                     </a>
