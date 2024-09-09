@@ -127,10 +127,10 @@
                         <i class="menu-icon la la-shopping-cart"></i>
                         <span class="menu-title">Sale</span>
                     </a>
-                    <div class="sidebar-submenu  ">
+                    <div class="sidebar-submenu">
                         <ul>
                             <li class="sidebar-menu-item  ">
-                                <a href="sale/sale_all.html" class="nav-link">
+                                <a href="{{ route('add-Sale') }}" class="nav-link">
                                     <i class="menu-icon la la-dot-circle"></i>
                                     <span class="menu-title">All Sales</span>
                                 </a>

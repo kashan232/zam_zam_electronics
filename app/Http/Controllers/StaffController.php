@@ -14,7 +14,9 @@ class StaffController extends Controller
         if (Auth::id()) {
             $userId = Auth::id();
             // dd($userId);
-            $staffs = User::where('admin_or_user_id', '=', $userId)->where('usertype', '=', 'staff')->get();
+            // dd($userId);
+            $staffs = User::where('admin_id', '=', $userId)->where('usertype', '=', 'staff')->get();
+            // dd($staffs);
             return view('admin_panel.staff.staff', [
                 'staffs' => $staffs
             ]);

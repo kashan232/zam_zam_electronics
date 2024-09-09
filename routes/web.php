@@ -7,6 +7,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PurchaseController;
+use App\Http\Controllers\SaleController;
 use App\Http\Controllers\StaffController;
 use App\Http\Controllers\StaffSalaryController;
 use App\Http\Controllers\SupplierController;
@@ -93,6 +94,12 @@ Route::get('/purchase-return/{id}', [PurchaseController::class, 'purchase_return
 Route::post('/store-purchase-return', [PurchaseController::class, 'store_purchase_return'])->name('store-purchase-return');
 Route::get('/all-purchase-return', [PurchaseController::class, 'all_purchase_return'])->name('all-purchase-return');
 Route::post('/purchase-return-payment', [PurchaseController::class, 'purchase_return_payment'])->name('purchase-return-payment');
+
+
+//Sale 
+Route::get('/Sale', [SaleController::class, 'Sale'])->middleware(['auth','admin'])->name('Sale');
+Route::get('/add-Sale', [SaleController::class, 'add_Sale'])->middleware(['auth','admin'])->name('add-Sale');
+Route::post('/store-Sale', [SaleController::class, 'store_Sale'])->name('store-Sale');
 
 
 //Customer
