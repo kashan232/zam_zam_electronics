@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Models\ClaimReturn;
 use App\Models\Product;
 use App\Models\Purchase;
 use App\Models\PurchaseReturn;
@@ -415,4 +416,169 @@ class PurchaseController extends Controller
             return redirect()->back()->with('error', 'Purchase Return not found.');
         }
     }
+
+
+    public function purchase_return_damage_item($id)
+    {
+        if (Auth::id()) {
+            $userId = Auth::id();
+
+            // Fetch suppliers, warehouses, and categories
+            $Suppliers = Supplier::get();
+            $Warehouses = Warehouse::get();
+            $Category = Category::get();
+
+            // Fetch the specific purchase by ID and make sure we get the item details
+            $purchase = Purchase::where('id', $id)->first();
+
+            if ($purchase) {
+                // Decode JSON fields from the purchase table for items, quantities, and prices
+                $itemNames = json_decode($purchase->item_name, true);
+                $quantities = json_decode($purchase->quantity, true);
+                $prices = json_decode($purchase->price, true);
+                $totals = json_decode($purchase->total, true);
+
+                // Initialize an array to store stock quantities
+                $stocks = [];
+
+                // Loop through item names and fetch stock quantity from the Product table
+                foreach ($itemNames as $itemName) {
+                    // Fetch product based on the product_name
+                    $product = Product::where('product_name', $itemName)->first();
+
+                    if ($product) {
+                        // Store stock quantity if the product is found
+                        $stocks[] = $product->stock;
+                    } else {
+                        // If product not found, store 0 stock
+                        $stocks[] = 0;
+                    }
+                }
+
+                // dd($stocks); // Debugging line to check stock values
+                // Pass all data including stocks to the blade
+                return view('admin_panel.claim_return.add_claim_return', [
+                    'Suppliers' => $Suppliers,
+                    'Warehouses' => $Warehouses,
+                    'Category' => $Category,
+                    'purchase' => $purchase,
+                    'itemNames' => $itemNames,
+                    'quantities' => $quantities,
+                    'prices' => $prices,
+                    'totals' => $totals,
+                    'stocks' => $stocks // Pass the stock quantities to the view
+                ]);
+            } else {
+                return redirect()->back()->with('error', 'Purchase not found');
+            }
+        } else {
+            return redirect()->back();
+        }
+    }
+
+    public function store_purchase_return_damage_item(Request $request)
+    {
+        // Retrieve inputs from the request
+        $itemNames = $request->input('item_name', []);
+        $returnQuantities = array_map('floatval', $request->input('return_qty', [])); // Convert quantities to float
+        $unitPrices = array_map('floatval', $request->input('price', [])); // Convert unit prices to float
+        $purchaseId = $request->input('purchase_id');
+
+        // Ensure item names, return quantities, and unit prices are arrays
+        if (!is_array($itemNames) || !is_array($returnQuantities) || !is_array($unitPrices)) {
+            return redirect()->back()->with('error', 'Invalid data provided.');
+        }
+
+        // Update stock quantities in the Product table
+        foreach ($itemNames as $index => $itemName) {
+            $returnQty = $returnQuantities[$index] ?? 0;
+            $product = Product::where('product_name', $itemName)->first();
+
+            if ($product) {
+                // Subtract the return quantity from the current stock
+                $product->stock -= $returnQty;
+                $product->save();
+            }
+        }
+
+        // Fetch the purchase record to update quantities
+        $purchase = Purchase::where('id', $purchaseId)->first();
+        if ($purchase) {
+            $itemNamesInPurchase = json_decode($purchase->item_name, true);
+            $quantitiesInPurchase = json_decode($purchase->quantity, true);
+
+            // Update quantities in the purchase record
+            foreach ($itemNames as $index => $itemName) {
+                $returnQty = $returnQuantities[$index] ?? 0;
+                $itemIndex = array_search($itemName, $itemNamesInPurchase);
+
+                if ($itemIndex !== false) {
+                    // Subtract the return quantity from the existing quantity
+                    $quantitiesInPurchase[$itemIndex] -= $returnQty;
+
+                    // Ensure quantity does not go below zero
+                    if ($quantitiesInPurchase[$itemIndex] < 0) {
+                        $quantitiesInPurchase[$itemIndex] = 0;
+                    }
+                }
+            }
+
+            // Save updated quantities and item names as strings
+            $purchase->quantity = json_encode(array_map('strval', $quantitiesInPurchase));
+            $purchase->item_name = json_encode($itemNamesInPurchase);
+            $purchase->save();
+        }
+
+        // Update purchase record to set is_return flag
+        Purchase::where('id', $purchaseId)->update(['is_return' => 1]);
+
+        // Calculate totals
+        $totals = [];
+        $subtotal = 0;
+        foreach ($returnQuantities as $index => $quantity) {
+            $price = $unitPrices[$index] ?? 0;
+            $total = $quantity * $price;
+            $totals[] = strval($total);  // Convert total to string
+            $subtotal += $total;
+        }
+
+        // Prepare data for storage and ensure all numeric arrays are saved as strings
+        $ClaimReturn = [
+            'purchase_id' => $purchaseId,
+            'return_date' => $request->input('return_date'),
+            'supplier' => $request->input('supplier'),
+            'warehouse_id' => $request->input('warehouse'),
+            'item_name' => json_encode($itemNames),
+            'return_quantity' => json_encode(array_map('strval', $returnQuantities)),  // Convert quantities to strings
+            'price' => json_encode(array_map('strval', $unitPrices)),  // Convert prices to strings
+            'total' => json_encode($totals),  // Totals are already converted to strings above
+            'note' => $request->input('note'),
+            'discount' => $request->input('discount') ?? 0,
+            'subtotal' => strval($subtotal),  // Subtotal as string
+            'total_price' => strval($subtotal),  // Assuming total_price should be the subtotal
+            'payable_amount' => strval($request->input('payable_amount'))
+        ];
+
+        // Save purchase return to the database
+        ClaimReturn::create($ClaimReturn);
+
+        // Redirect back with a success message
+        return redirect()->back()->with('success', 'Purchase return saved, stock updated, and purchase marked as returned successfully.');
+    }
+    public function all_purchase_return_damage_item()
+    {
+        if (Auth::id()) {
+            $userId = Auth::id();
+
+            // Retrieve all ClaimReturn with their related Purchase data (including invoice_no)
+            $ClaimReturns = ClaimReturn::with('purchase')->get();
+            // dd($ClaimReturn);
+            return view('admin_panel.claim_return.claim_return', [
+                'ClaimReturns' => $ClaimReturns,
+            ]);
+        } else {
+            return redirect()->back();
+        }
+    }
+
 }

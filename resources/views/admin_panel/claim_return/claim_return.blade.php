@@ -16,7 +16,7 @@
             <div class="bodywrapper__inner">
 
                 <div class="d-flex mb-30 flex-wrap gap-3 justify-content-between align-items-center">
-                    <h6 class="page-title">All Sales</h6>
+                    <h6 class="page-title">Claims Retunrs</h6>
                     <div class="d-flex flex-wrap justify-content-end gap-2 align-items-center breadcrumb-plugins">
                         <form action="" method="GET" class="d-flex gap-2">
                             <div class="input-group w-auto">
@@ -34,7 +34,7 @@
                             </div>
 
                         </form>
-                        <a href="{{ route('add-Sale') }}"
+                        <a href="{{ route('add-purchase') }}"
                             class="btn btn-outline--primary h-45">
                             <i class="la la-plus"></i>Add New </a>
                     </div>
@@ -49,50 +49,53 @@
                                         <thead>
                                             <tr>
                                                 <th>Invoice No. | Date</th>
-                                                <th>Customer | Warehouse </th>
-                                                <th>Total Amount </th>
-                                                <th>Discount </th>
-                                                <th>Payable </th>
-                                                <th>Received | Returned</th>
-                                                <!-- <th>Recipt </th> -->
+                                                <th>Supplier </th>
+                                                <th>Total Amount | Warehouse</th>
+                                                <th>Discount | Payable </th>
+                                                <th>Paid | Due</th>
+                                                <th>Status</th>
                                                 <th>Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach($Sales as $Sale)
+                                            @foreach($ClaimReturns as $ClaimReturn)
                                             <tr>
                                                 <td>
                                                     <span class="fw-bold">
-                                                        {{ $Sale->invoice_no }}
+                                                        {{ $ClaimReturn->purchase->invoice_no ?? 'N/A' }} <!-- Access invoice_no -->
                                                     </span>
                                                     <br>
-                                                    <small>{{ $Sale->sale_date }}</small>
+                                                    <small>{{ $ClaimReturn->return_date }}</small>
                                                 </td>
 
                                                 <td>
-                                                    <span class="text--primary fw-bold"> {{ $Sale->customer}} <br>
-                                                    {{ $Sale->warehouse_id }} </span>
+                                                    <span class="text--primary fw-bold"> {{ $ClaimReturn->supplier}} </span>
                                                 </td>
 
                                                 <td>
-                                                    <span class="fw-bold">{{ $Sale->total_price }} </span>
-                                                    
-                                                </td>
-                                                <td>
-                                                    {{ $Sale->discount }}
-                                                </td>
-                                                <td>
-                                                    <span class="fw-bold">{{ $Sale->Payable_amount }}</span>
-                                                </td>
-                                                <td>
-                                                    <span class="fw-bold">{{ $Sale->cash_received }}</span>
+                                                    <span class="fw-bold">{{ $ClaimReturn->total_price }} </span>
                                                     <br>
-                                                    <span class="fw-bold">{{ $Sale->change_return }}</span>
-
+                                                    {{ $ClaimReturn->warehouse_id }}
                                                 </td>
-                                                <!-- <td>
-                                                    <a class="dropdown-item btn btn-sm btn-outline--primary ms-1 editBtn" href="#"> <i class="la la-pen"></i> Edit</a>
-                                                </td> -->
+                                                <td>
+                                                    {{ $ClaimReturn->discount }}
+                                                    <br>
+                                                    <span class="fw-bold">{{ $ClaimReturn->payable_amount }}</span>
+                                                </td>
+                                                <td>
+                                                    {{ $ClaimReturn->paid_amount }}
+                                                    <br>
+                                                    <span class="fw-bold" title="Payable to Supplier">
+                                                        {{ $ClaimReturn->due_amount }}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    @if($ClaimReturn->status == 'Paid')
+                                                    <span class="badge badge--success bg-success text-white">Paid</span>
+                                                    @else
+                                                    <span class="badge badge--danger bg-danger text-white">Due</span>
+                                                    @endif
+                                                </td>
                                                 <td>
                                                     <div class="dropdown">
                                                         <button class="btn btn-sm btn-outline--info ms-1 dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -100,8 +103,15 @@
                                                         </button>
                                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                                             <a class="dropdown-item btn btn-sm btn-outline--primary ms-1 editBtn" href="#"> <i class="la la-pen"></i> Edit</a>
+                                                            <a href="#" class="dropdown-item btn btn-sm btn-outline--primary ms-1 paymentBtn"
+                                                                data-id="{{ $ClaimReturn->id }}"
+                                                                data-invoice_no="{{ $ClaimReturn->purchase->invoice_no }}"
+                                                                data-supplier="{{ $ClaimReturn->supplier }}"
+                                                                data-payable_amount="{{ $ClaimReturn->payable_amount }}">
+                                                                <i class="la la-money-bill-wave"></i>
+                                                                Pay
+                                                            </a>
                                                             <a class="dropdown-item btn btn-sm btn-outline--primary ms-1 editBtn" href="#"> <i class="la la-eye"></i> View</a>
-                                                            <a class="dropdown-item btn btn-sm btn-outline--primary ms-1 editBtn" href="{{ route('invoice.download', ['id' => $Sale->id]) }}"> <i class="la la-undo"></i> Download Invoice</a>
                                                         </div>
                                                     </div>
                                                 </td>
@@ -125,10 +135,10 @@
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
-                                <form action="{{ route('purchases-payment') }}" method="POST">
+                                <form action="{{ route('purchase-return-payment') }}" method="POST">
                                     @csrf
                                     <div class="mb-3">
-                                        <label for="purchase_id" class="form-label">Purchase ID</label>
+                                        <label for="purchase_id" class="form-label">Purchase Return ID</label>
                                         <input type="text" class="form-control" id="purchase_id" name="purchase_id" readonly>
                                     </div>
                                     <div class="mb-3">
@@ -153,6 +163,7 @@
                         </div>
                     </div>
                 </div>
+
             </div><!-- bodywrapper__inner end -->
         </div><!-- body-wrapper end -->
 

@@ -115,6 +115,14 @@
                     </div>
                 </li>
 
+                <li class="sidebar-menu-item  ">
+                    <a href="{{ route('all-purchase-return-damage-item') }}"
+                        class="nav-link">
+                        <i class="menu-icon la la-dot-circle"></i>
+                        <span class="menu-title">Claim Returns</span>
+                    </a>
+                </li>
+                
                 <li class="sidebar-menu-item">
                     <a href="{{ route('customer') }}" class="nav-link">
                         <i class="menu-icon la la-users"></i>
@@ -130,7 +138,7 @@
                     <div class="sidebar-submenu">
                         <ul>
                             <li class="sidebar-menu-item  ">
-                                <a href="{{ route('add-Sale') }}" class="nav-link">
+                                <a href="{{ route('all-sales') }}" class="nav-link">
                                     <i class="menu-icon la la-dot-circle"></i>
                                     <span class="menu-title">All Sales</span>
                                 </a>
@@ -239,6 +247,13 @@
                                     class="nav-link">
                                     <i class="menu-icon la la-dot-circle"></i>
                                     <span class="menu-title">Customer</span>
+                                </a>
+                            </li>
+                            <li class="sidebar-menu-item  ">
+                                <a href="https://script.viserlab.com/torylab/admin/reports/data-entry/customer"
+                                    class="nav-link">
+                                    <i class="menu-icon la la-dot-circle"></i>
+                                    <span class="menu-title">Claim Returns</span>
                                 </a>
                             </li>
                             <li class="sidebar-menu-item  ">

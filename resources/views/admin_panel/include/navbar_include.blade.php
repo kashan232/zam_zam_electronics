@@ -10,13 +10,12 @@
     </div>
     <div class="navbar__right">
         <ul class="navbar__action-list">
-
             <li class="dropdown">
                 <button type="button" class="" data-bs-toggle="dropdown" data-display="static"
                     aria-haspopup="true" aria-expanded="false">
                     <span class="navbar-user">
                         <span class="navbar-user__thumb">
-                            <img src="#"alt="image"></span>
+                            <img src="/assets/admin/images/user.png" alt="image"></span>
                         <span class="navbar-user__info">
                             <span class="navbar-user__name">Super Admin</span>
                         </span>
@@ -33,7 +32,7 @@
                         <span class="dropdown-menu__caption">Password</span>
                     </a>
                     <form method="POST" action="{{ route('logout') }}">
-                    @csrf
+                        @csrf
                         <a href="route('logout')" onclick="event.preventDefault(); this.closest('form').submit();"
                             class="dropdown-menu__item d-flex align-items-center px-3 py-2">
                             <i class="dropdown-menu__icon las la-sign-out-alt"></i>

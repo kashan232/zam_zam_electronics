@@ -6,13 +6,15 @@ use App\Models\Category;
 use App\Models\Customer;
 use App\Models\Product;
 use App\Models\Purchase;
+use App\Models\Sale;
 use App\Models\Warehouse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Barryvdh\DomPDF\Facade\Pdf; // If using barryvdh/laravel-dompdf
 
 class SaleController extends Controller
 {
-    
+
     public function Sale()
     {
         if (Auth::id()) {
@@ -74,64 +76,105 @@ class SaleController extends Controller
 
     public function store_Sale(Request $request)
     {
-        // Validate the request
-        $validatedData = $request->validate([
-            'invoice_no' => 'required|string',
-            'supplier' => 'required|string',
-            'purchase_date' => 'required|date',
-            'warehouse_id' => 'required|string',
-            'item_category' => 'required|array',
-            'item_name' => 'required|array',
-            'quantity' => 'required|array',
-            'price' => 'required|array',
-            'total' => 'required|array',
-            'note' => 'nullable|string',
-            'total_price' => 'required|numeric',
-            'discount' => 'nullable|numeric',  // Ensure it's numeric
+        // Generate a unique invoice number
+        $invoiceNo = Sale::generateInvoiceNo();
+        // dd($invoiceNo);  
+        // Debugging: Log the request data to check incoming values
+        \Log::info('Request Data:', $request->all());
+
+        // Ensure discount, cash received, and change return are numeric
+        $discount = (float) ($request->input('discount', 0));
+        $totalPrice = (float) $request->input('total_price', 0);
+        $cashReceived = (float) $request->input('cash_received', 0);
+        $changeToReturn = (float) $request->input('change_to_return', 0); // Fixed field name
+
+        // Debugging: Log the processed values
+        \Log::info('Processed Values:', [
+            'discount' => $discount,
+            'total_price' => $totalPrice,
+            'cash_received' => $cashReceived,
+            'change_to_return' => $changeToReturn, // Fixed field name
         ]);
 
-        // Ensure discount is numeric and default to 0 if null
-        $discount = (float) $request->discount ?? 0;
-
-        // Ensure total_price is numeric as well
-        $totalPrice = (float) $request->total_price;
-
         // Prepare data for storage
-        $purchaseData = [
-            'invoice_no' => $request->invoice_no,
-            'supplier' => $request->supplier,
-            'purchase_date' => $request->purchase_date,
-            'warehouse_id' => $request->warehouse_id,
-            'item_category' => json_encode($request->item_category),
-            'item_name' => json_encode($request->item_name),
-            'quantity' => json_encode($request->quantity),
-            'price' => json_encode($request->price),
-            'total' => json_encode($request->total),
-            'note' => $request->note,
+        $saleData = [
+            'invoice_no' => $invoiceNo,
+            'customer' => $request->input('customer', ''),
+            'sale_date' => $request->input('sale_date', ''),
+            'warehouse_id' => $request->input('warehouse_id', ''),
+            'item_category' => json_encode($request->input('item_category', [])),
+            'item_name' => json_encode($request->input('item_name', [])),
+            'quantity' => json_encode($request->input('quantity', [])),
+            'price' => json_encode($request->input('price', [])),
+            'total' => json_encode($request->input('total', [])),
+            'note' => $request->input('note', ''),
             'total_price' => $totalPrice,
             'discount' => $discount,
-            'Payable_amount' => $totalPrice - $discount, // Correct subtraction with numeric values
+            'Payable_amount' => $totalPrice - $discount,
+            'cash_received' => $cashReceived,
+            'change_return' => $changeToReturn, // Fixed field name
         ];
 
-        // Save purchase data
-        $purchase = Purchase::create($purchaseData);
+        // Save sale data
+        $sale = Sale::create($saleData);
 
-        // Step 2: Update Product Stock
-        foreach ($request->item_name as $key => $item_name) {
-            $item_category = $request->item_category[$key];
-            $quantity = $request->quantity[$key];
+        // Update Product Stock
+        foreach ($request->input('item_name', []) as $key => $item_name) {
+            $item_category = $request->input('item_category', [])[$key] ?? '';
+            $quantity = $request->input('quantity', [])[$key] ?? 0;
 
-            // Find the product and update stock
+            // Find the product by name and category and update stock
             $product = Product::where('product_name', $item_name)
                 ->where('category', $item_category)
                 ->first();
+
             if ($product) {
-                $product->stock += $quantity; // Increase the stock
+                $product->stock -= $quantity; // Decrease stock for sales
                 $product->save();
+            } else {
+                // Handle case when product is not found (optional)
+                return redirect()->back()->with('error', "Product $item_name in category $item_category not found.");
             }
         }
 
-        return redirect()->back()->with('success', 'Purchase saved successfully and stock updated.');
+        return redirect()->back()->with('success', 'Sale recorded successfully and stock updated.');
     }
 
+
+    public function all_sales()
+    {
+        if (Auth::id()) {
+            $userId = Auth::id();
+
+            // Retrieve all Sales with their related Purchase data (including invoice_no)
+            $Sales = Sale::get();
+            // dd($Sales);
+            return view('admin_panel.sale.sales', [
+                'Sales' => $Sales,
+            ]);
+        } else {
+            return redirect()->back();
+        }
+    }
+
+
+    public function downloadInvoice($id)
+    {
+        // Fetch the sale data
+        $sale = Sale::findOrFail($id);
+
+        // Fetch the customer information based on the customer name in the sale
+        $customer = Customer::where('customer_name', $sale->customer)->first();
+
+        // If customer is not found, handle the case (optional)
+        if (!$customer) {
+            abort(404, 'Customer not found for this sale.');
+        }
+
+        // Load the view and pass both sale and customer data
+        $pdf = Pdf::loadView('admin_panel.invoices.invoice', ['sale' => $sale, 'customer' => $customer]);
+
+        // Download the PDF file
+        return $pdf->download('invoice-' . $sale->invoice_no . '.pdf');
+    }
 }

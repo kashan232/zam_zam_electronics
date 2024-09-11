@@ -119,6 +119,9 @@
 
                                                             <a class="dropdown-item btn btn-sm btn-outline--primary ms-1 editBtn" href="{{ route('purchase-return',['id' => $purchase->id ]) }}
                                                             "> <i class="la la-undo"></i> View Return Details</a>
+                                                            
+                                                            <a class="dropdown-item btn btn-sm btn-outline--primary ms-1 editBtn" href="{{ route('purchase-return-damage-item',['id' => $purchase->id ]) }}
+                                                            "> <i class="la la-undo"></i> Damage Item</a>
                                                         </div>
                                                     </div>
                                                 </td>

@@ -5,7 +5,6 @@
     <div class="page-wrapper default-version">
 
         <!-- sidebar start -->
-
         @include('admin_panel.include.sidebar_include')
         <!-- sidebar end -->
 
@@ -28,21 +27,13 @@
                     <div class="col-lg-12 col-md-12 mb-30">
                         <div class="card">
                             <div class="card-body">
-                                <form action="{{ route('store-Purchase') }}" method="POST">
+                                <form action="{{ route('store-Sale') }}" method="POST">
                                     @csrf
                                     <div class="row mb-3">
-                                        <div class="col-xl-3 col-sm-6">
-                                            <div class="form-group">
-                                                <label>Invoice No:</label>
-                                                <input type="text" name="invoice_no" class="form-control"
-                                                    required>
-                                            </div>
-                                        </div>
-
-                                        <div class="col-xl-3 col-sm-6">
+                                        <div class="col-xl-4 col-sm-6">
                                             <div class="form-group" id="supplier-wrapper">
                                                 <label class="form-label">Customers</label>
-                                                <select name="supplier" class="select2-basic form-control" required>
+                                                <select name="customer" class="select2-basic form-control" required>
                                                     <option selected disabled>Select One</option>
                                                     @foreach($Customers as $Customer)
                                                     <option value="{{ $Customer->customer_name }}"> {{ $Customer->customer_name }} </option>
@@ -51,15 +42,15 @@
                                             </div>
                                         </div>
 
-                                        <div class="col-xl-3 col-sm-6">
+                                        <div class="col-xl-4 col-sm-6">
                                             <div class="form-group">
                                                 <label>Date</label>
-                                                <input name="purchase_date" type="date" data-language="en"
-                                                    class="datepicker-here form-control bg--white" 
+                                                <input name="sale_date" type="date" data-language="en"
+                                                    class="datepicker-here form-control bg--white"
                                                     required>
                                             </div>
                                         </div>
-                                        <div class="col-xl-3 col-sm-6">
+                                        <div class="col-xl-4 col-sm-6">
                                             <div class="form-group">
                                                 <label class="form-label">Warehouse</label>
                                                 <select name="warehouse_id" class="form-control " required>
@@ -71,6 +62,7 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <!-- Product Items List -->
                                     <div class="row mb-3">
                                         <div class="table-responsive">
                                             <table class="productTable table border">
@@ -117,7 +109,7 @@
                                     <div class="row">
                                         <div class="col-md-8 col-sm-6">
                                             <div class="form-group">
-                                                <label>Note</label>
+                                                <label>Sale Note</label>
                                                 <textarea name="note" class="form-control"></textarea>
                                             </div>
                                         </div>
@@ -126,21 +118,20 @@
                                             <div class="row">
                                                 <div class="col-sm-12">
                                                     <div class="form-group">
-                                                        <label> Total Price</label>
+                                                        <label>Total Price</label>
                                                         <div class="input-group">
                                                             <span class="input-group-text">$</span>
-                                                            <input type="number" name="total_price" class="form-control total_price"
-                                                               required readonly>
+                                                            <input type="number" name="total_price" class="form-control total_price" required readonly>
                                                         </div>
                                                     </div>
                                                 </div>
 
                                                 <div class="col-sm-12">
                                                     <div class="form-group">
-                                                        <label> Discount</label>
+                                                        <label>Discount</label>
                                                         <div class="input-group">
                                                             <span class="input-group-text">$</span>
-                                                            <input type="number" name="discount" class="form-control"step="any">
+                                                            <input type="number" name="discount" class="form-control" step="any">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -150,16 +141,37 @@
                                                         <label>Payable Amount</label>
                                                         <div class="input-group">
                                                             <span class="input-group-text">$</span>
-                                                            <input type="number" name="Payable_amount" class="form-control payable_amount"
-                                                                disabled>
+                                                            <input type="number" name="Payable_amount" class="form-control payable_amount" disabled>
                                                         </div>
                                                     </div>
                                                 </div>
 
+                                                <!-- Cash Payment Fields Start -->
+                                                <div class="col-sm-12">
+                                                    <div class="form-group">
+                                                        <label>Cash Received</label>
+                                                        <div class="input-group">
+                                                            <span class="input-group-text">$</span>
+                                                            <input type="number" name="cash_received" id="cashReceived" class="form-control">
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-sm-12">
+                                                    <div class="form-group">
+                                                        <label>Change to Return</label>
+                                                        <div class="input-group">
+                                                            <span class="input-group-text">$</span>
+                                                            <input type="number" name="change_to_return" id="changeToReturn" class="form-control" readonly>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <!-- Cash Payment Fields End -->
 
                                             </div>
                                         </div>
                                     </div>
+
 
 
 
@@ -183,16 +195,99 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const purchaseItems = document.getElementById('purchaseItems');
+            const cashReceivedInput = document.getElementById('cashReceived');
+            const payableAmountInput = document.querySelector('.payable_amount');
+            const changeToReturnInput = document.getElementById('changeToReturn');
 
-            // Event listener for category selection
+            cashReceivedInput.addEventListener('input', function() {
+                const cashReceived = parseFloat(cashReceivedInput.value) || 0;
+                const payableAmount = parseFloat(payableAmountInput.value) || 0;
+
+                const changeToReturn = cashReceived - payableAmount;
+                changeToReturnInput.value = changeToReturn > 0 ? changeToReturn.toFixed(2) : 0;
+            });
+
+            // Existing code for adding/removing rows and calculating total
+            const addRowButton = document.getElementById('addRow');
+            addRowButton.addEventListener('click', function() {
+                const newRow = `
+            <tr>
+                <td>
+                    <select name="item_category[]" class="form-control item-category" required>
+                        <option value="" disabled selected>Select Category</option>
+                        @foreach($Category as $Categories)
+                        <option value="{{ $Categories->category }}">{{ $Categories->category }}</option>
+                        @endforeach
+                    </select>
+                </td>
+                <td>
+                    <select name="item_name[]" class="form-control item-name" required>
+                        <option value="" disabled selected>Select Item</option>
+                    </select>
+                </td>
+                <td><input type="number" name="quantity[]" class="form-control quantity" required></td>
+                <td><input type="number" name="price[]" class="form-control price" required></td>
+                <td><input type="number" name="total[]" class="form-control total" readonly></td>
+                <td>
+                    <button type="button" class="btn btn-danger remove-row">Delete</button>
+                </td>
+            </tr>`;
+                purchaseItems.insertAdjacentHTML('beforeend', newRow);
+            });
+
+            purchaseItems.addEventListener('click', function(e) {
+                if (e.target.classList.contains('remove-row')) {
+                    e.target.closest('tr').remove();
+                    calculateTotalPrice();
+                }
+            });
+
+            purchaseItems.addEventListener('input', function(e) {
+                if (e.target.classList.contains('quantity') || e.target.classList.contains('price')) {
+                    const row = e.target.closest('tr');
+                    const quantity = parseFloat(row.querySelector('.quantity').value) || 0;
+                    const price = parseFloat(row.querySelector('.price').value) || 0;
+                    const total = row.querySelector('.total');
+
+                    total.value = (quantity * price).toFixed(2);
+                    calculateTotalPrice();
+                }
+            });
+
+            // Update payable amount when discount is entered
+            const discountInput = document.getElementById('discount');
+            discountInput.addEventListener('input', function() {
+                calculateTotalPrice();
+            });
+
+            function calculateTotalPrice() {
+                let totalPrice = 0;
+                document.querySelectorAll('.total').forEach(function(input) {
+                    totalPrice += parseFloat(input.value) || 0;
+                });
+                document.querySelector('.total_price').value = totalPrice.toFixed(2);
+
+                const discount = parseFloat(discountInput.value) || 0;
+                const payableAmount = totalPrice - discount;
+                payableAmountInput.value = payableAmount.toFixed(2);
+
+                // Update change returned if cash is selected
+                if (paymentMethodSelect.value === 'Cash' && cashReceivedInput.value) {
+                    const cashReceived = parseFloat(cashReceivedInput.value) || 0;
+                    const change = cashReceived - payableAmount;
+                    changeReturnedInput.value = change.toFixed(2);
+                }
+            }
+
+            // Event listener for category selection (existing code)
             purchaseItems.addEventListener('change', function(e) {
                 if (e.target.classList.contains('item-category')) {
-                    const categoryId = e.target.value;
+                    const categoryName = e.target.value;
                     const row = e.target.closest('tr');
                     const itemSelect = row.querySelector('.item-name');
 
-                    if (categoryId) {
-                        fetch(`/get-items-by-category/${categoryId}`)
+                    if (categoryName) {
+                        fetch(`/get-items-by-category/${categoryName}`)
                             .then(response => response.json())
                             .then(items => {
                                 // Clear previous options
@@ -210,61 +305,6 @@
                     }
                 }
             });
-
-            // Existing code for adding/removing rows and calculating total
-            const addRowButton = document.getElementById('addRow');
-            addRowButton.addEventListener('click', function() {
-                const newRow = `
-        <tr>
-            <td>
-                <select name="item_category[]" class="form-control item-category" required>
-                    <option value="" disabled selected>Select Category</option>
-                    @foreach($Category as $Categories)
-                    <option value="{{ $Categories->category }}">{{ $Categories->category }}</option>
-                    @endforeach
-                </select>
-            </td>
-            <td>
-                <select name="item_name[]" class="form-control item-name" required>
-                    <option value="" disabled selected>Select Item</option>
-                </select>
-            </td>
-            <td><input type="number" name="quantity[]" class="form-control quantity" required></td>
-            <td><input type="number" name="price[]" class="form-control price" required></td>
-            <td><input type="number" name="total[]" class="form-control total" readonly></td>
-            <td>
-                <button type="button" class="btn btn-danger remove-row">Delete</button>
-            </td>
-        </tr>`;
-                purchaseItems.insertAdjacentHTML('beforeend', newRow);
-            });
-
-            purchaseItems.addEventListener('click', function(e) {
-                if (e.target.classList.contains('remove-row')) {
-                    e.target.closest('tr').remove();
-                    calculateTotalPrice();
-                }
-            });
-
-            purchaseItems.addEventListener('input', function(e) {
-                if (e.target.classList.contains('quantity') || e.target.classList.contains('price')) {
-                    const row = e.target.closest('tr');
-                    const quantity = row.querySelector('.quantity').value;
-                    const price = row.querySelector('.price').value;
-                    const total = row.querySelector('.total');
-
-                    total.value = (quantity * price).toFixed(2);
-                    calculateTotalPrice();
-                }
-            });
-
-            function calculateTotalPrice() {
-                let totalPrice = 0;
-                document.querySelectorAll('.total').forEach(function(input) {
-                    totalPrice += parseFloat(input.value) || 0;
-                });
-                document.querySelector('.total_price').value = totalPrice.toFixed(2);
-                document.querySelector('.payable_amount').value = totalPrice.toFixed(2);
-            }
         });
     </script>
+</body>

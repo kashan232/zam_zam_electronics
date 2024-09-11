@@ -96,11 +96,18 @@ Route::get('/all-purchase-return', [PurchaseController::class, 'all_purchase_ret
 Route::post('/purchase-return-payment', [PurchaseController::class, 'purchase_return_payment'])->name('purchase-return-payment');
 
 
+Route::get('/purchase-return-damage-item/{id}', [PurchaseController::class, 'purchase_return_damage_item'])->name('purchase-return-damage-item');
+Route::post('/store-purchase-return-damage-item', [PurchaseController::class, 'store_purchase_return_damage_item'])->name('store-purchase-return-damage-item');
+Route::get('/all-purchase-return-damage-item', [PurchaseController::class, 'all_purchase_return_damage_item'])->name('all-purchase-return-damage-item');
+
+
 //Sale 
 Route::get('/Sale', [SaleController::class, 'Sale'])->middleware(['auth','admin'])->name('Sale');
 Route::get('/add-Sale', [SaleController::class, 'add_Sale'])->middleware(['auth','admin'])->name('add-Sale');
 Route::post('/store-Sale', [SaleController::class, 'store_Sale'])->name('store-Sale');
-
+Route::get('/all-sales', [SaleController::class, 'all_sales'])->name('all-sales');
+// Route for downloading invoice
+Route::get('/invoice/download/{id}', [SaleController::class, 'downloadInvoice'])->name('invoice.download');
 
 //Customer
 Route::get('/customer', [CustomerController::class, 'customer'])->middleware(['auth','admin'])->name('customer');

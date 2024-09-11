@@ -1,4 +1,3 @@
-
 @include('admin_panel.include.header_include')
 
 <body>
@@ -22,6 +21,45 @@
 
 
                 <div class="row gy-4 mb-30">
+
+                    <div class="col-xxl-3 col-sm-6">
+                        <div class="widget-two box--shadow2 b-radius--5 bg--white">
+                            <i class="las la-shopping-bag overlay-icon text--success"></i>
+
+                            <div class="widget-two__icon b-radius--5   bg--success  ">
+                                <i class="las la-shopping-bag"></i>
+                            </div>
+
+                            <div class="widget-two__content">
+                                <h3>{{ $totalPurchasesPrice }}</h3>
+                                <p>Purchases</p>
+                            </div>
+
+                            <a href="https://script.viserlab.com/torylab/admin/purchase/all"
+                                class="widget-two__btn btn btn-outline--success">View All</a>
+                        </div>
+
+                    </div><!-- dashboard-w1 end -->
+
+                    <div class="col-xxl-3 col-sm-6">
+                        <div class="widget-two box--shadow2 b-radius--5 bg--white">
+                            <i class="las la-share overlay-icon text--danger"></i>
+
+                            <div class="widget-two__icon b-radius--5   bg--danger  ">
+                                <i class="las la-share"></i>
+                            </div>
+
+                            <div class="widget-two__content">
+                                <h3>{{ $totalPurchaseReturnsPrice }}</h3>
+                                <p>Purchases Return</p>
+                            </div>
+
+                            <a href="https://script.viserlab.com/torylab/admin/purchase-return/all"
+                                class="widget-two__btn btn btn-outline--danger">View All</a>
+                        </div>
+
+                    </div><!-- dashboard-w1 end -->
+
                     <div class="col-xxl-3 col-sm-6">
                         <div class="widget-two box--shadow2 b-radius--5 bg--white">
                             <i class="las la-shopping-cart overlay-icon text--primary"></i>
@@ -60,43 +98,7 @@
 
                     </div><!-- dashboard-w1 end -->
 
-                    <div class="col-xxl-3 col-sm-6">
-                        <div class="widget-two box--shadow2 b-radius--5 bg--white">
-                            <i class="las la-shopping-bag overlay-icon text--success"></i>
 
-                            <div class="widget-two__icon b-radius--5   bg--success  ">
-                                <i class="las la-shopping-bag"></i>
-                            </div>
-
-                            <div class="widget-two__content">
-                                <h3>$1,202,670,360.00</h3>
-                                <p>Purchases</p>
-                            </div>
-
-                            <a href="https://script.viserlab.com/torylab/admin/purchase/all"
-                                class="widget-two__btn btn btn-outline--success">View All</a>
-                        </div>
-
-                    </div><!-- dashboard-w1 end -->
-
-                    <div class="col-xxl-3 col-sm-6">
-                        <div class="widget-two box--shadow2 b-radius--5 bg--white">
-                            <i class="las la-share overlay-icon text--danger"></i>
-
-                            <div class="widget-two__icon b-radius--5   bg--danger  ">
-                                <i class="las la-share"></i>
-                            </div>
-
-                            <div class="widget-two__content">
-                                <h3>$247,649,800.00</h3>
-                                <p>Purchases Return</p>
-                            </div>
-
-                            <a href="https://script.viserlab.com/torylab/admin/purchase-return/all"
-                                class="widget-two__btn btn btn-outline--danger">View All</a>
-                        </div>
-
-                    </div><!-- dashboard-w1 end -->
                 </div><!-- row end-->
 
                 <div class="row gy-4 mb-30">
@@ -242,64 +244,33 @@
                                         <thead>
                                             <tr>
                                                 <th>Product</th>
-                                                <th>Warehouse</th>
+                                                <th>Category</th>
                                                 <th>Alert</th>
                                                 <th>Stock</th>
                                                 <th>Unit</th>
                                             </tr>
                                         </thead>
                                         <tbody>
+                                            @foreach($all_product as $product)
                                             <tr>
-                                                <td class="fw-bold"> 5L Sunflower Oil </td>
-                                                <td> Warehouse Two </td>
-                                                <td>
-                                                    <span class="bg--warning px-2 rounded">
-                                                        100
-                                                    </span>
-                                                </td>
+                                                <td class="fw-bold"> {{ $product->product_name }} </td>
+                                                <td> {{ $product->category }} </td>
                                                 <td>
                                                     <span class="bg--danger px-2 rounded">
-                                                        50
+                                                    {{ $product->alert_quantity }}
                                                     </span>
                                                 </td>
-                                                <td>
-                                                    kg
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td class="fw-bold"> 50KG Bag Miniket Rice </td>
-                                                <td> Warehouse Two </td>
                                                 <td>
                                                     <span class="bg--warning px-2 rounded">
-                                                        200
+                                                    {{ $product->stock }}
                                                     </span>
                                                 </td>
                                                 <td>
-                                                    <span class="bg--danger px-2 rounded">
-                                                        100
-                                                    </span>
-                                                </td>
-                                                <td>
-                                                    bag
+                                                {{ $product->unit }}
                                                 </td>
                                             </tr>
-                                            <tr>
-                                                <td class="fw-bold"> 50KG Bag Miniket Rice </td>
-                                                <td> Warehouse One </td>
-                                                <td>
-                                                    <span class="bg--warning px-2 rounded">
-                                                        200
-                                                    </span>
-                                                </td>
-                                                <td>
-                                                    <span class="bg--danger px-2 rounded">
-                                                        150
-                                                    </span>
-                                                </td>
-                                                <td>
-                                                    bag
-                                                </td>
-                                            </tr>
+                                            @endforeach
+
                                         </tbody>
                                     </table><!-- table end -->
                                 </div>
@@ -469,7 +440,7 @@
                             </div>
 
                             <div class="widget-two__content">
-                                <h3 class="text-white">8</h3>
+                                <h3 class="text-white">{{ $categories }}</h3>
                                 <p class="text-white">Categories</p>
                             </div>
                             <a href="https://script.viserlab.com/torylab/admin/category" class="widget-two__btn">View
@@ -483,7 +454,7 @@
                             </div>
 
                             <div class="widget-two__content">
-                                <h3 class="text-white">14</h3>
+                                <h3 class="text-white">{{ $products }}</h3>
                                 <p class="text-white">Products</p>
                             </div>
                             <a href="https://script.viserlab.com/torylab/admin/product/all" class="widget-two__btn">View
@@ -498,7 +469,7 @@
                             </div>
 
                             <div class="widget-two__content">
-                                <h3 class="text-white">12</h3>
+                                <h3 class="text-white">{{ $suppliers }}</h3>
                                 <p class="text-white">Suppliers</p>
                             </div>
                             <a href="https://script.viserlab.com/torylab/admin/supplier/all"
@@ -513,7 +484,7 @@
                             </div>
 
                             <div class="widget-two__content">
-                                <h3 class="text-white">12</h3>
+                                <h3 class="text-white">{{ $customers }}</h3>
                                 <p class="text-white">Customers</p>
                             </div>
                             <a href="https://script.viserlab.com/torylab/admin/customer/all"
@@ -528,5 +499,4 @@
         </div><!-- body-wrapper end -->
     </div>
 
-@include('admin_panel.include.footer_include')
-    
+    @include('admin_panel.include.footer_include')
