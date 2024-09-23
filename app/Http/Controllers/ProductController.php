@@ -33,12 +33,12 @@ class ProductController extends Controller
             $all_category = Category::where('admin_or_user_id', '=', $userId)->get();
             $all_brand = Brand::where('admin_or_user_id', '=', $userId)->get();
             $all_unit = Unit::where('admin_or_user_id', '=', $userId)->get();
-            
+
             return view('admin_panel.product.add_product', [
                 'all_category' => $all_category,
                 'all_brand' => $all_brand,
                 'all_unit' => $all_unit,
-                
+
             ]);
         } else {
             return redirect()->back();
@@ -50,19 +50,21 @@ class ProductController extends Controller
             $usertype = Auth()->user()->usertype;
             $userId = Auth::id();
 
-             // Handle image upload
-             $image = $request->file('image');
-             $imageName = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
-             $imagePath = 'product_images/' . $imageName;
- 
-             // Save the original image to the public directory
-             $image->move(public_path('product_images'), $imageName);
+            // Handle image upload
+            $image = $request->file('image');
+            $imageName = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
+            $imagePath = 'product_images/' . $imageName;
+
+            // Save the original image to the public directory
+            $image->move(public_path('product_images'), $imageName);
 
             Product::create([
                 'admin_or_user_id' => $userId,
                 'product_name'     => $request->product_name,
                 'category'         => $request->category,
                 'brand'            => $request->brand,
+                'stock'            => $request->stock,
+                'barcode_number'            => $request->barcode_number,
                 'sku'              => $request->sku,
                 'unit'             => $request->unit,
                 'alert_quantity'   => $request->alert_quantity,
@@ -71,7 +73,7 @@ class ProductController extends Controller
                 'created_at'       => Carbon::now(),
                 'updated_at'       => Carbon::now(),
             ]);
-            return redirect()->back()->with('unit-added', 'Unit Added Successfully');
+            return redirect()->back()->with('unit-added', 'Product Added Successfully');
         } else {
             return redirect()->back();
         }
@@ -84,14 +86,61 @@ class ProductController extends Controller
             $all_brand = Brand::where('admin_or_user_id', '=', $userId)->get();
             $all_unit = Unit::where('admin_or_user_id', '=', $userId)->get();
             $product_details = Product::findOrFail($id);
-            
+            // dd($product_details);
             return view('admin_panel.product.edit_product', [
                 'all_category' => $all_category,
                 'all_brand' => $all_brand,
                 'all_unit' => $all_unit,
                 'product_details' => $product_details,
-                
+
             ]);
+        } else {
+            return redirect()->back();
+        }
+    }
+
+    public function update_product(Request $request, $id)
+    {
+        if (Auth::id()) {
+            $userId = Auth::id();
+
+            // Find the product by ID
+            $product = Product::findOrFail($id);
+
+            // Handle image upload if a new image is provided
+            if ($request->hasFile('image')) {
+                // Delete the old image if exists
+                if ($product->image) {
+                    $oldImagePath = public_path('product_images/' . $product->image);
+                    if (file_exists($oldImagePath)) {
+                        unlink($oldImagePath);
+                    }
+                }
+
+                // Upload new image
+                $image = $request->file('image');
+                $imageName = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
+                $image->move(public_path('product_images'), $imageName);
+
+                // Set the new image name in the product data
+                $product->image = $imageName;
+            }
+
+            // Update product details
+            $product->product_name   = $request->product_name;
+            $product->category       = $request->category;
+            $product->brand          = $request->brand;
+            $product->sku            = $request->sku;
+            $product->unit           = $request->unit;
+            $product->alert_quantity = $request->alert_quantity;
+            $product->retail_price   = $request->retail_price;  // Including retail price update
+            $product->note           = $request->note;
+            $product->updated_at     = Carbon::now();
+
+            // Save updated product
+            $product->save();
+
+            return redirect()->route('all-product')->with('product-updated', 'Product updated successfully');
         } else {
             return redirect()->back();
         }

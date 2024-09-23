@@ -60,14 +60,14 @@
                                                     <div class="form-group ">
                                                         <label>Name</label>
                                                         <input type="text" name="product_name" class="form-control"
-                                                            value="" required>
+                                                            >
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-6">
                                                     <div class="form-group ">
                                                         <label class="form-label">Category</label>
-                                                        <select name="category" class="form-control " required>
-                                                            <option value="" selected disabled>Select One</option>
+                                                        <select name="category" class="form-control " >
+                                                            <option selected disabled>Select One</option>
                                                             @foreach($all_category as $category)
                                                             <option value="{{ $category->category }}">
                                                                 {{ $category->category }}
@@ -79,8 +79,8 @@
                                                 <div class=" col-sm-6">
                                                     <div class="form-group">
                                                         <label>Brand</label>
-                                                        <select name="brand" class="form-control" required>
-                                                            <option value="" selected disabled>Select One</option>
+                                                        <select name="brand" class="form-control" >
+                                                            <option selected disabled>Select One</option>
                                                             @foreach($all_brand as $brand)
                                                             <option value="{{ $brand->brand }}">
                                                                 {{ $brand->brand }}
@@ -91,16 +91,27 @@
                                                 </div>
                                                 <div class="col-sm-6">
                                                     <div class="form-group ">
+                                                        <label class="form-label">Initial stock</label>
+                                                        <input type="text" class="form-control " name="stock">
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-6">
+                                                    <div class="form-group ">
+                                                        <label class="form-label">Barcode Number</label>
+                                                        <input type="text" class="form-control " name="barcode_number">
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-6">
+                                                    <div class="form-group ">
                                                         <label class="form-label">SKU</label>
-                                                        <input type="text" class="form-control " name="sku"
-                                                            value="" required>
+                                                        <input type="text" class="form-control " name="sku">
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-6">
                                                     <div class="form-group">
                                                         <label>Unit(UoM)</label>
-                                                        <select name="unit" class="form-control " required>
-                                                            <option value="" selected disabled>Select One</option>
+                                                        <select name="unit" class="form-control " >
+                                                            <option selected disabled>Select One</option>
                                                             @foreach($all_unit as $unit)
                                                             <option value="{{ $unit->unit }}">
                                                                 {{ $unit->unit }}
@@ -113,7 +124,7 @@
                                                     <div class="form-group">
                                                         <label>Alert Quantity</label>
                                                         <input type="number" name="alert_quantity"
-                                                            class="form-control" value="" required>
+                                                            class="form-control" >
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-12">

@@ -85,7 +85,7 @@ class PurchaseController extends Controller
             'item_category' => 'required|array',
             'item_name' => 'required|array',
             'quantity' => 'required|array',
-            'price' => 'required|array',
+            'price' => 'required|array',  // This is an array of prices
             'total' => 'required|array',
             'note' => 'nullable|string',
             'total_price' => 'required|numeric',
@@ -107,7 +107,7 @@ class PurchaseController extends Controller
             'item_category' => json_encode($request->item_category),
             'item_name' => json_encode($request->item_name),
             'quantity' => json_encode($request->quantity),
-            'price' => json_encode($request->price),
+            'price' => json_encode($request->price),  // Array of prices
             'total' => json_encode($request->total),
             'note' => $request->note,
             'total_price' => $totalPrice,
@@ -118,17 +118,20 @@ class PurchaseController extends Controller
         // Save purchase data
         $purchase = Purchase::create($purchaseData);
 
-        // Step 2: Update Product Stock
+        // Step 2: Update Product Stock and Wholesale Price
         foreach ($request->item_name as $key => $item_name) {
             $item_category = $request->item_category[$key];
             $quantity = $request->quantity[$key];
+            $purchase_price = $request->price[$key];  // Single price for the item
 
-            // Find the product and update stock
+            // Find the product and update stock and wholesale price
             $product = Product::where('product_name', $item_name)
                 ->where('category', $item_category)
                 ->first();
+
             if ($product) {
                 $product->stock += $quantity; // Increase the stock
+                $product->wholesale_price = $purchase_price;  // Set wholesale price to purchase price
                 $product->save();
             }
         }
@@ -141,8 +144,6 @@ class PurchaseController extends Controller
     // public function store_Purchase(Request $request)
     // {
     //     // Validate the request
-
-    //     dd($request);
     //     $validatedData = $request->validate([
     //         'invoice_no' => 'required|string',
     //         'supplier' => 'required|string',
@@ -154,12 +155,15 @@ class PurchaseController extends Controller
     //         'price' => 'required|array',
     //         'total' => 'required|array',
     //         'note' => 'nullable|string',
-    //         'total_price' => 'required|numeric', // Keep numeric validation if you expect decimal values
-    //         'discount' => 'nullable|numeric',   // Keep numeric validation if you expect decimal values
+    //         'total_price' => 'required|numeric',
+    //         'discount' => 'nullable|numeric',  // Ensure it's numeric
     //     ]);
 
-    //     // Set default discount if not provided
-    //     $discount = $request->discount ?? 0;
+    //     // Ensure discount is numeric and default to 0 if null
+    //     $discount = (float) $request->discount ?? 0;
+
+    //     // Ensure total_price is numeric as well
+    //     $totalPrice = (float) $request->total_price;
 
     //     // Prepare data for storage
     //     $purchaseData = [
@@ -173,9 +177,9 @@ class PurchaseController extends Controller
     //         'price' => json_encode($request->price),
     //         'total' => json_encode($request->total),
     //         'note' => $request->note,
-    //         'total_price' => $request->total_price,
+    //         'total_price' => $totalPrice,
     //         'discount' => $discount,
-    //         'Payable_amount' => $request->total_price - $discount, // Handle as a numeric value, not decimal
+    //         'Payable_amount' => $totalPrice - $discount, // Correct subtraction with numeric values
     //     ];
 
     //     // Save purchase data
@@ -192,12 +196,15 @@ class PurchaseController extends Controller
     //             ->first();
     //         if ($product) {
     //             $product->stock += $quantity; // Increase the stock
+    //             $product->wholesale_price = $purchase->price;
     //             $product->save();
     //         }
     //     }
 
     //     return redirect()->back()->with('success', 'Purchase saved successfully and stock updated.');
     // }
+
+
 
     public function purchases_payment(Request $request)
     {
@@ -417,6 +424,14 @@ class PurchaseController extends Controller
         }
     }
 
+    public function getUnitByProduct($productId)
+    {
+        $product = Product::where('product_name', $productId)->first();
+        return response()->json([
+            'unit' => $product->unit,
+        ]);
+    }
+
 
     public function purchase_return_damage_item($id)
     {
@@ -580,5 +595,4 @@ class PurchaseController extends Controller
             return redirect()->back();
         }
     }
-
 }

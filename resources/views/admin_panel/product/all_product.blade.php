@@ -64,6 +64,8 @@
                                                 <th>Stock </th>
                                                 <th>Total Sale | Alert Qty</th>
                                                 <th>Unit</th>
+                                                <th>Wholesale Price</th>
+                                                <th>Retail Price</th>
                                                 <th>Action</th>
                                             </tr>
                                         </thead>
@@ -94,6 +96,8 @@
                                                     <span class="badge badge--warning">{{ $product->alert_quantity }}</span>
                                                 </td>
                                                 <td>{{ $product->unit }}</td>
+                                                <td>{{ $product->wholesale_price }}</td>
+                                                <td>{{ $product->retail_price }}</td>
                                                 <td>
                                                     <div class="button--group">
                                                         <a href="{{ route('edit-product',['id' => $product->id ]) }}"

@@ -94,6 +94,7 @@ Route::get('/purchase-return/{id}', [PurchaseController::class, 'purchase_return
 Route::post('/store-purchase-return', [PurchaseController::class, 'store_purchase_return'])->name('store-purchase-return');
 Route::get('/all-purchase-return', [PurchaseController::class, 'all_purchase_return'])->name('all-purchase-return');
 Route::post('/purchase-return-payment', [PurchaseController::class, 'purchase_return_payment'])->name('purchase-return-payment');
+Route::get('/get-unit-by-product/{productId}', [PurchaseController::class, 'getUnitByProduct']);
 
 
 Route::get('/purchase-return-damage-item/{id}', [PurchaseController::class, 'purchase_return_damage_item'])->name('purchase-return-damage-item');

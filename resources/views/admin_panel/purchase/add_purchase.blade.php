@@ -55,7 +55,7 @@
                                             <div class="form-group">
                                                 <label>Date</label>
                                                 <input name="purchase_date" type="date" data-language="en"
-                                                    class="datepicker-here form-control bg--white" 
+                                                    class="datepicker-here form-control bg--white"
                                                     required>
                                             </div>
                                         </div>
@@ -78,6 +78,7 @@
                                                     <tr>
                                                         <th>Category</th>
                                                         <th>Name</th>
+                                                        <th>Unit</th>
                                                         <th>Quantity<span class="text--danger">*</span></th>
                                                         <th>Price<span class="text--danger">*</span></th>
                                                         <th>Total</th>
@@ -97,8 +98,10 @@
                                                         <td>
                                                             <select name="item_name[]" class="form-control item-name" required>
                                                                 <option value="" disabled selected>Select Item</option>
-                                                                <!-- Items will be dynamically populated here based on category selection -->
                                                             </select>
+                                                        </td>
+                                                        <td>
+                                                            <input type="text" name="unit[]" class="form-control unit" readonly> <!-- Readonly Unit column -->
                                                         </td>
                                                         <td><input type="number" name="quantity[]" class="form-control quantity" required></td>
                                                         <td><input type="number" name="price[]" class="form-control price" required></td>
@@ -108,6 +111,7 @@
                                                         </td>
                                                     </tr>
                                                 </tbody>
+
 
                                             </table>
                                             <button type="button" class="btn btn-primary mt-4 mb-4" id="addRow">Add More</button>
@@ -130,7 +134,7 @@
                                                         <div class="input-group">
                                                             <span class="input-group-text">$</span>
                                                             <input type="number" name="total_price" class="form-control total_price"
-                                                               required readonly>
+                                                                required readonly>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -140,7 +144,7 @@
                                                         <label> Discount</label>
                                                         <div class="input-group">
                                                             <span class="input-group-text">$</span>
-                                                            <input type="number" name="discount" class="form-control"step="any">
+                                                            <input type="number" name="discount" class="form-control" step="any">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -183,7 +187,6 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const purchaseItems = document.getElementById('purchaseItems');
-
             // Event listener for category selection
             purchaseItems.addEventListener('change', function(e) {
                 if (e.target.classList.contains('item-category')) {
@@ -195,10 +198,8 @@
                         fetch(`/get-items-by-category/${categoryId}`)
                             .then(response => response.json())
                             .then(items => {
-                                // Clear previous options
                                 itemSelect.innerHTML = '<option value="" disabled selected>Select Item</option>';
 
-                                // Populate new options
                                 items.forEach(item => {
                                     const option = document.createElement('option');
                                     option.value = item.product_name;
@@ -207,6 +208,23 @@
                                 });
                             })
                             .catch(error => console.error('Error fetching items:', error));
+                    }
+                }
+
+                // Event listener for product selection to populate Unit
+                if (e.target.classList.contains('item-name')) {
+                    const productId = e.target.value;
+                    const row = e.target.closest('tr');
+                    const unitInput = row.querySelector('.unit');
+
+                    if (productId) {
+                        fetch(`/get-unit-by-product/${productId}`)
+                            .then(response => response.json())
+                            .then(product => {
+                                // Populate unit input
+                                unitInput.value = product.unit; // Assuming the API response includes 'unit'
+                            })
+                            .catch(error => console.error('Error fetching unit:', error));
                     }
                 }
             });

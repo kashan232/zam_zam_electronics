@@ -25,7 +25,7 @@
                     <div class="col-lg-12 col-md-12 mb-30">
                         <div class="card">
                             <div class="card-body">
-                                <form action="{{ route('store-product') }}" method="POST" enctype="multipart/form-data">
+                                <form action="{{ route('update-product',['id'=> $product_details->id ]) }}" method="POST" enctype="multipart/form-data">
                                     @csrf
                                     <div class="row">
                                         <div class="col-md-4 col-sm-6">
@@ -33,102 +33,106 @@
                                                 <div class="image-upload">
                                                     <div class="thumb">
                                                         <div class="avatar-preview">
-                                                            <div class="profilePicPreview"
-                                                                style="background-image: url(https://script.viserlab.com/torylab/placeholder-image/400x400)">
-                                                                <button type="button" class="remove-image"><i
-                                                                        class="fa fa-times"></i></button>
+                                                            <div class="profilePicPreview" style="background-image: url({{ asset('product_images/' . $product_details->image) }})">
+                                                                <button type="button" class="remove-image"><i class="fa fa-times"></i></button>
                                                             </div>
                                                         </div>
                                                         <div class="avatar-edit">
-                                                            <input type="file" class="profilePicUpload"
-                                                                name="image" id="profilePicUpload1"
-                                                                accept=".png, .jpg, .jpeg">
-                                                            <label for="profilePicUpload1" class="bg--success">Upload
-                                                                Image
-                                                            </label>
-                                                            <small class="mt-2">Supported files: 
-                                                                <b>jpeg, jpg.</b> Image will be resized into 400x400px
-                                                            </small>
+                                                            <input type="file" class="profilePicUpload" name="image" id="profilePicUpload1" accept=".png, .jpg, .jpeg">
+                                                            <label for="profilePicUpload1" class="bg--success">Upload Image</label>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
+
                                         <div class="col-md-8 col-sm-12">
                                             <div class="row">
                                                 <div class="col-sm-6">
-                                                    <div class="form-group ">
+                                                    <div class="form-group">
                                                         <label>Name</label>
-                                                        <input type="text" name="product_name" class="form-control"
-                                                            value="" required>
+                                                        <input type="text" name="product_name" class="form-control" value="{{ $product_details->product_name }}" required>
                                                     </div>
                                                 </div>
+
                                                 <div class="col-sm-6">
-                                                    <div class="form-group ">
+                                                    <div class="form-group">
                                                         <label class="form-label">Category</label>
-                                                        <select name="category" class="form-control " required>
-                                                            <option value="" selected disabled>Select One</option>
+                                                        <select name="category" class="form-control" required>
+                                                            <option value="" disabled>Select One</option>
                                                             @foreach($all_category as $category)
-                                                            <option value="{{ $category->category }}">
+                                                            <option value="{{ $category->category }}" {{ $product_details->category == $category->category ? 'selected' : '' }}>
                                                                 {{ $category->category }}
                                                             </option>
                                                             @endforeach
                                                         </select>
                                                     </div>
                                                 </div>
-                                                <div class=" col-sm-6">
+
+                                                <div class="col-sm-6">
                                                     <div class="form-group">
                                                         <label>Brand</label>
                                                         <select name="brand" class="form-control" required>
-                                                            <option value="" selected disabled>Select One</option>
+                                                            <option value="" disabled>Select One</option>
                                                             @foreach($all_brand as $brand)
-                                                            <option value="{{ $brand->brand }}">
+                                                            <option value="{{ $brand->brand }}" {{ $product_details->brand == $brand->brand ? 'selected' : '' }}>
                                                                 {{ $brand->brand }}
                                                             </option>
                                                             @endforeach
                                                         </select>
                                                     </div>
                                                 </div>
-                                                <div class="col-sm-6">
-                                                    <div class="form-group ">
-                                                        <label class="form-label">SKU</label>
-                                                        <input type="text" class="form-control " name="sku"
-                                                            value="" required>
-                                                    </div>
-                                                </div>
+
                                                 <div class="col-sm-6">
                                                     <div class="form-group">
-                                                        <label>Unit(UoM)</label>
-                                                        <select name="unit" class="form-control " required>
-                                                            <option value="" selected disabled>Select One</option>
+                                                        <label class="form-label">SKU</label>
+                                                        <input type="text" class="form-control" name="sku" value="{{ $product_details->sku }}" required>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-sm-6">
+                                                    <div class="form-group">
+                                                        <label>Unit (UoM)</label>
+                                                        <select name="unit" class="form-control" required>
+                                                            <option value="" disabled>Select One</option>
                                                             @foreach($all_unit as $unit)
-                                                            <option value="{{ $unit->unit }}">
+                                                            <option value="{{ $unit->unit }}" {{ $product_details->unit == $unit->unit ? 'selected' : '' }}>
                                                                 {{ $unit->unit }}
                                                             </option>
                                                             @endforeach
                                                         </select>
                                                     </div>
                                                 </div>
+
                                                 <div class="col-sm-6">
                                                     <div class="form-group">
                                                         <label>Alert Quantity</label>
-                                                        <input type="number" name="alert_quantity"
-                                                            class="form-control" value="" required>
+                                                        <input type="number" name="alert_quantity" class="form-control" value="{{ $product_details->alert_quantity }}" required>
                                                     </div>
                                                 </div>
+
+                                                <div class="col-sm-6">
+                                                    <div class="form-group">
+                                                        <label>Retail Price</label>
+                                                        <input type="text" name="retail_price" class="form-control" value="{{ $product_details->retail_price }}">
+                                                    </div>
+                                                </div>
+
                                                 <div class="col-sm-12">
                                                     <div class="form-group">
                                                         <label>Note</label>
-                                                        <textarea name="note" class="form-control"></textarea>
+                                                        <textarea name="note" class="form-control">{{ $product_details->note }}</textarea>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
+
                                     <div class="form-group">
-                                        <button type="submit" class="btn btn--primary w-100 h-45">Submit</button>
+                                        <button type="submit" class="btn btn--primary w-100 h-45">Update</button>
                                     </div>
                                 </form>
+
                             </div>
                         </div>
                     </div>
