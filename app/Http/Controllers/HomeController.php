@@ -29,8 +29,9 @@ class HomeController extends Controller
                 $suppliers = DB::table('suppliers')->count();
                 $customers = DB::table('customers')->count();
 
-
-                return view('admin_panel.admin_dashboard', compact('totalPurchasesPrice', 'totalPurchaseReturnsPrice','all_product','categories','products','suppliers','customers'));
+                $lowStockProducts = Product::whereColumn('stock', '<=', 'alert_quantity')->get();
+                
+                return view('admin_panel.admin_dashboard', compact('totalPurchasesPrice', 'totalPurchaseReturnsPrice', 'all_product', 'categories', 'products', 'suppliers', 'customers'));
             }
         } else {
             return Redirect()->route('login');

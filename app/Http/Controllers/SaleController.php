@@ -177,4 +177,5 @@ class SaleController extends Controller
         // Download the PDF file
         return $pdf->download('invoice-' . $sale->invoice_no . '.pdf');
     }
+   
 }

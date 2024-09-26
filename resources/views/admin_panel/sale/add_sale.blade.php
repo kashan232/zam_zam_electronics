@@ -1,5 +1,38 @@
 @include('admin_panel.include.header_include')
 
+<style>
+    .search-container {
+        position: relative;
+        width: 100%;
+        /* Adjust width as needed */
+    }
+
+    #productSearch {
+        width: 100%;
+        padding: 8px;
+    }
+
+    #searchResults {
+        position: absolute;
+        width: 100%;
+        max-height: 200px;
+        overflow-y: auto;
+        background-color: #fff;
+        border: 1px solid #ddd;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+    }
+
+    .search-result-item {
+        padding: 10px;
+        cursor: pointer;
+    }
+
+    .search-result-item:hover {
+        background-color: #f0f0f0;
+    }
+</style>
+
 <body>
     <!-- page-wrapper start -->
     <div class="page-wrapper default-version">
@@ -63,6 +96,16 @@
                                         </div>
                                     </div>
                                     <!-- Product Items List -->
+                                    <div class="row mt-2 mb-2">
+                                        <div class="search-container">
+                                            <label class="form-label" style="font-size: 20px;">Search Products</label>
+                                            <input type="text" id="productSearch" placeholder="Search Products..." class="form-control">
+                                            <ul id="searchResults" class="list-group"></ul>
+                                        </div>
+
+
+
+                                    </div>
                                     <div class="row mb-3">
                                         <div class="table-responsive">
                                             <table class="productTable table border">
@@ -77,7 +120,7 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody id="purchaseItems">
-                                                    <tr>
+                                                    <!-- <tr>
                                                         <td>
                                                             <select name="item_category[]" class="form-control item-category" required>
                                                                 <option value="" disabled selected>Select Category</option>
@@ -89,7 +132,6 @@
                                                         <td>
                                                             <select name="item_name[]" class="form-control item-name" required>
                                                                 <option value="" disabled selected>Select Item</option>
-                                                                <!-- Items will be dynamically populated here based on category selection -->
                                                             </select>
                                                         </td>
                                                         <td><input type="number" name="quantity[]" class="form-control quantity" required></td>
@@ -98,7 +140,7 @@
                                                         <td>
                                                             <button type="button" class="btn btn-danger remove-row">Delete</button>
                                                         </td>
-                                                    </tr>
+                                                    </tr> -->
                                                 </tbody>
 
                                             </table>
@@ -194,117 +236,176 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const purchaseItems = document.getElementById('purchaseItems');
-            const cashReceivedInput = document.getElementById('cashReceived');
-            const payableAmountInput = document.querySelector('.payable_amount');
-            const changeToReturnInput = document.getElementById('changeToReturn');
+    const purchaseItems = document.getElementById('purchaseItems');
+    const cashReceivedInput = document.getElementById('cashReceived');
+    const payableAmountInput = document.querySelector('.payable_price');
+    const changeToReturnInput = document.getElementById('changeToReturn');
 
-            cashReceivedInput.addEventListener('input', function() {
-                const cashReceived = parseFloat(cashReceivedInput.value) || 0;
-                const payableAmount = parseFloat(payableAmountInput.value) || 0;
+    // Cash received input listener
+    cashReceivedInput.addEventListener('input', function() {
+        const cashReceived = parseFloat(cashReceivedInput.value) || 0;
+        const payableAmount = parseFloat(payableAmountInput.value) || 0;
+        const changeToReturn = cashReceived - payableAmount;
+        changeToReturnInput.value = changeToReturn > 0 ? changeToReturn.toFixed(2) : 0;
+    });
 
-                const changeToReturn = cashReceived - payableAmount;
-                changeToReturnInput.value = changeToReturn > 0 ? changeToReturn.toFixed(2) : 0;
-            });
+    // Function to calculate total price
+    function calculateTotalPrice() {
+        let totalPrice = 0;
+        document.querySelectorAll('.total').forEach(function(input) {
+            totalPrice += parseFloat(input.value) || 0;
+        });
+        document.querySelector('.total_price').value = totalPrice.toFixed(2);
 
-            // Existing code for adding/removing rows and calculating total
-            const addRowButton = document.getElementById('addRow');
-            addRowButton.addEventListener('click', function() {
-                const newRow = `
+        const discount = parseFloat(document.getElementById('discount').value) || 0;
+        const payableAmount = totalPrice - discount;
+        payableAmountInput.value = payableAmount.toFixed(2);
+    }
+
+    // Add row button
+    const addRowButton = document.getElementById('addRow');
+    addRowButton.addEventListener('click', function() {
+        const newRow = createNewRow();
+        purchaseItems.insertAdjacentHTML('beforeend', newRow);
+    });
+
+    // Create new row template
+    function createNewRow(category = '', productName = '', price = '') {
+        return `
             <tr>
                 <td>
                     <select name="item_category[]" class="form-control item-category" required>
-                        <option value="" disabled selected>Select Category</option>
+                        <option value="" disabled ${category ? '' : 'selected'}>Select Category</option>
                         @foreach($Category as $Categories)
-                        <option value="{{ $Categories->category }}">{{ $Categories->category }}</option>
+                        <option value="{{ $Categories->category }}" ${category === '{{ $Categories->category }}' ? 'selected' : ''}>{{ $Categories->category }}</option>
                         @endforeach
                     </select>
                 </td>
                 <td>
                     <select name="item_name[]" class="form-control item-name" required>
-                        <option value="" disabled selected>Select Item</option>
+                        <option value="" disabled ${productName ? '' : 'selected'}>Select Item</option>
+                        <option value="${productName}" selected>${productName}</option>
                     </select>
                 </td>
                 <td><input type="number" name="quantity[]" class="form-control quantity" required></td>
-                <td><input type="number" name="price[]" class="form-control price" required></td>
+                <td><input type="number" name="price[]" class="form-control price" value="${price}" required></td>
                 <td><input type="number" name="total[]" class="form-control total" readonly></td>
                 <td>
                     <button type="button" class="btn btn-danger remove-row">Delete</button>
                 </td>
             </tr>`;
-                purchaseItems.insertAdjacentHTML('beforeend', newRow);
-            });
+    }
 
-            purchaseItems.addEventListener('click', function(e) {
-                if (e.target.classList.contains('remove-row')) {
-                    e.target.closest('tr').remove();
-                    calculateTotalPrice();
-                }
-            });
+    // Remove row functionality
+    purchaseItems.addEventListener('click', function(e) {
+        if (e.target.classList.contains('remove-row')) {
+            e.target.closest('tr').remove();
+            calculateTotalPrice();
+        }
+    });
 
-            purchaseItems.addEventListener('input', function(e) {
-                if (e.target.classList.contains('quantity') || e.target.classList.contains('price')) {
-                    const row = e.target.closest('tr');
-                    const quantity = parseFloat(row.querySelector('.quantity').value) || 0;
-                    const price = parseFloat(row.querySelector('.price').value) || 0;
-                    const total = row.querySelector('.total');
+    // Quantity and price input change
+    purchaseItems.addEventListener('input', function(e) {
+        if (e.target.classList.contains('quantity') || e.target.classList.contains('price')) {
+            const row = e.target.closest('tr');
+            const quantity = parseFloat(row.querySelector('.quantity').value) || 0;
+            const price = parseFloat(row.querySelector('.price').value) || 0;
+            const total = row.querySelector('.total');
+            total.value = (quantity * price).toFixed(2);
+            calculateTotalPrice();
+        }
+    });
 
-                    total.value = (quantity * price).toFixed(2);
-                    calculateTotalPrice();
-                }
-            });
+    // Category selection event
+    purchaseItems.addEventListener('change', function(e) {
+        if (e.target.classList.contains('item-category')) {
+            const categoryName = e.target.value;
+            const row = e.target.closest('tr');
+            const itemSelect = row.querySelector('.item-name');
 
-            // Update payable amount when discount is entered
-            const discountInput = document.getElementById('discount');
-            discountInput.addEventListener('input', function() {
-                calculateTotalPrice();
-            });
-
-            function calculateTotalPrice() {
-                let totalPrice = 0;
-                document.querySelectorAll('.total').forEach(function(input) {
-                    totalPrice += parseFloat(input.value) || 0;
-                });
-                document.querySelector('.total_price').value = totalPrice.toFixed(2);
-
-                const discount = parseFloat(discountInput.value) || 0;
-                const payableAmount = totalPrice - discount;
-                payableAmountInput.value = payableAmount.toFixed(2);
-
-                // Update change returned if cash is selected
-                if (paymentMethodSelect.value === 'Cash' && cashReceivedInput.value) {
-                    const cashReceived = parseFloat(cashReceivedInput.value) || 0;
-                    const change = cashReceived - payableAmount;
-                    changeReturnedInput.value = change.toFixed(2);
-                }
+            if (categoryName) {
+                fetch(`/get-items-by-category/${categoryName}`)
+                    .then(response => response.json())
+                    .then(items => {
+                        itemSelect.innerHTML = '<option value="" disabled selected>Select Item</option>';
+                        items.forEach(item => {
+                            const option = document.createElement('option');
+                            option.value = item.product_name;
+                            option.textContent = item.product_name;
+                            itemSelect.appendChild(option);
+                        });
+                    })
+                    .catch(error => console.error('Error fetching items:', error));
             }
+        }
+    });
 
-            // Event listener for category selection (existing code)
-            purchaseItems.addEventListener('change', function(e) {
-                if (e.target.classList.contains('item-category')) {
-                    const categoryName = e.target.value;
-                    const row = e.target.closest('tr');
-                    const itemSelect = row.querySelector('.item-name');
+    // Product name selection event
+    purchaseItems.addEventListener('change', function(e) {
+        if (e.target.classList.contains('item-name')) {
+            const productName = e.target.value;
+            const row = e.target.closest('tr');
+            const priceInput = row.querySelector('.price');
 
-                    if (categoryName) {
-                        fetch(`/get-items-by-category/${categoryName}`)
-                            .then(response => response.json())
-                            .then(items => {
-                                // Clear previous options
-                                itemSelect.innerHTML = '<option value="" disabled selected>Select Item</option>';
+            if (productName) {
+                fetch(`/get-product-details/${productName}`)
+                    .then(response => response.json())
+                    .then(product => {
+                        priceInput.value = product.retail_price;
+                    })
+                    .catch(error => console.error('Error fetching product details:', error));
+            }
+        }
+    });
 
-                                // Populate new options
-                                items.forEach(item => {
-                                    const option = document.createElement('option');
-                                    option.value = item.product_name;
-                                    option.textContent = item.product_name;
-                                    itemSelect.appendChild(option);
-                                });
-                            })
-                            .catch(error => console.error('Error fetching items:', error));
-                    }
+    // Search product functionality
+    $('#productSearch').on('keyup', function() {
+        const query = $(this).val();
+        searchProducts(query);
+    });
+
+    function searchProducts(query) {
+        if (query.length > 0) {
+            $.ajax({
+                url: '/search-products',
+                type: 'GET',
+                data: { q: query },
+                success: function(data) {
+                    displaySearchResults(data);
+                },
+                error: function(error) {
+                    console.error('Error in AJAX request:', error);
                 }
             });
+        } else {
+            $('#searchResults').html('');
+        }
+    }
+
+    function displaySearchResults(products) {
+        const searchResults = $('#searchResults');
+        searchResults.html('');
+        products.forEach(product => {
+            const listItem = `<li class="list-group-item search-result-item" data-category="${product.category}" data-product-name="${product.product_name}" data-price="${product.retail_price}">
+                ${product.category} - ${product.product_name} - ${product.retail_price}
+            </li>`;
+            searchResults.append(listItem);
         });
+    }
+
+    // Click event for search results
+    $('#searchResults').on('click', '.search-result-item', function() {
+        const category = $(this).data('category');
+        const productName = $(this).data('product-name');
+        const price = $(this).data('price');
+
+        // Create a new row and insert it as the first row
+        const newRow = createNewRow(category, productName, price);
+        purchaseItems.insertAdjacentHTML('afterbegin', newRow);
+        $('#searchResults').html(''); // Clear search results after adding
+        calculateTotalPrice(); // Update total price after adding the new row
+    });
+});
+
     </script>
 </body>

@@ -109,6 +109,8 @@ Route::post('/store-Sale', [SaleController::class, 'store_Sale'])->name('store-S
 Route::get('/all-sales', [SaleController::class, 'all_sales'])->name('all-sales');
 // Route for downloading invoice
 Route::get('/invoice/download/{id}', [SaleController::class, 'downloadInvoice'])->name('invoice.download');
+Route::get('/get-product-details/{productName}', [ProductController::class, 'getProductDetails']);
+Route::get('/search-products', [ProductController::class, 'searchProducts']);
 
 //Customer
 Route::get('/customer', [CustomerController::class, 'customer'])->middleware(['auth','admin'])->name('customer');

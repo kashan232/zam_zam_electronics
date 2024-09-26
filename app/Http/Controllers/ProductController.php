@@ -145,4 +145,27 @@ class ProductController extends Controller
             return redirect()->back();
         }
     }
+
+    public function getProductDetails($productName)
+    {
+        $product = Product::where('product_name', $productName)->first();
+        if ($product) {
+            return response()->json([
+                'retail_price' => $product->retail_price,
+                'stock' => $product->stock,
+            ]);
+        }
+        return response()->json(['message' => 'Product not found'], 404);
+    }
+
+    public function searchProducts(Request $request)
+    {
+        $query = $request->get('q');
+
+        // Perform a search based on the product name
+        $products = Product::where('product_name', 'like', '%' . $query . '%')
+            ->get(['id', 'category','product_name', 'retail_price']);
+
+        return response()->json($products);
+    }
 }
