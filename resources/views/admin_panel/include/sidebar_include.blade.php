@@ -77,11 +77,31 @@
                 </li>
 
                 <li class="sidebar-menu-item ">
+                    <a href="{{ route('product-alerts') }}" class="nav-link ">
+                        <i class="menu-icon las la-bell"></i>
+                        <span class="menu-title">Stock Alerts</span>
+                        @php
+                        $lowStockProductsCount = DB::table('products')
+                        ->whereRaw('CAST(stock AS UNSIGNED) <= CAST(alert_quantity AS UNSIGNED)')
+                            ->count();
+                            @endphp
+
+
+                            @if($lowStockProductsCount > 0)
+                            <small>&nbsp;<i class="fa fa-circle text--danger" aria-hidden="true" aria-label="Returned" data-bs-original-title="Returned"></i></small>
+                            @endif
+                    </a>
+                </li>
+
+                <li class="sidebar-menu-item ">
                     <a href="{{ route('warehouse') }}" class="nav-link ">
                         <i class="menu-icon la la-warehouse"></i>
                         <span class="menu-title">Warehouse</span>
                     </a>
                 </li>
+
+
+
 
                 <li class="sidebar-menu-item">
                     <a href="{{ route('supplier') }}" class="nav-link">
@@ -122,7 +142,7 @@
                         <span class="menu-title">Claim Returns</span>
                     </a>
                 </li>
-                
+
                 <li class="sidebar-menu-item">
                     <a href="{{ route('customer') }}" class="nav-link">
                         <i class="menu-icon la la-users"></i>
@@ -153,294 +173,10 @@
                         </ul>
                     </div>
                 </li>
-
-                <li class="sidebar-menu-item ">
-                    <a href="https://script.viserlab.com/torylab/admin/adjustment/all" class="nav-link ">
-                        <i class="menu-icon la la-balance-scale"></i>
-                        <span class="menu-title">Adjustment</span>
-                    </a>
-                </li>
-
-                <li class="sidebar-menu-item ">
-                    <a href="https://script.viserlab.com/torylab/admin/transfer/all" class="nav-link ">
-                        <i class="menu-icon la la-retweet"></i>
-                        <span class="menu-title">Transfer</span>
-                    </a>
-                </li>
-
-                <li class="sidebar-menu-item sidebar-dropdown">
-                    <a href="javascript:void(0)" class="">
-                        <i class="menu-icon la la-wallet"></i>
-                        <span class="menu-title">Expense</span>
-                    </a>
-                    <div class="sidebar-submenu  ">
-                        <ul>
-                            <li class="sidebar-menu-item  ">
-                                <a href="https://script.viserlab.com/torylab/admin/expense-type"
-                                    class="nav-link">
-                                    <i class="menu-icon la la-dot-circle"></i>
-                                    <span class="menu-title">Type</span>
-                                </a>
-                            </li>
-                            <li class="sidebar-menu-item  ">
-                                <a href="https://script.viserlab.com/torylab/admin/expense" class="nav-link">
-                                    <i class="menu-icon la la-dot-circle"></i>
-                                    <span class="menu-title">All Expenses</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                </li>
-                <li class="sidebar__menu-header">Reports</li>
-
-                <li class="sidebar-menu-item sidebar-dropdown">
-                    <a href="javascript:void(0)" class="">
-                        <i class="menu-icon la la-money-check-alt"></i>
-                        <span class="menu-title">Payment Report</span>
-                    </a>
-                    <div class="sidebar-submenu  ">
-                        <ul>
-                            <li class="sidebar-menu-item  ">
-                                <a href="https://script.viserlab.com/torylab/admin/reports/payment/supplier"
-                                    class="nav-link">
-                                    <i class="menu-icon la la-dot-circle"></i>
-                                    <span class="menu-title">Supplier Payments</span>
-                                </a>
-                            </li>
-
-                            <li class="sidebar-menu-item  ">
-                                <a href="https://script.viserlab.com/torylab/admin/reports/payment/customer"
-                                    class="nav-link">
-                                    <i class="menu-icon la la-dot-circle"></i>
-                                    <span class="menu-title">Customer Payments</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                </li>
-
-                <li class="sidebar-menu-item  ">
-                    <a href="https://script.viserlab.com/torylab/admin/reports/stock/index" class="nav-link">
-                        <i class="menu-icon la la-list"></i>
-                        <span class="menu-title">Stock Report</span>
-                    </a>
-                </li>
-
-                <li class="sidebar-menu-item sidebar-dropdown">
-                    <a href="javascript:void(0)" class="">
-                        <i class="menu-icon la la-database"></i>
-                        <span class="menu-title">Data Entry Report</span>
-                    </a>
-
-                    <div class="sidebar-submenu  ">
-                        <ul>
-                            <li class="sidebar-menu-item  ">
-                                <a href="https://script.viserlab.com/torylab/admin/reports/data-entry/product"
-                                    class="nav-link">
-                                    <i class="menu-icon la la-dot-circle"></i>
-                                    <span class="menu-title">Product</span>
-                                </a>
-                            </li>
-
-                            <li class="sidebar-menu-item  ">
-                                <a href="https://script.viserlab.com/torylab/admin/reports/data-entry/customer"
-                                    class="nav-link">
-                                    <i class="menu-icon la la-dot-circle"></i>
-                                    <span class="menu-title">Customer</span>
-                                </a>
-                            </li>
-                            <li class="sidebar-menu-item  ">
-                                <a href="https://script.viserlab.com/torylab/admin/reports/data-entry/customer"
-                                    class="nav-link">
-                                    <i class="menu-icon la la-dot-circle"></i>
-                                    <span class="menu-title">Claim Returns</span>
-                                </a>
-                            </li>
-                            <li class="sidebar-menu-item  ">
-                                <a href="https://script.viserlab.com/torylab/admin/reports/data-entry/supplier"
-                                    class="nav-link">
-                                    <i class="menu-icon la la-dot-circle"></i>
-                                    <span class="menu-title">Supplier</span>
-                                </a>
-                            </li>
-
-                            <li class="sidebar-menu-item  ">
-                                <a href="https://script.viserlab.com/torylab/admin/reports/data-entry/purchase"
-                                    class="nav-link">
-                                    <i class="menu-icon la la-dot-circle"></i>
-                                    <span pan class="menu-title">Purchase</span>
-                                </a>
-                            </li>
-                            <li class="sidebar-menu-item  ">
-                                <a href="https://script.viserlab.com/torylab/admin/reports/data-entry/purchase-return"
-                                    class="nav-link">
-                                    <i class="menu-icon la la-dot-circle"></i>
-                                    <span class="menu-title">Purchase Return</span>
-                                </a>
-                            </li>
-
-                            <li class="sidebar-menu-item  ">
-                                <a href="https://script.viserlab.com/torylab/admin/reports/data-entry/sale"
-                                    class="nav-link">
-                                    <i class="menu-icon la la-dot-circle"></i>
-                                    <span pan class="menu-title">Sale</span>
-                                </a>
-                            </li>
-                            <li class="sidebar-menu-item  ">
-                                <a href="https://script.viserlab.com/torylab/admin/reports/data-entry/sale-return"
-                                    class="nav-link">
-                                    <i class="menu-icon la la-dot-circle"></i>
-                                    <span class="menu-title">Sale Return</span>
-                                </a>
-                            </li>
-                            <li class="sidebar-menu-item  ">
-                                <a href="https://script.viserlab.com/torylab/admin/reports/data-entry/adjustment"
-                                    class="nav-link">
-                                    <i class="menu-icon la la-dot-circle"></i>
-                                    <span class="menu-title">Adjustment</span>
-                                </a>
-                            </li>
-                            <li class="sidebar-menu-item  ">
-                                <a href="https://script.viserlab.com/torylab/admin/reports/data-entry/transfer"
-                                    class="nav-link">
-                                    <i class="menu-icon la la-dot-circle"></i>
-                                    <span class="menu-title">Transfer</span>
-                                </a>
-                            </li>
-                            <li class="sidebar-menu-item  ">
-                                <a href="https://script.viserlab.com/torylab/admin/reports/data-entry/expense"
-                                    class="nav-link">
-                                    <i class="menu-icon la la-dot-circle"></i>
-                                    <span class="menu-title">Expense</span>
-                                </a>
-                            </li>
-                            <li class="sidebar-menu-item  ">
-                                <a href="https://script.viserlab.com/torylab/admin/reports/data-entry/supplier-payment"
-                                    class="nav-link">
-                                    <i class="menu-icon la la-dot-circle"></i>
-                                    <span class="menu-title">Supplier Payment</span>
-                                </a>
-                            </li>
-                            <li class="sidebar-menu-item  ">
-                                <a href="https://script.viserlab.com/torylab/admin/reports/data-entry/customer-payment"
-                                    class="nav-link">
-                                    <i class="menu-icon la la-dot-circle"></i>
-                                    <span class="menu-title">Customer Payment</span>
-                                </a>
-                            </li>
-
-                        </ul>
-                    </div>
-                </li>
-                <li class="sidebar__menu-header">Settings</li>
-                <li class="sidebar-menu-item ">
-                    <a href="https://script.viserlab.com/torylab/admin/general-setting" class="nav-link">
-                        <i class="menu-icon la la-life-ring"></i>
-                        <span class="menu-title">General Setting</span>
-                    </a>
-                </li>
-                <li class="sidebar-menu-item ">
-                    <a href="https://script.viserlab.com/torylab/admin/setting/system-configuration"
-                        class="nav-link">
-                        <i class="menu-icon la la-cog"></i>
-                        <span class="menu-title">System Configuration</span>
-                    </a>
-                </li>
-                <li class="sidebar-menu-item ">
-                    <a href="https://script.viserlab.com/torylab/admin/setting/logo-icon" class="nav-link">
-                        <i class="menu-icon la la-images"></i>
-                        <span class="menu-title">Logo & Favicon</span>
-                    </a>
-                </li>
-                <li class="sidebar-menu-item sidebar-dropdown">
-                    <a href="javascript:void(0)" class="">
-                        <i class="menu-icon la la-bell"></i>
-                        <span class="menu-title">Notification Setting</span>
-                    </a>
-                    <div class="sidebar-submenu  ">
-                        <ul>
-                            <li class="sidebar-menu-item  ">
-                                <a href="https://script.viserlab.com/torylab/admin/notification/global"
-                                    class="nav-link">
-                                    <i class="menu-icon la la-dot-circle"></i>
-                                    <span class="menu-title">Global Template</span>
-                                </a>
-                            </li>
-                            <li class="sidebar-menu-item  ">
-                                <a href="https://script.viserlab.com/torylab/admin/notification/email/setting"
-                                    class="nav-link">
-                                    <i class="menu-icon la la-dot-circle"></i>
-                                    <span class="menu-title">Email Setting</span>
-                                </a>
-                            </li>
-                            <li class="sidebar-menu-item  ">
-                                <a href="https://script.viserlab.com/torylab/admin/notification/sms/setting"
-                                    class="nav-link">
-                                    <i class="menu-icon la la-dot-circle"></i>
-                                    <span class="menu-title">SMS Setting</span>
-                                </a>
-                            </li>
-                            <li class="sidebar-menu-item  ">
-                                <a href="https://script.viserlab.com/torylab/admin/notification/templates"
-                                    class="nav-link">
-                                    <i class="menu-icon la la-dot-circle"></i>
-                                    <span class="menu-title">Notification Templates</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                </li>
-
-                <li class="sidebar__menu-header">Extra</li>
-                <li class="sidebar-menu-item sidebar-dropdown">
-                    <a href="javascript:void(0)" class="">
-                        <i class="menu-icon la la-server"></i>
-                        <span class="menu-title">System</span>
-                    </a>
-                    <div class="sidebar-submenu  ">
-                        <ul>
-                            <li class="sidebar-menu-item  ">
-                                <a href="https://script.viserlab.com/torylab/admin/system/info"
-                                    class="nav-link">
-                                    <i class="menu-icon la la-dot-circle"></i>
-                                    <span class="menu-title">Application</span>
-                                </a>
-                            </li>
-                            <li class="sidebar-menu-item  ">
-                                <a href="https://script.viserlab.com/torylab/admin/system/server-info"
-                                    class="nav-link">
-                                    <i class="menu-icon la la-dot-circle"></i>
-                                    <span class="menu-title">Server</span>
-                                </a>
-                            </li>
-                            <li class="sidebar-menu-item  ">
-                                <a href="https://script.viserlab.com/torylab/admin/system/optimize"
-                                    class="nav-link">
-                                    <i class="menu-icon la la-dot-circle"></i>
-                                    <span class="menu-title">Cache</span>
-                                </a>
-                            </li>
-                            <li class="sidebar-menu-item  ">
-                                <a href="https://script.viserlab.com/torylab/admin/system/system-update"
-                                    class="nav-link">
-                                    <i class="menu-icon las la-dot-circle"></i>
-                                    <span class="menu-title">Update</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                </li>
-                <li class="sidebar-menu-item  ">
-                    <a href="https://script.viserlab.com/torylab/admin/request-report" class="nav-link"
-                        data-default-url="https://script.viserlab.com/torylab/admin/request-report">
-                        <i class="menu-icon la la-bug"></i>
-                        <span class="menu-title">Report & Request </span>
-                    </a>
-                </li>
             </ul>
             <div class="text-center mb-3 text-uppercase">
-                <span class="text--primary">torylab</span>
-                <span class="text--success">V1.1 </span>
+                <span class="text--primary">POS</span>
+                <span class="text--success">System </span>
             </div>
         </div>
     </div>

@@ -38,6 +38,9 @@ Route::get('/', function () {
 
 Route::get('/home', [HomeController::class, 'home'])->middleware(['auth'])->name('home');
 Route::get('/admin-page', [HomeController::class, 'adminpage'])->middleware(['auth','admin'])->name('admin-page');
+Route::get('/Admin-Change-Password', [HomeController::class, 'Admin_Change_Password'])->name('Admin-Change-Password');
+Route::post('/updte-change-Password', [HomeController::class, 'updte_change_Password'])->name('updte-change-Password');
+
 
 //category
 Route::get('/category', [CategoryController::class, 'category'])->middleware(['auth','admin'])->name('category');
@@ -60,6 +63,7 @@ Route::get('/add-product', [ProductController::class, 'add_product'])->middlewar
 Route::post('/store-product', [ProductController::class, 'store_product'])->name('store-product');
 Route::get('/edit-product/{id}', [ProductController::class, 'edit_product'])->middleware(['auth','admin'])->name('edit-product');
 Route::post('/update-product/{id}', [ProductController::class, 'update_product'])->name('update-product');
+Route::get('/product-alerts', [ProductController::class, 'product_alerts'])->name('product-alerts');
 
 //warehouse
 Route::get('/warehouse', [WarehouseController::class, 'warehouse'])->middleware(['auth','admin'])->name('warehouse');
@@ -111,6 +115,8 @@ Route::get('/all-sales', [SaleController::class, 'all_sales'])->name('all-sales'
 Route::get('/invoice/download/{id}', [SaleController::class, 'downloadInvoice'])->name('invoice.download');
 Route::get('/get-product-details/{productName}', [ProductController::class, 'getProductDetails']);
 Route::get('/search-products', [ProductController::class, 'searchProducts']);
+Route::get('/sale-receipt/{id}', [SaleController::class, 'showReceipt'])->name('sale-receipt');
+
 
 //Customer
 Route::get('/customer', [CustomerController::class, 'customer'])->middleware(['auth','admin'])->name('customer');

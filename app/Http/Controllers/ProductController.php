@@ -164,8 +164,22 @@ class ProductController extends Controller
 
         // Perform a search based on the product name
         $products = Product::where('product_name', 'like', '%' . $query . '%')
-            ->get(['id', 'category','product_name', 'retail_price']);
+            ->get(['id', 'category', 'product_name', 'retail_price']);
 
         return response()->json($products);
+    }
+
+    public function product_alerts()
+    {
+        if (Auth::id()) {
+            $userId = Auth::id();
+            $lowStockProducts = Product::whereRaw('CAST(stock AS UNSIGNED) <= CAST(alert_quantity AS UNSIGNED)')->get();
+            // dd($lowStockProducts);
+            return view('admin_panel.product.product_alerts', [
+                'lowStockProducts' => $lowStockProducts,
+            ]);
+        } else {
+            return redirect()->back();
+        }
     }
 }

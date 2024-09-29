@@ -173,7 +173,7 @@
                                                         <label>Discount</label>
                                                         <div class="input-group">
                                                             <span class="input-group-text">$</span>
-                                                            <input type="number" name="discount" class="form-control" step="any">
+                                                            <input type="number" id="discount" name="discount" class="form-control" step="any">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -183,7 +183,7 @@
                                                         <label>Payable Amount</label>
                                                         <div class="input-group">
                                                             <span class="input-group-text">$</span>
-                                                            <input type="number" name="Payable_amount" class="form-control payable_amount" disabled>
+                                                            <input type="number" name="payable_amount" class="form-control payable_amount" readonly>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -212,6 +212,7 @@
 
                                             </div>
                                         </div>
+
                                     </div>
 
 
@@ -236,42 +237,61 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-    const purchaseItems = document.getElementById('purchaseItems');
-    const cashReceivedInput = document.getElementById('cashReceived');
-    const payableAmountInput = document.querySelector('.payable_price');
-    const changeToReturnInput = document.getElementById('changeToReturn');
+            const purchaseItems = document.getElementById('purchaseItems');
+            const totalPriceInput = document.querySelector('.total_price');
+            const discountInput = document.getElementById('discount');
+            const payableAmountInput = document.querySelector('.payable_amount');
+            const cashReceivedInput = document.getElementById('cashReceived');
+            const changeToReturnInput = document.getElementById('changeToReturn');
 
-    // Cash received input listener
-    cashReceivedInput.addEventListener('input', function() {
-        const cashReceived = parseFloat(cashReceivedInput.value) || 0;
-        const payableAmount = parseFloat(payableAmountInput.value) || 0;
-        const changeToReturn = cashReceived - payableAmount;
-        changeToReturnInput.value = changeToReturn > 0 ? changeToReturn.toFixed(2) : 0;
-    });
+            // Function to calculate payable amount after applying discount
+            function calculatePayableAmount() {
+                const totalPrice = parseFloat(totalPriceInput.value) || 0;
+                const discount = parseFloat(discountInput.value) || 0;
+                const payableAmount = totalPrice - discount;
+                payableAmountInput.value = payableAmount.toFixed(2);
+            }
 
-    // Function to calculate total price
-    function calculateTotalPrice() {
-        let totalPrice = 0;
-        document.querySelectorAll('.total').forEach(function(input) {
-            totalPrice += parseFloat(input.value) || 0;
-        });
-        document.querySelector('.total_price').value = totalPrice.toFixed(2);
+            // Function to calculate change to return
+            function calculateChangeToReturn() {
+                const payableAmount = parseFloat(payableAmountInput.value) || 0;
+                const cashReceived = parseFloat(cashReceivedInput.value) || 0;
+                const changeToReturn = cashReceived - payableAmount;
+                changeToReturnInput.value = changeToReturn > 0 ? changeToReturn.toFixed(2) : 0;
+            }
 
-        const discount = parseFloat(document.getElementById('discount').value) || 0;
-        const payableAmount = totalPrice - discount;
-        payableAmountInput.value = payableAmount.toFixed(2);
-    }
+            // Event listener for discount input
+            discountInput.addEventListener('input', function() {
+                calculatePayableAmount();
+                calculateChangeToReturn(); // Recalculate change in case cash was already entered
+            });
 
-    // Add row button
-    const addRowButton = document.getElementById('addRow');
-    addRowButton.addEventListener('click', function() {
-        const newRow = createNewRow();
-        purchaseItems.insertAdjacentHTML('beforeend', newRow);
-    });
+            // Event listener for cash received input
+            cashReceivedInput.addEventListener('input', function() {
+                calculateChangeToReturn();
+            });
 
-    // Create new row template
-    function createNewRow(category = '', productName = '', price = '') {
-        return `
+            // Function to calculate total price from items
+            function calculateTotalPrice() {
+                let totalPrice = 0;
+                document.querySelectorAll('.total').forEach(function(input) {
+                    totalPrice += parseFloat(input.value) || 0;
+                });
+                totalPriceInput.value = totalPrice.toFixed(2);
+                calculatePayableAmount();
+            }
+
+
+            // Add row button
+            const addRowButton = document.getElementById('addRow');
+            addRowButton.addEventListener('click', function() {
+                const newRow = createNewRow();
+                purchaseItems.insertAdjacentHTML('beforeend', newRow);
+            });
+
+            // Create new row template
+            function createNewRow(category = '', productName = '', price = '') {
+                return `
             <tr>
                 <td>
                     <select name="item_category[]" class="form-control item-category" required>
@@ -294,118 +314,119 @@
                     <button type="button" class="btn btn-danger remove-row">Delete</button>
                 </td>
             </tr>`;
-    }
-
-    // Remove row functionality
-    purchaseItems.addEventListener('click', function(e) {
-        if (e.target.classList.contains('remove-row')) {
-            e.target.closest('tr').remove();
-            calculateTotalPrice();
-        }
-    });
-
-    // Quantity and price input change
-    purchaseItems.addEventListener('input', function(e) {
-        if (e.target.classList.contains('quantity') || e.target.classList.contains('price')) {
-            const row = e.target.closest('tr');
-            const quantity = parseFloat(row.querySelector('.quantity').value) || 0;
-            const price = parseFloat(row.querySelector('.price').value) || 0;
-            const total = row.querySelector('.total');
-            total.value = (quantity * price).toFixed(2);
-            calculateTotalPrice();
-        }
-    });
-
-    // Category selection event
-    purchaseItems.addEventListener('change', function(e) {
-        if (e.target.classList.contains('item-category')) {
-            const categoryName = e.target.value;
-            const row = e.target.closest('tr');
-            const itemSelect = row.querySelector('.item-name');
-
-            if (categoryName) {
-                fetch(`/get-items-by-category/${categoryName}`)
-                    .then(response => response.json())
-                    .then(items => {
-                        itemSelect.innerHTML = '<option value="" disabled selected>Select Item</option>';
-                        items.forEach(item => {
-                            const option = document.createElement('option');
-                            option.value = item.product_name;
-                            option.textContent = item.product_name;
-                            itemSelect.appendChild(option);
-                        });
-                    })
-                    .catch(error => console.error('Error fetching items:', error));
             }
-        }
-    });
 
-    // Product name selection event
-    purchaseItems.addEventListener('change', function(e) {
-        if (e.target.classList.contains('item-name')) {
-            const productName = e.target.value;
-            const row = e.target.closest('tr');
-            const priceInput = row.querySelector('.price');
-
-            if (productName) {
-                fetch(`/get-product-details/${productName}`)
-                    .then(response => response.json())
-                    .then(product => {
-                        priceInput.value = product.retail_price;
-                    })
-                    .catch(error => console.error('Error fetching product details:', error));
-            }
-        }
-    });
-
-    // Search product functionality
-    $('#productSearch').on('keyup', function() {
-        const query = $(this).val();
-        searchProducts(query);
-    });
-
-    function searchProducts(query) {
-        if (query.length > 0) {
-            $.ajax({
-                url: '/search-products',
-                type: 'GET',
-                data: { q: query },
-                success: function(data) {
-                    displaySearchResults(data);
-                },
-                error: function(error) {
-                    console.error('Error in AJAX request:', error);
+            // Remove row functionality
+            purchaseItems.addEventListener('click', function(e) {
+                if (e.target.classList.contains('remove-row')) {
+                    e.target.closest('tr').remove();
+                    calculateTotalPrice();
                 }
             });
-        } else {
-            $('#searchResults').html('');
-        }
-    }
 
-    function displaySearchResults(products) {
-        const searchResults = $('#searchResults');
-        searchResults.html('');
-        products.forEach(product => {
-            const listItem = `<li class="list-group-item search-result-item" data-category="${product.category}" data-product-name="${product.product_name}" data-price="${product.retail_price}">
+            // Quantity and price input change
+            purchaseItems.addEventListener('input', function(e) {
+                if (e.target.classList.contains('quantity') || e.target.classList.contains('price')) {
+                    const row = e.target.closest('tr');
+                    const quantity = parseFloat(row.querySelector('.quantity').value) || 0;
+                    const price = parseFloat(row.querySelector('.price').value) || 0;
+                    const total = row.querySelector('.total');
+                    total.value = (quantity * price).toFixed(2);
+                    calculateTotalPrice();
+                }
+            });
+
+            // Category selection event
+            purchaseItems.addEventListener('change', function(e) {
+                if (e.target.classList.contains('item-category')) {
+                    const categoryName = e.target.value;
+                    const row = e.target.closest('tr');
+                    const itemSelect = row.querySelector('.item-name');
+
+                    if (categoryName) {
+                        fetch(`/get-items-by-category/${categoryName}`)
+                            .then(response => response.json())
+                            .then(items => {
+                                itemSelect.innerHTML = '<option value="" disabled selected>Select Item</option>';
+                                items.forEach(item => {
+                                    const option = document.createElement('option');
+                                    option.value = item.product_name;
+                                    option.textContent = item.product_name;
+                                    itemSelect.appendChild(option);
+                                });
+                            })
+                            .catch(error => console.error('Error fetching items:', error));
+                    }
+                }
+            });
+
+            // Product name selection event
+            purchaseItems.addEventListener('change', function(e) {
+                if (e.target.classList.contains('item-name')) {
+                    const productName = e.target.value;
+                    const row = e.target.closest('tr');
+                    const priceInput = row.querySelector('.price');
+
+                    if (productName) {
+                        fetch(`/get-product-details/${productName}`)
+                            .then(response => response.json())
+                            .then(product => {
+                                priceInput.value = product.retail_price;
+                            })
+                            .catch(error => console.error('Error fetching product details:', error));
+                    }
+                }
+            });
+
+            // Search product functionality
+            $('#productSearch').on('keyup', function() {
+                const query = $(this).val();
+                searchProducts(query);
+            });
+
+            function searchProducts(query) {
+                if (query.length > 0) {
+                    $.ajax({
+                        url: '/search-products',
+                        type: 'GET',
+                        data: {
+                            q: query
+                        },
+                        success: function(data) {
+                            displaySearchResults(data);
+                        },
+                        error: function(error) {
+                            console.error('Error in AJAX request:', error);
+                        }
+                    });
+                } else {
+                    $('#searchResults').html('');
+                }
+            }
+
+            function displaySearchResults(products) {
+                const searchResults = $('#searchResults');
+                searchResults.html('');
+                products.forEach(product => {
+                    const listItem = `<li class="list-group-item search-result-item" data-category="${product.category}" data-product-name="${product.product_name}" data-price="${product.retail_price}">
                 ${product.category} - ${product.product_name} - ${product.retail_price}
             </li>`;
-            searchResults.append(listItem);
+                    searchResults.append(listItem);
+                });
+            }
+
+            // Click event for search results
+            $('#searchResults').on('click', '.search-result-item', function() {
+                const category = $(this).data('category');
+                const productName = $(this).data('product-name');
+                const price = $(this).data('price');
+
+                // Create a new row and insert it as the first row
+                const newRow = createNewRow(category, productName, price);
+                purchaseItems.insertAdjacentHTML('afterbegin', newRow);
+                $('#searchResults').html(''); // Clear search results after adding
+                calculateTotalPrice(); // Update total price after adding the new row
+            });
         });
-    }
-
-    // Click event for search results
-    $('#searchResults').on('click', '.search-result-item', function() {
-        const category = $(this).data('category');
-        const productName = $(this).data('product-name');
-        const price = $(this).data('price');
-
-        // Create a new row and insert it as the first row
-        const newRow = createNewRow(category, productName, price);
-        purchaseItems.insertAdjacentHTML('afterbegin', newRow);
-        $('#searchResults').html(''); // Clear search results after adding
-        calculateTotalPrice(); // Update total price after adding the new row
-    });
-});
-
     </script>
 </body>

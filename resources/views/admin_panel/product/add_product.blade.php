@@ -46,7 +46,7 @@
                                                             <label for="profilePicUpload1" class="bg--success">Upload
                                                                 Image
                                                             </label>
-                                                            <small class="mt-2">Supported files: 
+                                                            <small class="mt-2">Supported files:
                                                                 <b>jpeg, jpg.</b> Image will be resized into 400x400px
                                                             </small>
                                                         </div>
@@ -59,14 +59,13 @@
                                                 <div class="col-sm-6">
                                                     <div class="form-group ">
                                                         <label>Name</label>
-                                                        <input type="text" name="product_name" class="form-control"
-                                                            >
+                                                        <input type="text" name="product_name" class="form-control">
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-6">
                                                     <div class="form-group ">
                                                         <label class="form-label">Category</label>
-                                                        <select name="category" class="form-control " >
+                                                        <select name="category" class="form-control ">
                                                             <option selected disabled>Select One</option>
                                                             @foreach($all_category as $category)
                                                             <option value="{{ $category->category }}">
@@ -79,7 +78,7 @@
                                                 <div class=" col-sm-6">
                                                     <div class="form-group">
                                                         <label>Brand</label>
-                                                        <select name="brand" class="form-control" >
+                                                        <select name="brand" class="form-control">
                                                             <option selected disabled>Select One</option>
                                                             @foreach($all_brand as $brand)
                                                             <option value="{{ $brand->brand }}">
@@ -95,10 +94,11 @@
                                                         <input type="text" class="form-control " name="stock">
                                                     </div>
                                                 </div>
+                                                <!-- Barcode Number -->
                                                 <div class="col-sm-6">
                                                     <div class="form-group ">
                                                         <label class="form-label">Barcode Number</label>
-                                                        <input type="text" class="form-control " name="barcode_number">
+                                                        <input type="text" class="form-control" name="barcode_number" id="barcodeInput" autofocus>
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-6">
@@ -110,7 +110,7 @@
                                                 <div class="col-sm-6">
                                                     <div class="form-group">
                                                         <label>Unit(UoM)</label>
-                                                        <select name="unit" class="form-control " >
+                                                        <select name="unit" class="form-control ">
                                                             <option selected disabled>Select One</option>
                                                             @foreach($all_unit as $unit)
                                                             <option value="{{ $unit->unit }}">
@@ -124,7 +124,7 @@
                                                     <div class="form-group">
                                                         <label>Alert Quantity</label>
                                                         <input type="number" name="alert_quantity"
-                                                            class="form-control" >
+                                                            class="form-control">
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-12">
@@ -148,3 +148,21 @@
         </div><!-- body-wrapper end -->
     </div>
     @include('admin_panel.include.footer_include')
+
+    <script>
+        // Barcode input field ko target kar rahe hain
+        const barcodeInput = document.getElementById('barcodeInput');
+
+        // Event listener jab barcode scanner se koi value aaye
+        barcodeInput.addEventListener('input', function(event) {
+            const barcodeValue = event.target.value;
+
+            // Jab barcode ki length sufficient ho (tumhare barcode ki length pe depend karega)
+            if (barcodeValue.length >= 6) { // 6 ko tum adjust kar sakte ho barcode length ke hisaab se
+                console.log("Barcode scanned: " + barcodeValue);
+
+                // Tum yahan koi additional action bhi kar sakte ho
+                // Jaise form submit ya barcode ko validate karna
+            }
+        });
+    </script>

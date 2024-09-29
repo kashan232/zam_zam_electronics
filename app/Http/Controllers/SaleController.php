@@ -136,8 +136,9 @@ class SaleController extends Controller
                 return redirect()->back()->with('error', "Product $item_name in category $item_category not found.");
             }
         }
-
-        return redirect()->back()->with('success', 'Sale recorded successfully and stock updated.');
+        // Redirect to receipt page for printing
+        return redirect()->route('sale-receipt', ['id' => $sale->id])
+            ->with('success', 'Sale recorded successfully. Redirecting to receipt...');
     }
 
 
@@ -177,5 +178,13 @@ class SaleController extends Controller
         // Download the PDF file
         return $pdf->download('invoice-' . $sale->invoice_no . '.pdf');
     }
-   
+
+    public function showReceipt($id)
+    {
+        // Fetch the sale data using the sale ID
+        $sale = Sale::findOrFail($id);
+
+        // Pass sale data to the receipt view
+        return view('admin_panel.sale.receipt', compact('sale'));
+    }
 }
