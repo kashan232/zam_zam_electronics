@@ -41,6 +41,9 @@ Route::get('/admin-page', [HomeController::class, 'adminpage'])->middleware(['au
 Route::get('/Admin-Change-Password', [HomeController::class, 'Admin_Change_Password'])->name('Admin-Change-Password');
 Route::post('/updte-change-Password', [HomeController::class, 'updte_change_Password'])->name('updte-change-Password');
 
+// staff dashboard work 
+Route::get('/get-products-by-category', [HomeController::class, 'getProductsByCategory'])->name('get.products.by.category');
+
 
 //category
 Route::get('/category', [CategoryController::class, 'category'])->middleware(['auth','admin'])->name('category');

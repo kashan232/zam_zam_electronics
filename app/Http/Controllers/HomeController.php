@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -17,8 +18,15 @@ class HomeController extends Controller
         if (Auth::id()) {
             $usertype = Auth()->user()->usertype;
 
-            if ($usertype == 'user') {
-                return view('user_panel.user_dashboard');
+            if ($usertype == 'staff') {
+
+                // Fetch all categories for the dropdown
+                $categories = Category::all();
+
+                // Initially, load all products for display (optional, can be removed if you prefer to only load products on category change)
+                $products = Product::all();
+
+                return view('user_panel.user_dashboard', compact('categories', 'products'));
             } else if ($usertype == 'admin') {
                 $userId = Auth::id();
                 $totalPurchasesPrice = \App\Models\Purchase::sum('total_price');
@@ -96,5 +104,18 @@ class HomeController extends Controller
         } else {
             return redirect()->back();
         }
+    }
+
+    // Staff work 
+
+    public function getProductsByCategory(Request $request)
+    {
+        $categoryname = $request->categoryname;
+        // dd($categoryname);
+        // Fetch products based on the selected category
+        $products = Product::where('category', $categoryname)->get();
+        // dd($products);
+        // Return JSON response
+        return response()->json($products);
     }
 }
