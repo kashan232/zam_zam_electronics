@@ -26,14 +26,7 @@
                                 <form action="{{ route('store-Purchase') }}" method="POST">
                                     @csrf
                                     <div class="row mb-3">
-                                        <div class="col-xl-3 col-sm-6">
-                                            <div class="form-group">
-                                                <label>Invoice No:</label>
-                                                <input type="text" name="invoice_no" class="form-control" required>
-                                            </div>
-                                        </div>
-
-                                        <div class="col-xl-3 col-sm-6">
+                                        <div class="col-xl-4 col-sm-4">
                                             <div class="form-group" id="supplier-wrapper">
                                                 <label class="form-label">Supplier</label>
                                                 <select name="supplier" class="select2-basic form-control" required>
@@ -45,14 +38,14 @@
                                             </div>
                                         </div>
 
-                                        <div class="col-xl-3 col-sm-6">
+                                        <div class="col-xl-4 col-sm-4">
                                             <div class="form-group">
                                                 <label>Date</label>
                                                 <input name="purchase_date" type="date" class="datepicker-here form-control bg--white" required>
                                             </div>
                                         </div>
 
-                                        <div class="col-xl-3 col-sm-6">
+                                        <div class="col-xl-4 col-sm-4">
                                             <div class="form-group">
                                                 <label class="form-label">Warehouse</label>
                                                 <select name="warehouse_id" class="form-control" required>

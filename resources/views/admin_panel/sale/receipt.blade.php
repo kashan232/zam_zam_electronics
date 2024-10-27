@@ -105,14 +105,15 @@
     <div class="receipt-container">
         <!-- Receipt Header -->
         <div class="receipt-header">
-            <h2>Falcon Communication</h2>
-            <p><strong>Address: Hyderabad Latifabad No 8</strong></p>
-            <p>Phone: 123-456-7890</p>
+            <h2>MK Traders</h2>
+            <p><strong>Address: Hyderabad City </strong></p>
+            <p>Phone: 0312-307278-9</p>
         </div>
 
         <!-- Sale Info -->
         <div class="details">
             <p><strong>Receipt No:</strong> {{ $sale->invoice_no }}</p>
+            <p><strong>Customer:</strong> {{ $sale->customer }}</p>
             <p><strong>Date:</strong> {{ \Carbon\Carbon::parse($sale->created_at)->format('F d, Y h:i A') }}</p>
         </div>
 

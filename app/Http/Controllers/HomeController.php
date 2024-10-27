@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Models\Customer;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -25,14 +26,27 @@ class HomeController extends Controller
 
                 // Initially, load all products for display (optional, can be removed if you prefer to only load products on category change)
                 $products = Product::all();
+                $Customers = Customer::all();
 
-                return view('user_panel.user_dashboard', compact('categories', 'products'));
+                return view('user_panel.user_dashboard', compact('categories', 'products', 'Customers'));
             } else if ($usertype == 'admin') {
                 $userId = Auth::id();
                 $totalPurchasesPrice = \App\Models\Purchase::sum('total_price');
                 $totalPurchaseReturnsPrice = \App\Models\PurchaseReturn::sum('total_price');
+                // Fetch all products for the logged-in admin
                 $all_product = Product::where('admin_or_user_id', '=', $userId)->get();
-                // dd($all_product);
+
+                // Calculate total stock value for all products
+                $totalStockValue = $all_product->sum(function ($product) {
+                    return $product->stock * $product->wholesale_price;
+                });
+
+
+                // Calculate total stock value for each product
+                foreach ($all_product as $product) {
+                    $product->total_stock_value = $product->stock * $product->wholesale_price;
+                }
+
 
                 $categories = DB::table('categories')->count();
                 $products = DB::table('products')->count();
@@ -41,7 +55,7 @@ class HomeController extends Controller
 
                 // $lowStockProducts = Product::whereRaw('CAST(stock AS UNSIGNED) <= CAST(alert_quantity AS UNSIGNED)')->get();
                 // dd($lowStockProducts);
-                return view('admin_panel.admin_dashboard', compact('totalPurchasesPrice', 'totalPurchaseReturnsPrice', 'all_product', 'categories', 'products', 'suppliers', 'customers'));
+                return view('admin_panel.admin_dashboard', compact('totalPurchasesPrice', 'totalPurchaseReturnsPrice', 'all_product', 'totalStockValue', 'categories', 'products', 'suppliers', 'customers'));
             }
         } else {
             return Redirect()->route('login');
@@ -117,5 +131,17 @@ class HomeController extends Controller
         // dd($products);
         // Return JSON response
         return response()->json($products);
+    }
+
+    public function getProductByBarcode(Request $request)
+    {
+        $barcode = $request->query('barcode'); // Get barcode from query parameters
+        $product = Product::where('barcode_number', $barcode)->first();
+
+        if ($product) {
+            return response()->json($product);
+        } else {
+            return response()->json(null, 404);
+        }
     }
 }

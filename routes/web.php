@@ -43,6 +43,7 @@ Route::post('/updte-change-Password', [HomeController::class, 'updte_change_Pass
 
 // staff dashboard work 
 Route::get('/get-products-by-category', [HomeController::class, 'getProductsByCategory'])->name('get.products.by.category');
+Route::get('/get-product-by-barcode', [HomeController::class, 'getProductByBarcode'])->name('get.product.by.barcode');
 
 
 //category
@@ -114,6 +115,8 @@ Route::get('/Sale', [SaleController::class, 'Sale'])->middleware(['auth','admin'
 Route::get('/add-Sale', [SaleController::class, 'add_Sale'])->middleware(['auth','admin'])->name('add-Sale');
 Route::post('/store-Sale', [SaleController::class, 'store_Sale'])->name('store-Sale');
 Route::get('/all-sales', [SaleController::class, 'all_sales'])->name('all-sales');
+
+
 // Route for downloading invoice
 Route::get('/invoice/download/{id}', [SaleController::class, 'downloadInvoice'])->name('invoice.download');
 Route::get('/get-product-details/{productName}', [ProductController::class, 'getProductDetails']);

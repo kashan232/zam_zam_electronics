@@ -78,7 +78,6 @@ class PurchaseController extends Controller
     {
         // Validate the request
         $validatedData = $request->validate([
-            'invoice_no' => 'required|string',
             'supplier' => 'required|string',
             'purchase_date' => 'required|date',
             'warehouse_id' => 'required|string',
@@ -92,6 +91,8 @@ class PurchaseController extends Controller
             'discount' => 'nullable|numeric',  // Ensure it's numeric
         ]);
 
+        $invoiceNo = Purchase::generateInvoiceNo();
+
         // Ensure discount is numeric and default to 0 if null
         $discount = (float) $request->discount ?? 0;
 
@@ -100,7 +101,7 @@ class PurchaseController extends Controller
 
         // Prepare data for storage
         $purchaseData = [
-            'invoice_no' => $request->invoice_no,
+            'invoice_no' => $invoiceNo,
             'supplier' => $request->supplier,
             'purchase_date' => $request->purchase_date,
             'warehouse_id' => $request->warehouse_id,

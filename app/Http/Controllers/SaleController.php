@@ -187,4 +187,5 @@ class SaleController extends Controller
         // Pass sale data to the receipt view
         return view('admin_panel.sale.receipt', compact('sale'));
     }
+
 }
