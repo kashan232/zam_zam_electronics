@@ -14,7 +14,7 @@ class CustomerController extends Controller
         if (Auth::id()) {
             $userId = Auth::id();
             // dd($userId);
-            $Customers = Customer::where('admin_or_user_id', '=', $userId)->get();
+            $Customers = Customer::all();
             return view('admin_panel.customers.customers', [
                 'Customers' => $Customers
             ]);

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\Customer;
 use App\Models\Product;
+use App\Models\Warehouse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -27,8 +28,10 @@ class HomeController extends Controller
                 // Initially, load all products for display (optional, can be removed if you prefer to only load products on category change)
                 $products = Product::all();
                 $Customers = Customer::all();
+                $Warehouses = Warehouse::get();
 
-                return view('user_panel.user_dashboard', compact('categories', 'products', 'Customers'));
+
+                return view('user_panel.user_dashboard', compact('categories', 'products', 'Customers','Warehouses'));
             } else if ($usertype == 'admin') {
                 $userId = Auth::id();
                 $totalPurchasesPrice = \App\Models\Purchase::sum('total_price');

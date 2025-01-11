@@ -126,7 +126,7 @@ Route::get('/sale-receipt/{id}', [SaleController::class, 'showReceipt'])->name('
 
 
 //Customer
-Route::get('/customer', [CustomerController::class, 'customer'])->middleware(['auth','admin'])->name('customer');
+Route::get('/customer', [CustomerController::class, 'customer'])->name('customer');
 Route::post('/store-customer', [CustomerController::class, 'store_customer'])->name('store-customer');
 Route::post('/update-customer', [CustomerController::class, 'update_customer'])->name('update-customer');
 
