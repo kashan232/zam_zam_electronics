@@ -112,8 +112,8 @@ Route::get('/all-purchase-return-damage-item', [PurchaseController::class, 'all_
 
 
 //Sale 
-Route::get('/Sale', [SaleController::class, 'Sale'])->middleware(['auth','admin'])->name('Sale');
-Route::get('/add-Sale', [SaleController::class, 'add_Sale'])->middleware(['auth','admin'])->name('add-Sale');
+Route::get('/Sale', [SaleController::class, 'Sale'])->name('Sale');
+Route::get('/add-Sale', [SaleController::class, 'add_Sale'])->name('add-Sale');
 Route::post('/store-Sale', [SaleController::class, 'store_Sale'])->name('store-Sale');
 Route::get('/all-sales', [SaleController::class, 'all_sales'])->name('all-sales');
 

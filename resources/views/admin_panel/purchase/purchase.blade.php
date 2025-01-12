@@ -18,22 +18,6 @@
                 <div class="d-flex mb-30 flex-wrap gap-3 justify-content-between align-items-center">
                     <h6 class="page-title">All Purchases</h6>
                     <div class="d-flex flex-wrap justify-content-end gap-2 align-items-center breadcrumb-plugins">
-                        <form action="" method="GET" class="d-flex gap-2">
-                            <div class="input-group w-auto">
-                                <input type="search" name="search" class="form-control bg--white"
-                                    placeholder="Search..." value="">
-                                <button class="btn btn--primary" type="submit"><i class="la la-search"></i></button>
-                            </div>
-
-                            <div class="input-group w-auto">
-                                <input name="date" type="search" data-range="true" data-multiple-dates-separator=" - "
-                                    data-language="en" data-format="Y-m-d"
-                                    class="datepicker-here form-control bg--white pe-2" data-position='bottom right'
-                                    placeholder="Start Date - End Date" autocomplete="off" value="">
-                                <button class="btn btn--primary input-group-text"><i class="la la-search"></i></button>
-                            </div>
-
-                        </form>
                         <a href="{{ route('add-purchase') }}"
                             class="btn btn-outline--primary h-45">
                             <i class="la la-plus"></i>Add New </a>
@@ -45,7 +29,7 @@
                         <div class="card b-radius--10 bg--transparent">
                             <div class="card-body p-0 ">
                                 <div class="table-responsive--md table-responsive">
-                                    <table class="table table--light style--two bg--white">
+                                    <table id="example" class="display  table table--light style--two bg--white" style="width:100%">
                                         <thead>
                                             <tr>
                                                 <th>Invoice No. | Date</th>

@@ -21,7 +21,7 @@
                         <div class="card b-radius--10">
                             <div class="card-body p-0">
                                 <div class="table-responsive--md table-responsive">
-                                    <table class="table--light style--two table">
+                                    <table id="example" class="display  table table--light style--two bg--white" style="width:100%">
                                         <thead>
                                             <tr>
                                                 <th>Image</th>

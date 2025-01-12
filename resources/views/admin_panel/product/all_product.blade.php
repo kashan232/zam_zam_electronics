@@ -16,38 +16,11 @@
                 <div class="d-flex mb-30 flex-wrap gap-3 justify-content-between align-items-center">
                     <h6 class="page-title">All Products</h6>
                     <div class="d-flex flex-wrap justify-content-end gap-2 align-items-center breadcrumb-plugins">
-                        <form action="" method="GET" class="d-flex gap-2">
-                            <div class="input-group w-auto">
-                                <input type="search" name="search" class="form-control bg--white"
-                                    placeholder="Name or SKU" value="">
-                                <button class="btn btn--primary" type="submit"><i class="la la-search"></i></button>
-                            </div>
-                        </form>
+                       
                         <a href="{{ route('add-product') }}"
                             class="btn btn-outline--primary">
                             <i class="la la-plus"></i>Add New </a>
 
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-outline--success dropdown-toggle"
-                                data-bs-toggle="dropdown" aria-expanded="false">
-                                Action </button>
-                            <ul class="dropdown-menu">
-                                <li>
-                                    <a class="dropdown-item"
-                                        href="https://script.viserlab.com/torylab/admin/product/pdf"><i
-                                            class="la la-download"></i>Export PDF</a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item"
-                                        href="https://script.viserlab.com/torylab/admin/product/csv"><i
-                                            class="la la-download"></i>Export CSV</a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item importBtn" href="javascript:void(0)">
-                                        <i class="las la-cloud-upload-alt"></i> Import CSV</a>
-                                </li>
-                            </ul>
-                        </div>
                     </div>
                 </div>
                 <div class="row">
@@ -55,7 +28,7 @@
                         <div class="card b-radius--10">
                             <div class="card-body p-0">
                                 <div class="table-responsive--md table-responsive">
-                                    <table class="table--light style--two table">
+                                    <table id="example" class="display  table table--light style--two bg--white" style="width:100%">
                                         <thead>
                                             <tr>
                                                 <th>Image</th>

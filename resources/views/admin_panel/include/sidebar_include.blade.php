@@ -7,7 +7,7 @@
             </a>
         </div>
         <div class="sidebar__menu-wrapper" id="sidebar__menuWrapper">
-        @if(Auth::check() && Auth::user()->usertype == 'admin')
+            @if(Auth::check() && Auth::user()->usertype == 'admin')
             <ul class="sidebar__menu">
                 <li class="sidebar-menu-item active">
                     <a href="{{ route('home') }}" class="nav-link ">
@@ -158,7 +158,7 @@
                     </a>
                     <div class="sidebar-submenu">
                         <ul>
-                            <li class="sidebar-menu-item  ">
+                            <li class="sidebar-menu-item">
                                 <a href="{{ route('all-sales') }}" class="nav-link">
                                     <i class="menu-icon la la-dot-circle"></i>
                                     <span class="menu-title">All Sales</span>
@@ -183,14 +183,14 @@
             <ul class="sidebar__menu">
                 <li class="sidebar-menu-item active">
                     <a href="{{ route('home') }}" class="nav-link ">
-                        <i class="menu-icon la la-shopping-cart"></i>
-                        <span class="menu-title">Create Sale</span>
+                        <i class="menu-icon la la-home"></i>
+                        <span class="menu-title">Dashboard</span>
                     </a>
                 </li>
 
                 <li class="sidebar-menu-item">
-                    <a href="{{ route('home') }}" class="nav-link ">
-                        <i class="menu-icon la la-shopping-cart"></i>
+                    <a href="{{ route('all-sales') }}" class="nav-link">
+                        <i class="menu-icon la la-dot-circle"></i>
                         <span class="menu-title">All Sales</span>
                     </a>
                 </li>

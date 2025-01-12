@@ -1,5 +1,10 @@
 /* default margin css start */
 
+div.dt-buttons {
+    float: left;
+    margin: 5px 0!important;
+}
+
 .my-5 {
     margin: 5px 0;
 }

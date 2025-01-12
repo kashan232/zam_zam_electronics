@@ -17,19 +17,11 @@
                 <div class="d-flex mb-30 flex-wrap gap-3 justify-content-between align-items-center">
                     <h6 class="page-title">Brands</h6>
                     <div class="d-flex flex-wrap justify-content-end gap-2 align-items-center breadcrumb-plugins">
-                        <form action="" method="GET" class="d-flex gap-2">
-                            <div class="input-group w-auto">
-                                <input type="search" name="search" class="form-control bg--white"
-                                    placeholder="Search..." value="">
-                                <button class="btn btn--primary" type="submit"><i class="la la-search"></i></button>
-                            </div>
-
-                        </form>
+                        
                         <button type="button" class="btn btn-sm btn-outline--primary cuModalBtn"
                             data-modal_title="Add New Brand">
                             <i class="las la-plus"></i>Add New </button>
-                        <button type="button" class="btn btn-sm btn-outline--info importBtn">
-                            <i class="las la-cloud-upload-alt"></i>Import CSV </button>
+                        
                     </div>
                 </div>
 
@@ -38,7 +30,7 @@
                         <div class="card b-radius--10 ">
                             <div class="card-body p-0">
                                 <div class="table-responsive--sm table-responsive">
-                                    <table class="table table--light ">
+                                    <table id="example" class="display  table table--light style--two bg--white" style="width:100%">
                                         <thead>
                                             <tr>
                                                 <th>S.N.</th>

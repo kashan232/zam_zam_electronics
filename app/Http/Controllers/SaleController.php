@@ -96,8 +96,13 @@ class SaleController extends Controller
             'change_to_return' => $changeToReturn, // Fixed field name
         ]);
 
+        $usertype = Auth()->user()->usertype;
+        $userId = Auth::id();
+
         // Prepare data for storage
         $saleData = [
+            'userid' => $userId,
+            'user_type' => $usertype,
             'invoice_no' => $invoiceNo,
             'customer' => $request->input('customer', ''),
             'sale_date' => $request->input('sale_date', ''),
@@ -144,11 +149,13 @@ class SaleController extends Controller
 
     public function all_sales()
     {
+
         if (Auth::id()) {
             $userId = Auth::id();
+            $usertype = Auth()->user()->usertype;
 
             // Retrieve all Sales with their related Purchase data (including invoice_no)
-            $Sales = Sale::get();
+            $Sales = Sale::where('userid', $userId)->where('user_type', $usertype)->get();
             // dd($Sales);
             return view('admin_panel.sale.sales', [
                 'Sales' => $Sales,
