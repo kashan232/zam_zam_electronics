@@ -52,7 +52,7 @@
 
         table {
             width: 100%;
-            margin-top: 10px;
+            margin-top: 16px;
             font-size: 14px;
             border-collapse: collapse;
         }
@@ -64,11 +64,16 @@
             font-weight: bold;
         }
 
+        .tbody tr .cntr {
+            text-align: center!important;
+        }
+
         .tbody tr td {
             padding: 4px 0;
             text-align: left;
             border-bottom: 1px solid #000;
         }
+
 
         .totals {
             font-weight: bold;
@@ -95,7 +100,7 @@
         }
     </style>
     <script>
-        window.onload = function () {
+        window.onload = function() {
             window.print();
         }
     </script>
@@ -105,9 +110,9 @@
     <div class="receipt-container">
         <!-- Receipt Header -->
         <div class="receipt-header">
-            <h2>MK Traders</h2>
-            <p><strong>Address: Hyderabad City </strong></p>
-            <p>Phone: 0312-307278-9</p>
+            <h2>Beauty Base Cosmetics</h2>
+            <p><strong>Address: Resham Bazar </strong></p>
+            <p>Phone: 0313-300452-0</p>
         </div>
 
         <!-- Sale Info -->
@@ -130,10 +135,17 @@
             <tbody class="tbody">
                 @foreach(json_decode($sale->item_name) as $key => $item)
                 <tr>
+                    <!-- Display the item name -->
                     <td>{{ $item }}</td>
-                    <td>{{ json_decode($sale->quantity)[$key] }}</td>
-                    <td>{{ json_decode($sale->price)[$key] }}</td>
-                    <td>{{ json_decode($sale->total)[$key] }}</td>
+
+                    <!-- Display the quantity as it is -->
+                    <td class="cntr">{{ json_decode($sale->quantity)[$key] }}</td>
+
+                    <!-- Display the price without decimals -->
+                    <td class="cntr">{{ number_format(json_decode($sale->price)[$key], 0) }}</td>
+
+                    <!-- Display the total without decimals -->
+                    <td class="cntr">{{ number_format(json_decode($sale->total)[$key], 0) }}</td>
                 </tr>
                 @endforeach
             </tbody>
@@ -165,19 +177,19 @@
         <div class="receipt-footer">
             <p class="note">No Refund Without Receipt</p>
             <p>Thank you for shopping with us!</p>
-            <p>Developed by Kashan Shaikh <strong>03173859647</strong></p>
+            <p>Developed by ProWave Software Solution <br> <strong>0317 3836223</strong><br><strong> 0317 3859647</strong></p>
         </div>
     </div>
 
     <script>
-        window.onload = function () {
+        window.onload = function() {
             window.print();
-            setTimeout(function () {
+            setTimeout(function() {
                 window.location.href = '/all-sales'; // Replace with your redirect URL
             }, 1000);
         }
     </script>
-    
+
 </body>
 
 </html>

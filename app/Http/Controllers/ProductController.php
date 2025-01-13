@@ -73,7 +73,7 @@ class ProductController extends Controller
                 'created_at'       => Carbon::now(),
                 'updated_at'       => Carbon::now(),
             ]);
-            return redirect()->back()->with('unit-added', 'Product Added Successfully');
+            return redirect()->back()->with('success', 'Product Added Successfully');
         } else {
             return redirect()->back();
         }

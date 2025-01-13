@@ -190,7 +190,7 @@ class SaleController extends Controller
     {
         // Fetch the sale data using the sale ID
         $sale = Sale::findOrFail($id);
-
+        // dd($sale);
         // Pass sale data to the receipt view
         return view('admin_panel.sale.receipt', compact('sale'));
     }
