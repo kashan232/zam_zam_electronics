@@ -25,6 +25,11 @@
                     <div class="col-lg-12 col-md-12 mb-30">
                         <div class="card">
                             <div class="card-body">
+                            @if (session()->has('success'))
+                                        <div class="alert alert-success">
+                                            <strong>Success!</strong> {{ session('success') }}.
+                                </div>
+                                @endif
                                 <form action="{{ route('update-product',['id'=> $product_details->id ]) }}" method="POST" enctype="multipart/form-data">
                                     @csrf
                                     <div class="row">

@@ -40,7 +40,7 @@ class StaffController extends Controller
                 'created_at'        => Carbon::now(),
                 'updated_at'        => Carbon::now(),
             ]);
-            return redirect()->back()->with('Staff-added', 'Staff has been  created successfully');
+            return redirect()->back()->with('success', 'Staff has been  created successfully');
         } else {
             return redirect()->back();
         }
@@ -63,7 +63,7 @@ class StaffController extends Controller
                 'email'          => $email,
                 'updated_at' => Carbon::now(),
             ]);
-            return redirect()->back()->with('Staff-added', 'Staff Updated Successfully');
+            return redirect()->back()->with('success', 'Staff Updated Successfully');
         } else {
             return redirect()->back();
         }

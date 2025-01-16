@@ -33,7 +33,7 @@ class BrandController extends Controller
                 'created_at'        => Carbon::now(),
                 'updated_at'        => Carbon::now(),
             ]);
-            return redirect()->back()->with('brand-added', 'brand Added Successfully');
+            return redirect()->back()->with('success', 'brand Added Successfully');
         } else {
             return redirect()->back();
         }
@@ -51,7 +51,7 @@ class BrandController extends Controller
                 'brand'   => $brand,
                 'updated_at' => Carbon::now(),
             ]);
-            return redirect()->back()->with('Category-updte', 'Category Updated Successfully');
+            return redirect()->back()->with('success', 'Category Updated Successfully');
         } else {
             return redirect()->back();
         }

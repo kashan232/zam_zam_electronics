@@ -28,6 +28,11 @@
                     <div class="col-lg-12">
                         <div class="card b-radius--10 bg--transparent">
                             <div class="card-body p-0 ">
+                                @if (session()->has('success'))
+                                <div class="alert alert-success">
+                                    <strong>Success!</strong> {{ session('success') }}.
+                                </div>
+                                @endif
                                 <div class="table-responsive--md table-responsive">
                                     <table id="example" class="display  table table--light style--two bg--white" style="width:100%">
                                         <thead>
@@ -103,7 +108,7 @@
 
                                                             <a class="dropdown-item btn btn-sm btn-outline--primary ms-1 editBtn" href="{{ route('purchase-return',['id' => $purchase->id ]) }}
                                                             "> <i class="la la-undo"></i> View Return Details</a>
-                                                            
+
                                                             <a class="dropdown-item btn btn-sm btn-outline--primary ms-1 editBtn" href="{{ route('purchase-return-damage-item',['id' => $purchase->id ]) }}
                                                             "> <i class="la la-undo"></i> Damage Item</a>
                                                         </div>

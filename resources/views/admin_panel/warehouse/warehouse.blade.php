@@ -27,9 +27,9 @@
                     <div class="col-lg-12">
                         <div class="card b-radius--10">
                             <div class="card-body p-0">
-                                @if (session()->has('Warehouse-added'))
+                                @if (session()->has('success'))
                                 <div class="alert alert-success">
-                                    <strong>Success!</strong> {{ session('Warehouse-added') }}.
+                                    <strong>Success!</strong> {{ session('success') }}.
                                 </div>
                                 @endif
                                 <div class="table-responsive--sm table-responsive">

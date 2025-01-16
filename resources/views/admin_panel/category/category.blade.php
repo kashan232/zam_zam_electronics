@@ -28,6 +28,11 @@
                     <div class="col-lg-12">
                         <div class="card b-radius--10">
                             <div class="card-body p-0">
+                                @if (session()->has('success'))
+                                        <div class="alert alert-success">
+                                            <strong>Success!</strong> {{ session('success') }}.
+                                </div>
+                                @endif
                                 <div class="table-responsive--sm table-responsive">
                                 <table id="example" class="display  table table--light" style="width:100%">
                                         <thead>
@@ -89,11 +94,7 @@
                                 @csrf
 
                                 <div class="modal-body">
-                                    {{-- @if (session()->has('Category-added'))
-                                        <div class="alert alert-success">
-                                            <strong>Success!</strong> {{ session('Category-added') }}.
-                                </div>
-                                @endif --}}
+                                    
                                 <div class="form-group">
                                     <label>Name</label>
                                     <input type="text" name="category" class="form-control" required>

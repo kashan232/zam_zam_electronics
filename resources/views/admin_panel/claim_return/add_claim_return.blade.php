@@ -21,6 +21,11 @@
                     <div class="col-lg-12 col-md-12 mb-30">
                         <div class="card">
                             <div class="card-body">
+                            @if (session()->has('success'))
+                                <div class="alert alert-success">
+                                    <strong>Success!</strong> {{ session('success') }}.
+                                </div>
+                                @endif
                                 <form action="{{ route('store-purchase-return-damage-item') }}" method="POST">
                                     @csrf
                                     <!-- Invoice and Supplier Info -->

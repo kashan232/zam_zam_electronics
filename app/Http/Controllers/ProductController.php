@@ -140,7 +140,7 @@ class ProductController extends Controller
             // Save updated product
             $product->save();
 
-            return redirect()->route('all-product')->with('product-updated', 'Product updated successfully');
+            return redirect()->route('all-product')->with('success', 'Product updated successfully');
         } else {
             return redirect()->back();
         }

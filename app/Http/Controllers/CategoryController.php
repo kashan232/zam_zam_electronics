@@ -34,7 +34,7 @@ class CategoryController extends Controller
                 'created_at'        => Carbon::now(),
                 'updated_at'        => Carbon::now(),
             ]);
-            return redirect()->back()->with('Category-added', 'Category Added Successfully');
+            return redirect()->back()->with('success', 'Category Added Successfully');
         } else {
             return redirect()->back();
         }
@@ -52,7 +52,7 @@ class CategoryController extends Controller
                 'category'   => $category,
                 'updated_at' => Carbon::now(),
             ]);
-            return redirect()->back()->with('Category-updte', 'Category Updated Successfully');
+            return redirect()->back()->with('success', 'Category Updated Successfully');
         } else {
             return redirect()->back();
         }

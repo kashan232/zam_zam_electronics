@@ -38,7 +38,7 @@ class SupplierController extends Controller
                 'created_at'        => Carbon::now(),
                 'updated_at'        => Carbon::now(),
             ]);
-            return redirect()->back()->with('supplier-added', 'Supplier Added Successfully');
+            return redirect()->back()->with('success', 'Supplier Added Successfully');
         } else {
             return redirect()->back();
         }
@@ -65,7 +65,7 @@ class SupplierController extends Controller
                 'address'          => $address,
                 'updated_at' => Carbon::now(),
             ]);
-            return redirect()->back()->with('supplier-added', 'Warehouse Updated Successfully');
+            return redirect()->back()->with('success', 'Supplier Updated Successfully');
         } else {
             return redirect()->back();
         }

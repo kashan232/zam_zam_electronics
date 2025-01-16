@@ -37,7 +37,7 @@ class WarehouseController extends Controller
                 'created_at'        => Carbon::now(),
                 'updated_at'        => Carbon::now(),
             ]);
-            return redirect()->back()->with('Warehouse-added', 'Warehouse Added Successfully');
+            return redirect()->back()->with('success', 'Warehouse Added Successfully');
         } else {
             return redirect()->back();
         }
@@ -58,7 +58,7 @@ class WarehouseController extends Controller
                 'address'          => $address,
                 'updated_at' => Carbon::now(),
             ]);
-            return redirect()->back()->with('Warehouse-added', 'Warehouse Updated Successfully');
+            return redirect()->back()->with('success', 'Warehouse Updated Successfully');
         } else {
             return redirect()->back();
         }

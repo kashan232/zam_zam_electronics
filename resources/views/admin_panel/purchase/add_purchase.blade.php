@@ -23,6 +23,11 @@
                     <div class="col-lg-12 col-md-12 mb-30">
                         <div class="card">
                             <div class="card-body">
+                            @if (session()->has('success'))
+                                <div class="alert alert-success">
+                                    <strong>Success!</strong> {{ session('success') }}.
+                                </div>
+                                @endif
                                 <form action="{{ route('store-Purchase') }}" method="POST">
                                     @csrf
                                     <div class="row mb-3">

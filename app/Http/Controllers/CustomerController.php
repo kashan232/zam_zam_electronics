@@ -37,7 +37,7 @@ class CustomerController extends Controller
                 'created_at'        => Carbon::now(),
                 'updated_at'        => Carbon::now(),
             ]);
-            return redirect()->back()->with('Customer-added', 'Customer has been  created successfully');
+            return redirect()->back()->with('success', 'Customer has been  created successfully');
         } else {
             return redirect()->back();
         }
@@ -61,7 +61,7 @@ class CustomerController extends Controller
                 'customer_address'          => $address,
                 'updated_at' => Carbon::now(),
             ]);
-            return redirect()->back()->with('Customer-update', 'Customer Updated Successfully');
+            return redirect()->back()->with('success', 'Customer Updated Successfully');
         } else {
             return redirect()->back();
         }

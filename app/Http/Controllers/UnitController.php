@@ -32,7 +32,7 @@ class UnitController extends Controller
                 'created_at'        => Carbon::now(),
                 'updated_at'        => Carbon::now(),
             ]);
-            return redirect()->back()->with('unit-added', 'Unit Added Successfully');
+            return redirect()->back()->with('success', 'Unit Added Successfully');
         } else {
             return redirect()->back();
         }
@@ -50,7 +50,7 @@ class UnitController extends Controller
                 'unit'   => $unit,
                 'updated_at' => Carbon::now(),
             ]);
-            return redirect()->back()->with('unit-updte', 'unit Updated Successfully');
+            return redirect()->back()->with('success', 'unit Updated Successfully');
         } else {
             return redirect()->back();
         }
