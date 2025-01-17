@@ -29,6 +29,7 @@ use Illuminate\Support\Facades\Route;
 // code deploy 
 // pos start
 // Old Pos setup
+// Software deployed
 Route::get('/', function () {
     return view('welcome');
 });
