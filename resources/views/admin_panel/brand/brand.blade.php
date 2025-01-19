@@ -49,7 +49,7 @@
                                             <tr>
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $brand->brand }}</td>
-                                                <td>3</td>
+                                                <td>{{ $brand->products_count }}</td>
                                                 <td>
                                                     <div class="button--group">
                                                         <button type="button"

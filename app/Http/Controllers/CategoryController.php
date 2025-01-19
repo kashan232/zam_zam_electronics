@@ -14,8 +14,13 @@ class CategoryController extends Controller
     {
         if (Auth::id()) {
             $userId = Auth::id();
-            // dd($userId);
-            $all_categories = Category::where('admin_or_user_id', '=', $userId)->get();
+            $all_categories = Category::where('admin_or_user_id', '=', $userId)
+                ->get()
+                ->map(function ($category) {
+                    $category->products_count = $category->products()->count();
+                    return $category;
+                });
+    
             return view('admin_panel.category.category', [
                 'all_categories' => $all_categories
             ]);

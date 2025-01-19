@@ -48,7 +48,7 @@
                                             <tr>
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $categories->category }}</td>
-                                                <td>1</td>
+                                                <td>{{ $categories->products_count }}</td>
                                                 <td>
                                                     <div class="button--group">
 
