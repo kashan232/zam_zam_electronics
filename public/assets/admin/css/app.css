@@ -1,5 +1,9 @@
 /* default margin css start */
 
+table.dataTable thead th, table.dataTable thead td, table.dataTable tfoot th, table.dataTable tfoot td {
+    text-align: center!important;
+}
+
 div.dt-buttons {
     float: left;
     margin: 5px 0!important;

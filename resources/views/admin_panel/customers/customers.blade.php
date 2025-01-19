@@ -33,7 +33,7 @@
                                     <strong>Success!</strong> {{ session('success') }}.
                                 </div>
                                 @endif
-                                <div class="table-responsive--sm table-responsive">
+                                <div class="table-responsive--md table-responsive">
                                     <table id="example" class="display  table table--light style--two bg--white" style="width:100%">
                                         <thead>
                                             <tr>
@@ -57,7 +57,7 @@
                                                 <td>
                                                     <div class="button--group">
                                                         <button type="button" class="btn btn-sm btn-outline--primary editcustomerbtn" data-toggle="modal" data-target="#exampleModal" data-customer-id="{{ $Customer->id }}" data-customer-name="{{ $Customer->customer_name }}" data-customer-email="{{ $Customer->customer_email }}" data-customer-phone="{{ $Customer->customer_phone }}"
-                                                        data-customer-address="{{ $Customer->customer_address }}">
+                                                            data-customer-address="{{ $Customer->customer_address }}">
                                                             <i class="la la-pencil"></i>Edit </button>
                                                     </div>
                                                 </td>
@@ -164,7 +164,7 @@
                 var customerphone = $(this).data('customer-phone');
                 var customeraddress = $(this).data('customer-address');
 
-                console.log(customerId, customername, customeremail, customerphone,customeraddress);
+                console.log(customerId, customername, customeremail, customerphone, customeraddress);
 
                 $('#customer_id').val(customerId);
                 $('#edit_customer_name').val(customername);
