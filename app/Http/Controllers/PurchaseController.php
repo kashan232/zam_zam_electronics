@@ -76,6 +76,7 @@ class PurchaseController extends Controller
 
     public function store_Purchase(Request $request)
     {
+        // dd($request);
         // Validate the request
         $validatedData = $request->validate([
             'supplier' => 'required|string',
@@ -114,6 +115,9 @@ class PurchaseController extends Controller
             'total_price' => $totalPrice,
             'discount' => $discount,
             'Payable_amount' => $totalPrice - $discount, // Correct subtraction with numeric values
+            'paid_amount' => $request->paid_amount,
+            'due_amount' => $request->due_amount,
+
         ];
 
         // Save purchase data

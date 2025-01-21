@@ -90,15 +90,15 @@
                                     </div>
                                     <div class="form-group">
                                         <label>Email</label>
-                                        <input type="text" class="form-control" name="customer_email" required>
+                                        <input type="text" class="form-control" name="customer_email">
                                     </div>
                                     <div class="form-group">
                                         <label>Mobile</label>
-                                        <input type="text" class="form-control" name="customer_phone" required>
+                                        <input type="text" class="form-control" name="customer_phone">
                                     </div>
                                     <div class="form-group">
                                         <label>Address</label>
-                                        <input type="text" class="form-control" name="customer_address" required>
+                                        <input type="text" class="form-control" name="customer_address">
                                     </div>
                                 </div>
                                 <div class="modal-footer">

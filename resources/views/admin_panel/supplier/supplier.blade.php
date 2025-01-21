@@ -39,7 +39,7 @@
                                             <tr>
                                                 <th>S.N.</th>
                                                 <th>Name</th>
-                                                <th>Mobile | Email</th>
+                                                <th>Mobile</th>
                                                 <th>Payable</th>
                                                 <th>Receivable</th>
                                                 <th>Action</th>
@@ -96,7 +96,7 @@
                                         <div class="col-lg-6">
                                             <div class="form-group">
                                                 <label class="form-label">E-Mail</label>
-                                                <input type="email" class="form-control" name="email" value="" required>
+                                                <input type="email" class="form-control" name="email">
                                             </div>
                                         </div>
 

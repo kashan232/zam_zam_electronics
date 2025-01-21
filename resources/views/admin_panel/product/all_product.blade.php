@@ -35,7 +35,7 @@
                                                 <th>Name | SKU </th>
                                                 <th>Category | Brand</th>
                                                 <th>Stock </th>
-                                                <th>Total Sale | Alert Qty</th>
+                                                <th>Alert Qty</th>
                                                 <th>Unit</th>
                                                 <th>Wholesale Price</th>
                                                 <th>Retail Price</th>
@@ -64,9 +64,7 @@
                                                     {{ $product->stock }}
                                                 </td>
                                                 <td>
-                                                    0
-                                                    <br>
-                                                    <span class="badge badge--warning">{{ $product->alert_quantity }}</span>
+                                                    <strong class="badge badge--danger">{{ $product->alert_quantity }}</strong>
                                                 </td>
                                                 <td>{{ $product->unit }}</td>
                                                 <td>{{ $product->wholesale_price }}</td>

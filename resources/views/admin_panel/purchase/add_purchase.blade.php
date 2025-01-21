@@ -23,11 +23,6 @@
                     <div class="col-lg-12 col-md-12 mb-30">
                         <div class="card">
                             <div class="card-body">
-                            @if (session()->has('success'))
-                                <div class="alert alert-success">
-                                    <strong>Success!</strong> {{ session('success') }}.
-                                </div>
-                                @endif
                                 <form action="{{ route('store-Purchase') }}" method="POST">
                                     @csrf
                                     <div class="row mb-3">
@@ -37,7 +32,7 @@
                                                 <select name="supplier" class="select2-basic form-control" required>
                                                     <option selected disabled>Select One</option>
                                                     @foreach($Suppliers as $Supplier)
-                                                        <option value="{{ $Supplier->name }}">{{ $Supplier->name }}</option>
+                                                    <option value="{{ $Supplier->name }}">{{ $Supplier->name }}</option>
                                                     @endforeach
                                                 </select>
                                             </div>
@@ -56,7 +51,7 @@
                                                 <select name="warehouse_id" class="form-control" required>
                                                     <option selected disabled>Select One</option>
                                                     @foreach($Warehouses as $Warehouse)
-                                                        <option value="{{ $Warehouse->name }}">{{ $Warehouse->name }}</option>
+                                                    <option value="{{ $Warehouse->name }}">{{ $Warehouse->name }}</option>
                                                     @endforeach
                                                 </select>
                                             </div>
@@ -83,7 +78,7 @@
                                                             <select name="item_category[]" class="form-control item-category" required>
                                                                 <option value="" disabled selected>Select Category</option>
                                                                 @foreach($Category as $Categories)
-                                                                    <option value="{{ $Categories->category }}">{{ $Categories->category }}</option>
+                                                                <option value="{{ $Categories->category }}">{{ $Categories->category }}</option>
                                                                 @endforeach
                                                             </select>
                                                         </td>
@@ -128,8 +123,8 @@
                                                     <div class="form-group">
                                                         <label>Total Price</label>
                                                         <div class="input-group">
-                                                            <span class="input-group-text">$</span>
-                                                            <input type="number" name="total_price" class="form-control total_price" required readonly>
+                                                            <span class="input-group-text">Pkr</span>
+                                                            <input type="number" name="total_price" class="form-control total_price" value="0" required readonly>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -138,8 +133,8 @@
                                                     <div class="form-group">
                                                         <label>Discount</label>
                                                         <div class="input-group">
-                                                            <span class="input-group-text">$</span>
-                                                            <input type="number" name="discount" class="form-control" step="any">
+                                                            <span class="input-group-text">Pkr</span>
+                                                            <input type="number" name="discount" class="form-control discount" step="any" value="0">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -148,11 +143,32 @@
                                                     <div class="form-group">
                                                         <label>Payable Amount</label>
                                                         <div class="input-group">
-                                                            <span class="input-group-text">$</span>
-                                                            <input type="number" name="payable_amount" class="form-control payable_amount" disabled>
+                                                            <span class="input-group-text">Pkr</span>
+                                                            <input type="number" name="payable_amount" class="form-control payable_amount" value="0" readonly>
                                                         </div>
                                                     </div>
                                                 </div>
+
+                                                <div class="col-sm-12">
+                                                    <div class="form-group">
+                                                        <label>Paid Amount</label>
+                                                        <div class="input-group">
+                                                            <span class="input-group-text">Pkr</span>
+                                                            <input type="number" name="paid_amount" class="form-control paid_amount" value="0">
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-sm-12">
+                                                    <div class="form-group">
+                                                        <label>Remaining Amount</label>
+                                                        <div class="input-group">
+                                                            <span class="input-group-text">Pkr</span>
+                                                            <input type="number" name="due_amount" class="form-control remaining_amount" readonly>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
                                             </div>
                                         </div>
                                     </div>
@@ -171,6 +187,28 @@
     @include('admin_panel.include.footer_include')
 
     <script>
+        document.addEventListener('input', function() {
+            // Fetch input values
+            const totalPrice = parseFloat(document.querySelector('.total_price').value) || 0;
+            const discount = parseFloat(document.querySelector('.discount').value) || 0;
+            const paidAmount = parseFloat(document.querySelector('.paid_amount').value) || 0;
+
+            // Calculate the payable amount
+            const payableAmount = totalPrice - discount;
+
+            // Update the payable amount field
+            const payableField = document.querySelector('.payable_amount');
+            payableField.value = payableAmount > 0 ? payableAmount : 0;
+
+            // Calculate the remaining amount
+            const remainingAmount = payableAmount - paidAmount;
+
+            // Update the remaining amount field
+            const remainingField = document.querySelector('input[name="due_amount"]');
+            remainingField.value = remainingAmount > 0 ? remainingAmount : 0;
+        });
+
+
         document.addEventListener('DOMContentLoaded', function() {
             const purchaseItems = document.getElementById('purchaseItems');
 
@@ -182,7 +220,7 @@
                     const itemSelect = row.querySelector('.item-name');
 
                     if (categoryId) {
-                        fetch(`/get-items-by-category/${categoryId}`)
+                        fetch(`{{ route('get-items-by-category', ':categoryId') }}`.replace(':categoryId', categoryId))
                             .then(response => response.json())
                             .then(items => {
                                 itemSelect.innerHTML = '<option value="" disabled selected>Select Item</option>';
@@ -204,12 +242,17 @@
                     const unitInput = row.querySelector('.unit');
 
                     if (productId) {
-                        fetch(`/get-unit-by-product/${productId}`)
+                        fetch(`{{ route('get-unit-by-product', ':productId') }}`.replace(':productId', productId))
                             .then(response => response.json())
                             .then(product => {
-                                unitInput.value = product.unit; // Assuming the API response includes 'unit'
+                                if (product.unit) {
+                                    unitInput.value = product.unit;
+                                } else {
+                                    unitInput.value = ''; // Handle cases where the unit is not found
+                                }
                             })
                             .catch(error => console.error('Error fetching unit:', error));
+
                     }
                 }
             });
@@ -257,9 +300,16 @@
                     e.target.closest('tr').remove();
                 }
             });
-
             // Calculate total and payable amount
             purchaseItems.addEventListener('input', function(e) {
+                calculateTotalAndPayable();
+            });
+
+            // Event listener for the discount input
+            document.querySelector('input[name="discount"]').addEventListener('input', calculateTotalAndPayable);
+
+            // Function to calculate total price and payable amount
+            function calculateTotalAndPayable() {
                 const rows = purchaseItems.querySelectorAll('tr');
                 let totalPrice = 0;
 
@@ -279,10 +329,11 @@
 
                 // Update total price
                 document.querySelector('.total_price').value = totalPrice;
+
                 // Calculate and update payable amount
                 const discount = parseFloat(document.querySelector('input[name="discount"]').value) || 0;
                 document.querySelector('.payable_amount').value = totalPrice - discount;
-            });
+            }
         });
     </script>
 

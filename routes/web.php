@@ -98,13 +98,14 @@ Route::get('/add-purchase', [PurchaseController::class, 'add_purchase'])->middle
 Route::post('/store-Purchase', [PurchaseController::class, 'store_Purchase'])->name('store-Purchase');
 Route::post('/update-Purchase', [PurchaseController::class, 'update_Purchase'])->name('update-Purchase');
 Route::post('/purchases-payment', [PurchaseController::class, 'purchases_payment'])->name('purchases-payment');
-Route::get('/get-items-by-category/{categoryId}', [PurchaseController::class, 'getItemsByCategory']);
+Route::get('/get-items-by-category/{categoryId}', [PurchaseController::class, 'getItemsByCategory'])->name('get-items-by-category');
+
 Route::get('/purchase-view/{id}', [PurchaseController::class, 'view'])->name('purchase-view');
 Route::get('/purchase-return/{id}', [PurchaseController::class, 'purchase_return'])->name('purchase-return');
 Route::post('/store-purchase-return', [PurchaseController::class, 'store_purchase_return'])->name('store-purchase-return');
 Route::get('/all-purchase-return', [PurchaseController::class, 'all_purchase_return'])->name('all-purchase-return');
 Route::post('/purchase-return-payment', [PurchaseController::class, 'purchase_return_payment'])->name('purchase-return-payment');
-Route::get('/get-unit-by-product/{productId}', [PurchaseController::class, 'getUnitByProduct']);
+Route::get('/get-unit-by-product/{productId}', [PurchaseController::class, 'getUnitByProduct'])->name('get-unit-by-product');
 
 
 Route::get('/purchase-return-damage-item/{id}', [PurchaseController::class, 'purchase_return_damage_item'])->name('purchase-return-damage-item');
@@ -121,8 +122,11 @@ Route::get('/all-sales', [SaleController::class, 'all_sales'])->name('all-sales'
 
 // Route for downloading invoice
 Route::get('/invoice/download/{id}', [SaleController::class, 'downloadInvoice'])->name('invoice.download');
-Route::get('/get-product-details/{productName}', [ProductController::class, 'getProductDetails']);
-Route::get('/search-products', [ProductController::class, 'searchProducts']);
+Route::get('/get-product-details/{productName}', [ProductController::class, 'getProductDetails'])->name('get-product-details');
+
+
+Route::get('/search-products', [ProductController::class, 'searchProducts'])->name('search-products');
+
 Route::get('/sale-receipt/{id}', [SaleController::class, 'showReceipt'])->name('sale-receipt');
 
 

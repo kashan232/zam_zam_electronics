@@ -50,29 +50,36 @@ class ProductController extends Controller
             $usertype = Auth()->user()->usertype;
             $userId = Auth::id();
 
-            // Handle image upload
-            $image = $request->file('image');
-            $imageName = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
-            $imagePath = 'product_images/' . $imageName;
+            // Handle image upload if the image is provided
+            $imageName = null;  // Default to null if no image is uploaded
+            if ($request->hasFile('image')) {
+                $image = $request->file('image');
+                $imageName = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
+                $imagePath = 'product_images/' . $imageName;
 
-            // Save the original image to the public directory
-            $image->move(public_path('product_images'), $imageName);
+                // Save the original image to the public directory
+                $image->move(public_path('product_images'), $imageName);
+            }
 
+            // Create the product with or without the image
             Product::create([
                 'admin_or_user_id' => $userId,
                 'product_name'     => $request->product_name,
                 'category'         => $request->category,
                 'brand'            => $request->brand,
                 'stock'            => $request->stock,
-                'barcode_number'            => $request->barcode_number,
+                'wholesale_price'            => $request->wholesale_price,
+                'retail_price'            => $request->retail_price,
+                'barcode_number'   => $request->barcode_number,
                 'sku'              => $request->sku,
                 'unit'             => $request->unit,
                 'alert_quantity'   => $request->alert_quantity,
                 'note'             => $request->note,
-                'image'            => $imageName,
+                'image'            => $imageName,  // Store null if no image uploaded
                 'created_at'       => Carbon::now(),
                 'updated_at'       => Carbon::now(),
             ]);
+
             return redirect()->back()->with('success', 'Product Added Successfully');
         } else {
             return redirect()->back();

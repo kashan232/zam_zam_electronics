@@ -60,6 +60,11 @@
                     <div class="col-lg-12 col-md-12 mb-30">
                         <div class="card">
                             <div class="card-body">
+                            @if (session()->has('error'))
+                                <div class="alert alert-danger">
+                                    <strong>Error!</strong> {{ session('error') }}.
+                                </div>
+                                @endif
                                 <form action="{{ route('store-Sale') }}" method="POST">
                                     @csrf
                                     <div class="row mb-3">
@@ -120,27 +125,6 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody id="purchaseItems">
-                                                    <!-- <tr>
-                                                        <td>
-                                                            <select name="item_category[]" class="form-control item-category" required>
-                                                                <option value="" disabled selected>Select Category</option>
-                                                                @foreach($Category as $Categories)
-                                                                <option value="{{ $Categories->category }}">{{ $Categories->category }}</option>
-                                                                @endforeach
-                                                            </select>
-                                                        </td>
-                                                        <td>
-                                                            <select name="item_name[]" class="form-control item-name" required>
-                                                                <option value="" disabled selected>Select Item</option>
-                                                            </select>
-                                                        </td>
-                                                        <td><input type="number" name="quantity[]" class="form-control quantity" required></td>
-                                                        <td><input type="number" name="price[]" class="form-control price" required></td>
-                                                        <td><input type="number" name="total[]" class="form-control total" readonly></td>
-                                                        <td>
-                                                            <button type="button" class="btn btn-danger remove-row">Delete</button>
-                                                        </td>
-                                                    </tr> -->
                                                 </tbody>
 
                                             </table>
@@ -162,7 +146,7 @@
                                                     <div class="form-group">
                                                         <label>Total Price</label>
                                                         <div class="input-group">
-                                                            <span class="input-group-text">$</span>
+                                                            <span class="input-group-text">Pkr</span>
                                                             <input type="number" name="total_price" class="form-control total_price" required readonly>
                                                         </div>
                                                     </div>
@@ -172,7 +156,7 @@
                                                     <div class="form-group">
                                                         <label>Discount</label>
                                                         <div class="input-group">
-                                                            <span class="input-group-text">$</span>
+                                                            <span class="input-group-text">Pkr</span>
                                                             <input type="number" id="discount" name="discount" class="form-control" step="any">
                                                         </div>
                                                     </div>
@@ -182,7 +166,7 @@
                                                     <div class="form-group">
                                                         <label>Payable Amount</label>
                                                         <div class="input-group">
-                                                            <span class="input-group-text">$</span>
+                                                            <span class="input-group-text">Pkr</span>
                                                             <input type="number" name="payable_amount" class="form-control payable_amount" readonly>
                                                         </div>
                                                     </div>
@@ -193,7 +177,7 @@
                                                     <div class="form-group">
                                                         <label>Cash Received</label>
                                                         <div class="input-group">
-                                                            <span class="input-group-text">$</span>
+                                                            <span class="input-group-text">Pkr</span>
                                                             <input type="number" name="cash_received" id="cashReceived" class="form-control">
                                                         </div>
                                                     </div>
@@ -203,7 +187,7 @@
                                                     <div class="form-group">
                                                         <label>Change to Return</label>
                                                         <div class="input-group">
-                                                            <span class="input-group-text">$</span>
+                                                            <span class="input-group-text">Pkr</span>
                                                             <input type="number" name="change_to_return" id="changeToReturn" class="form-control" readonly>
                                                         </div>
                                                     </div>
@@ -344,7 +328,7 @@
                     const itemSelect = row.querySelector('.item-name');
 
                     if (categoryName) {
-                        fetch(`/get-items-by-category/${categoryName}`)
+                        fetch(`{{ route('get-items-by-category', ':categoryId') }}`.replace(':categoryId', categoryName))
                             .then(response => response.json())
                             .then(items => {
                                 itemSelect.innerHTML = '<option value="" disabled selected>Select Item</option>';
@@ -368,8 +352,8 @@
                     const priceInput = row.querySelector('.price');
 
                     if (productName) {
-                        fetch(`/get-product-details/${productName}`)
-                            .then(response => response.json())
+                        fetch(`{{ route('get-product-details', ':productName') }}`.replace(':productName', productName))
+                        .then(response => response.json())
                             .then(product => {
                                 priceInput.value = product.retail_price;
                             })
@@ -387,7 +371,7 @@
             function searchProducts(query) {
                 if (query.length > 0) {
                     $.ajax({
-                        url: '/search-products',
+                        url: "{{ route('search-products') }}", // Using Laravel's route name
                         type: 'GET',
                         data: {
                             q: query

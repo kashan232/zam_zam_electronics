@@ -4,23 +4,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sale Receipt</title>
+    <title>Cash Memo</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
+            font-size: 12px;
         }
 
         .receipt-container {
-            width: 80mm;
+            width: 100%;
+            max-width: 400px;
+            margin: auto;
             padding: 10px;
+            border: 1px solid #000;
             background-color: #fff;
         }
 
         h2 {
             text-align: center;
-            font-size: 22px;
+            font-size: 18px;
             font-weight: bold;
             margin: 0;
         }
@@ -28,22 +32,15 @@
         .receipt-header p {
             text-align: center;
             margin: 2px 0;
-            font-size: 14px;
-        }
-
-        .right {
-            text-align: right;
         }
 
         .details {
-            margin-top: 20px;
-            font-size: 14px;
+            margin-top: 10px;
+            line-height: 1.6;
         }
 
         .details p {
             margin: 4px 0;
-            font-size: 14px;
-            line-height: 1.5;
         }
 
         .details strong {
@@ -52,58 +49,55 @@
 
         table {
             width: 100%;
-            margin-top: 16px;
-            font-size: 14px;
+            margin-top: 12px;
+            font-size: 12px;
             border-collapse: collapse;
         }
 
         th {
             text-align: left;
             border-bottom: 2px solid #000;
-            border-top: 2px solid #000;
-            font-weight: bold;
-        }
-
-        .tbody tr .cntr {
-            text-align: center!important;
+            padding: 4px 0;
         }
 
         .tbody tr td {
             padding: 4px 0;
             text-align: left;
-            border-bottom: 1px solid #000;
-        }
-
-
-        .totals {
-            font-weight: bold;
+            border-bottom: 1px dashed #000;
         }
 
         .totals td {
+            font-weight: bold;
             text-align: right;
+            padding-top: 4px;
         }
 
         .receipt-footer {
             text-align: center;
-            margin-top: 20px;
-            font-size: 14px;
+            margin-top: 10px;
+            font-size: 12px;
         }
 
         .note {
-            font-size: 18px;
+            font-size: 13px;
             font-weight: bold;
             margin-bottom: 5px;
         }
 
-        .receipt-footer p {
-            margin: 2px 0;
+        @media print {
+            body {
+                margin: 0;
+            }
+
+            .receipt-container {
+                border: none;
+                width: auto;
+                max-width: none;
+                margin: 0;
+                page-break-inside: avoid;
+            }
         }
     </style>
-    <script>
-        window.onload = function() {
-            window.print();
-        }
-    </script>
 </head>
 
 <body>
@@ -111,13 +105,14 @@
         <!-- Receipt Header -->
         <div class="receipt-header">
             <h2>Beauty Base Cosmetics</h2>
-            <p><strong>Address: Resham Bazar </strong></p>
-            <p>Phone: 0313-300452-0</p>
+            <p><strong>Cash Memo</strong></p>
+            <p><strong>Address:</strong> Resham Bazar</p>
+            <p><strong>Phone:</strong> 0313-300452-0</p>
         </div>
 
-        <!-- Sale Info -->
+        <!-- Sale Details -->
         <div class="details">
-            <p><strong>Receipt No:</strong> {{ $sale->invoice_no }}</p>
+            <p><strong>Memo No:</strong> {{ $sale->invoice_no }}</p>
             <p><strong>Customer:</strong> {{ $sale->customer }}</p>
             <p><strong>Date:</strong> {{ \Carbon\Carbon::parse($sale->created_at)->format('F d, Y h:i A') }}</p>
         </div>
@@ -128,24 +123,17 @@
                 <tr>
                     <th>Description</th>
                     <th>Qty</th>
-                    <th>Price</th>
+                    <th>Unit</th>
                     <th>Total</th>
                 </tr>
             </thead>
             <tbody class="tbody">
                 @foreach(json_decode($sale->item_name) as $key => $item)
                 <tr>
-                    <!-- Display the item name -->
                     <td>{{ $item }}</td>
-
-                    <!-- Display the quantity as it is -->
-                    <td class="cntr">{{ json_decode($sale->quantity)[$key] }}</td>
-
-                    <!-- Display the price without decimals -->
-                    <td class="cntr">{{ number_format(json_decode($sale->price)[$key], 0) }}</td>
-
-                    <!-- Display the total without decimals -->
-                    <td class="cntr">{{ number_format(json_decode($sale->total)[$key], 0) }}</td>
+                    <td>{{ json_decode($sale->quantity)[$key] }}</td>
+                    <td>{{ number_format(json_decode($sale->price)[$key], 0) }}</td>
+                    <td>{{ number_format(json_decode($sale->total)[$key], 0) }}</td>
                 </tr>
                 @endforeach
             </tbody>
@@ -160,14 +148,14 @@
                 </tr>
                 <tr class="totals">
                     <td colspan="3">Net Total</td>
-                    <td><strong>{{ $sale->Payable_amount }}</strong></td>
+                    <td>{{ $sale->Payable_amount }}</td>
                 </tr>
                 <tr class="totals">
                     <td colspan="3">Cash Received</td>
                     <td>{{ $sale->cash_received }}</td>
                 </tr>
                 <tr class="totals">
-                    <td colspan="3">Cash Returned</td>
+                    <td colspan="3">Change Returned</td>
                     <td>{{ $sale->change_return }}</td>
                 </tr>
             </tfoot>
@@ -175,21 +163,21 @@
 
         <!-- Footer Message -->
         <div class="receipt-footer">
-            <p class="note">No Refund Without Receipt</p>
-            <p>Thank you for shopping with us!</p>
-            <p>Developed by ProWave Software Solution <br> <strong>0317 3836223</strong><br><strong> 0317 3859647</strong></p>
+            <p class="note">Goods Once Sold Are Not Returnable</p>
+            <p>Thank you for your purchase!</p>
+            <p>Designed & Developed by ProWave Software Solution</p>
+            <p><strong>0317-3836223 | 0317-3859647</strong></p>
         </div>
     </div>
 
     <script>
-        window.onload = function() {
+        window.onload = function () {
             window.print();
-            setTimeout(function() {
-                window.location.href = '/all-sales'; // Replace with your redirect URL
+            setTimeout(function () {
+                window.location.href = "{{ route('all-sales') }}";
             }, 1000);
-        }
+        };
     </script>
-
 </body>
 
 </html>

@@ -65,59 +65,79 @@
                                                 <div class="col-sm-6">
                                                     <div class="form-group ">
                                                         <label>Name</label>
-                                                        <input type="text" name="product_name" class="form-control">
+                                                        <input type="text" name="product_name" class="form-control" required>
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-6">
-                                                    <div class="form-group ">
-                                                        <label class="form-label">Category</label>
-                                                        <select name="category" class="form-control ">
-                                                            <option selected disabled>Select One</option>
-                                                            @foreach($all_category as $category)
-                                                            <option value="{{ $category->category }}">
-                                                                {{ $category->category }}
-                                                            </option>
-                                                            @endforeach
-                                                        </select>
+                                                    <div class="form-group">
+                                                        <div class="form-group" id="category-wrapper">
+                                                            <label class="form-label">Category</label>
+                                                            <select name="category" class="select2-basic form-control" required>
+                                                                <option value="" selected disabled>Select One</option>
+                                                                @foreach($all_category as $category)
+                                                                <option value="{{ $category->category }}">
+                                                                    {{ $category->category }}
+                                                                </option>
+                                                                @endforeach
+                                                            </select>
+                                                        </div>
+
                                                     </div>
                                                 </div>
                                                 <div class=" col-sm-6">
                                                     <div class="form-group">
-                                                        <label>Brand</label>
-                                                        <select name="brand" class="form-control">
-                                                            <option selected disabled>Select One</option>
-                                                            @foreach($all_brand as $brand)
-                                                            <option value="{{ $brand->brand }}">
-                                                                {{ $brand->brand }}
-                                                            </option>
-                                                            @endforeach
-                                                        </select>
+                                                        <div class="form-group" id="brand-wrapper">
+                                                            <label class="form-label">Brand</label>
+                                                            <select name="brand" class="select2-basic form-control" required>
+                                                                <option value="" selected disabled>Select One</option>
+                                                                @foreach($all_brand as $brand)
+                                                                <option value="{{ $brand->brand }}">
+                                                                    {{ $brand->brand }}
+                                                                </option>
+                                                                @endforeach
+                                                            </select>
+                                                        </div>
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-6">
                                                     <div class="form-group ">
                                                         <label class="form-label">Initial stock</label>
-                                                        <input type="text" class="form-control " name="stock">
+                                                        <input type="text" class="form-control " name="stock" value="0">
                                                     </div>
                                                 </div>
+
+                                                <div class="col-sm-6">
+                                                    <div class="form-group ">
+                                                        <label class="form-label">Wholesale Price</label>
+                                                        <input type="number" class="form-control " name="wholesale_price" value="Null">
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-sm-6">
+                                                    <div class="form-group ">
+                                                        <label class="form-label">Retail Price</label>
+                                                        <input type="number" class="form-control " name="retail_price" value="Null">
+                                                    </div>
+                                                </div>
+
                                                 <!-- Barcode Number -->
                                                 <div class="col-sm-6">
                                                     <div class="form-group ">
                                                         <label class="form-label">Barcode Number</label>
-                                                        <input type="text" class="form-control" name="barcode_number" id="barcodeInput" autofocus>
+                                                        <input type="text" class="form-control" name="barcode_number" id="barcodeInput" value="Null" autofocus>
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-6">
                                                     <div class="form-group ">
                                                         <label class="form-label">SKU</label>
-                                                        <input type="text" class="form-control " name="sku">
+                                                        <input type="text" class="form-control " name="sku" value="Null">
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-6">
                                                     <div class="form-group">
                                                         <label>Unit(UoM)</label>
-                                                        <select name="unit" class="form-control ">
-                                                            <option selected disabled>Select One</option>
+                                                        <select name="unit" class="select2-basic form-control" required>
+                                                            <option value="" selected disabled>Select One</option>
                                                             @foreach($all_unit as $unit)
                                                             <option value="{{ $unit->unit }}">
                                                                 {{ $unit->unit }}
@@ -130,7 +150,7 @@
                                                     <div class="form-group">
                                                         <label>Alert Quantity</label>
                                                         <input type="number" name="alert_quantity"
-                                                            class="form-control">
+                                                            class="form-control" value="0">
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-12">

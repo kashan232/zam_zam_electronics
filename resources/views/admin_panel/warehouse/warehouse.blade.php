@@ -92,7 +92,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label>Address</label>
-                                        <input type="text" class="form-control" name="address" value="" required>
+                                        <input type="text" class="form-control" name="address">
                                     </div>
                                 </div>
                                 <div class="modal-footer">

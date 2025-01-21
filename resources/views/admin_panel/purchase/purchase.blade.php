@@ -72,7 +72,7 @@
                                                 <td>
                                                     {{ $purchase->discount }}
                                                     <br>
-                                                    <span class="fw-bold">{{ $purchase->Payable_amount }}</span>
+                                                    <span class="fw-bold">{{ $purchase->due_amount }}</span>
                                                 </td>
                                                 <td>
                                                     {{ $purchase->paid_amount }}
@@ -99,7 +99,7 @@
                                                                 data-id="{{ $purchase->id }}"
                                                                 data-invoice_no="{{ $purchase->invoice_no }}"
                                                                 data-supplier="{{ $purchase->supplier }}"
-                                                                data-payable_amount="{{ $purchase->Payable_amount }}">
+                                                                data-due_amount="{{ $purchase->due_amount }}">
                                                                 <i class="la la-money-bill-wave"></i>
                                                                 Pay
                                                             </a>
@@ -149,8 +149,8 @@
                                         <input type="text" class="form-control" id="supplier" name="supplier" readonly>
                                     </div>
                                     <div class="mb-3">
-                                        <label for="payable_amount" class="form-label">Payable Amount</label>
-                                        <input type="text" class="form-control" id="payable_amount" name="payable_amount" readonly>
+                                        <label for="due_amount" class="form-label">Due Amount</label>
+                                        <input type="text" class="form-control" id="due_amount" name="due_amount" readonly>
                                     </div>
                                     <div class="mb-3">
                                         <label for="paid_amount" class="form-label">Paying Amount</label>
@@ -173,12 +173,12 @@
                 var purchaseId = $(this).data('id');
                 var invoiceNo = $(this).data('invoice_no');
                 var supplier = $(this).data('supplier');
-                var payableAmount = $(this).data('payable_amount');
+                var payableAmount = $(this).data('due_amount');
 
                 $('#purchase_id').val(purchaseId);
                 $('#invoice_no').val(invoiceNo);
                 $('#supplier').val(supplier);
-                $('#payable_amount').val(payableAmount);
+                $('#due_amount').val(payableAmount);
 
                 $('#paymentModal').modal('show');
             });

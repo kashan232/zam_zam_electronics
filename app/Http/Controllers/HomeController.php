@@ -55,10 +55,11 @@ class HomeController extends Controller
                 $products = DB::table('products')->count();
                 $suppliers = DB::table('suppliers')->count();
                 $customers = DB::table('customers')->count();
+                $totalsales = DB::table('sales')->sum('Payable_amount');
 
                 // $lowStockProducts = Product::whereRaw('CAST(stock AS UNSIGNED) <= CAST(alert_quantity AS UNSIGNED)')->get();
                 // dd($lowStockProducts);
-                return view('admin_panel.admin_dashboard', compact('totalPurchasesPrice', 'totalPurchaseReturnsPrice', 'all_product', 'totalStockValue', 'categories', 'products', 'suppliers', 'customers'));
+                return view('admin_panel.admin_dashboard', compact('totalPurchasesPrice', 'totalPurchaseReturnsPrice', 'all_product', 'totalStockValue', 'categories', 'products', 'suppliers', 'customers','totalsales'));
             }
         } else {
             return Redirect()->route('login');
@@ -98,7 +99,7 @@ class HomeController extends Controller
 
             // Get the current authenticated user
             $user = Auth::user();
-            dd($user);
+            // dd($user);
             // Check if the old password matches
             if (!Hash::check($request->input('old_password'), $user->password)) {
                 return redirect()->back()->withErrors(['old_password' => 'Old password is incorrect']);

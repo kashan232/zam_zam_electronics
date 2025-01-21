@@ -74,32 +74,50 @@ class SaleController extends Controller
         ]);
     }
 
+
     public function store_Sale(Request $request)
     {
-        // Generate a unique invoice number
         $invoiceNo = Sale::generateInvoiceNo();
-        // dd($invoiceNo);  
-        // Debugging: Log the request data to check incoming values
         \Log::info('Request Data:', $request->all());
 
-        // Ensure discount, cash received, and change return are numeric
-        $discount = (float) ($request->input('discount', 0));
-        $totalPrice = (float) $request->input('total_price', 0);
-        $cashReceived = (float) $request->input('cash_received', 0);
-        $changeToReturn = (float) $request->input('change_to_return', 0); // Fixed field name
+        $discount = (float)($request->input('discount', 0));
+        $totalPrice = (float)$request->input('total_price', 0);
+        $cashReceived = (float)$request->input('cash_received', 0);
+        $changeToReturn = (float)$request->input('change_to_return', 0);
 
-        // Debugging: Log the processed values
         \Log::info('Processed Values:', [
             'discount' => $discount,
             'total_price' => $totalPrice,
             'cash_received' => $cashReceived,
-            'change_to_return' => $changeToReturn, // Fixed field name
+            'change_to_return' => $changeToReturn,
         ]);
 
         $usertype = Auth()->user()->usertype;
         $userId = Auth::id();
 
-        // Prepare data for storage
+        $itemNames = $request->input('item_name', []);
+        $itemCategories = $request->input('item_category', []);
+        $quantities = $request->input('quantity', []);
+
+        // Step 1: Validate stock for all products
+        foreach ($itemNames as $key => $item_name) {
+            $item_category = $itemCategories[$key] ?? '';
+            $quantity = $quantities[$key] ?? 0;
+
+            $product = Product::where('product_name', $item_name)
+                ->where('category', $item_category)
+                ->first();
+
+            if (!$product) {
+                return redirect()->back()->with('error', "Product $item_name in category $item_category not found.");
+            }
+
+            if ($product->stock < $quantity) {
+                return redirect()->back()->with('error', "Insufficient stock for product $item_name. Available: {$product->stock}, Required: $quantity.");
+            }
+        }
+
+        // Step 2: Proceed to save the sale
         $saleData = [
             'userid' => $userId,
             'user_type' => $usertype,
@@ -117,35 +135,29 @@ class SaleController extends Controller
             'discount' => $discount,
             'Payable_amount' => $totalPrice - $discount,
             'cash_received' => $cashReceived,
-            'change_return' => $changeToReturn, // Fixed field name
+            'change_return' => $changeToReturn,
         ];
 
-        // Save sale data
         $sale = Sale::create($saleData);
 
-        // Update Product Stock
-        foreach ($request->input('item_name', []) as $key => $item_name) {
-            $item_category = $request->input('item_category', [])[$key] ?? '';
-            $quantity = $request->input('quantity', [])[$key] ?? 0;
+        // Step 3: Deduct stock after successfully saving the sale
+        foreach ($itemNames as $key => $item_name) {
+            $item_category = $itemCategories[$key] ?? '';
+            $quantity = $quantities[$key] ?? 0;
 
-            // Find the product by name and category and update stock
             $product = Product::where('product_name', $item_name)
                 ->where('category', $item_category)
                 ->first();
 
             if ($product) {
-                $product->stock -= $quantity; // Decrease stock for sales
+                $product->stock -= $quantity;
                 $product->save();
-            } else {
-                // Handle case when product is not found (optional)
-                return redirect()->back()->with('error', "Product $item_name in category $item_category not found.");
             }
         }
-        // Redirect to receipt page for printing
+
         return redirect()->route('sale-receipt', ['id' => $sale->id])
             ->with('success', 'Sale recorded successfully. Redirecting to receipt...');
     }
-
 
     public function all_sales()
     {
@@ -194,5 +206,4 @@ class SaleController extends Controller
         // Pass sale data to the receipt view
         return view('admin_panel.sale.receipt', compact('sale'));
     }
-
 }

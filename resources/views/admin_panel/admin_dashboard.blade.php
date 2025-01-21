@@ -82,7 +82,7 @@
                             </div>
 
                             <div class="widget-two__content">
-                                <h3>$637,823,750.00</h3>
+                                <h3>{{$totalsales }}</h3>
                                 <p>Sales</p>
                             </div>
 
@@ -92,24 +92,7 @@
 
                     </div><!-- dashboard-w1 end -->
 
-                    <div class="col-xxl-3 col-sm-6">
-                        <div class="widget-two box--shadow2 b-radius--5 bg--white">
-                            <i class="las la-undo overlay-icon text--warning"></i>
-
-                            <div class="widget-two__icon b-radius--5   bg--warning  ">
-                                <i class="las la-undo"></i>
-                            </div>
-
-                            <div class="widget-two__content">
-                                <h3>$99,025,000.00</h3>
-                                <p>Sales Return</p>
-                            </div>
-
-                            <a href="#"
-                                class="widget-two__btn btn btn-outline--warning">View All</a>
-                        </div>
-
-                    </div><!-- dashboard-w1 end -->
+                    
 
 
                 </div><!-- row end-->
