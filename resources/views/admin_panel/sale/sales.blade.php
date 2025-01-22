@@ -37,7 +37,7 @@
                                                 <th>Total Amount </th>
                                                 <th>Discount </th>
                                                 <th>Payable </th>
-                                                <th>Received | Returned</th>
+                                                <th>Received </th>
                                                 <!-- <th>Recipt </th> -->
                                                 <th>Action</th>
                                             </tr>
@@ -70,9 +70,6 @@
                                                 </td>
                                                 <td>
                                                     <span class="fw-bold">{{ $Sale->cash_received }}</span>
-                                                    <br>
-                                                    <span class="fw-bold">{{ $Sale->change_return }}</span>
-
                                                 </td>
                                                 <!-- <td>
                                                     <a class="dropdown-item btn btn-sm btn-outline--primary ms-1 editBtn" href="#"> <i class="la la-pen"></i> Edit</a>

@@ -151,6 +151,13 @@
                     </a>
                 </li>
 
+                <li class="sidebar-menu-item">
+                    <a href="{{ route('customer-recovires') }}" class="nav-link">
+                        <i class="menu-icon la la-users"></i>
+                        <span class="menu-title">Customer Recoveries</span>
+                    </a>
+                </li>
+                
                 <li class="sidebar-menu-item sidebar-dropdown">
                     <a href="javascript:void(0)" class="">
                         <i class="menu-icon la la-shopping-cart"></i>
@@ -165,7 +172,7 @@
                                 </a>
                             </li>
                             <li class="sidebar-menu-item  ">
-                                <a href="sale_return/sale_return.html"
+                                <a href="#"
                                     class="nav-link">
                                     <i class="menu-icon la la-dot-circle"></i>
                                     <span class="menu-title">Sales Return</span>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Customer;
+use App\Models\CustomerCredit;
 use App\Models\Product;
 use App\Models\Purchase;
 use App\Models\Sale;
@@ -117,12 +118,46 @@ class SaleController extends Controller
             }
         }
 
-        // Step 2: Proceed to save the sale
+        $customerInfo = explode('|', $request->input('customer_info'));
+        if (count($customerInfo) < 2) {
+            return redirect()->back()->with('error', 'Invalid customer information format.');
+        }
+
+        $customerId = $customerInfo[0];
+        $customerName = $customerInfo[1];
+
+        $netTotal = $totalPrice - $discount;
+
+        $customerCredit = CustomerCredit::where('customerId', $customerId)->first();
+
+        $previousBalance = $customerCredit ? $customerCredit->closing_balance : 0;
+        $closingBalance = $previousBalance + $netTotal;
+
+        if ($cashReceived > 0) {
+            $closingBalance -= $cashReceived; // Deduct cash received from the closing balance
+        }
+
+        if ($customerCredit) {
+            $customerCredit->net_total = $netTotal;
+            $customerCredit->closing_balance = $closingBalance;
+            $customerCredit->previous_balance = $previousBalance;
+            $customerCredit->save();
+        } else {
+            CustomerCredit::create([
+                'customerId' => $customerId,
+                'customer_name' => $customerName,
+                'previous_balance' => $previousBalance,
+                'net_total' => $netTotal,
+                'closing_balance' => $closingBalance,
+            ]);
+        }
+
         $saleData = [
             'userid' => $userId,
             'user_type' => $usertype,
             'invoice_no' => $invoiceNo,
-            'customer' => $request->input('customer', ''),
+            'customerId' => $customerId,
+            'customer' => $customerName,
             'sale_date' => $request->input('sale_date', ''),
             'warehouse_id' => $request->input('warehouse_id', ''),
             'item_category' => json_encode($request->input('item_category', [])),
@@ -133,14 +168,13 @@ class SaleController extends Controller
             'note' => $request->input('note', ''),
             'total_price' => $totalPrice,
             'discount' => $discount,
-            'Payable_amount' => $totalPrice - $discount,
+            'Payable_amount' => $netTotal,
             'cash_received' => $cashReceived,
             'change_return' => $changeToReturn,
         ];
 
         $sale = Sale::create($saleData);
 
-        // Step 3: Deduct stock after successfully saving the sale
         foreach ($itemNames as $key => $item_name) {
             $item_category = $itemCategories[$key] ?? '';
             $quantity = $quantities[$key] ?? 0;
@@ -155,9 +189,156 @@ class SaleController extends Controller
             }
         }
 
-        return redirect()->route('sale-receipt', ['id' => $sale->id])
-            ->with('success', 'Sale recorded successfully. Redirecting to receipt...');
+        return redirect()->route('sale-receipt', [
+            'id' => $sale->id,
+            'previous_balance' => $previousBalance,
+            'closing_balance' => $closingBalance,
+            'net_total' => $netTotal,
+        ])->with('success', 'Sale recorded successfully. Redirecting to receipt...');
     }
+
+
+    // public function store_Sale(Request $request)
+    // {
+    //     $invoiceNo = Sale::generateInvoiceNo();
+    //     \Log::info('Request Data:', $request->all());
+
+    //     $discount = (float)($request->input('discount', 0));
+    //     $totalPrice = (float)$request->input('total_price', 0);
+    //     $cashReceived = (float)$request->input('cash_received', 0);
+    //     $changeToReturn = (float)$request->input('change_to_return', 0);
+
+    //     \Log::info('Processed Values:', [
+    //         'discount' => $discount,
+    //         'total_price' => $totalPrice,
+    //         'cash_received' => $cashReceived,
+    //         'change_to_return' => $changeToReturn,
+    //     ]);
+
+    //     $usertype = Auth()->user()->usertype;
+    //     $userId = Auth::id();
+
+    //     $itemNames = $request->input('item_name', []);
+    //     $itemCategories = $request->input('item_category', []);
+    //     $quantities = $request->input('quantity', []);
+
+    //     // Step 1: Validate stock for all products
+    //     foreach ($itemNames as $key => $item_name) {
+    //         $item_category = $itemCategories[$key] ?? '';
+    //         $quantity = $quantities[$key] ?? 0;
+
+    //         $product = Product::where('product_name', $item_name)
+    //             ->where('category', $item_category)
+    //             ->first();
+
+    //         if (!$product) {
+    //             return redirect()->back()->with('error', "Product $item_name in category $item_category not found.");
+    //         }
+
+    //         if ($product->stock < $quantity) {
+    //             return redirect()->back()->with('error', "Insufficient stock for product $item_name. Available: {$product->stock}, Required: $quantity.");
+    //         }
+    //     }
+
+    //     // Get customer info from the concatenated string
+    //     $customerInfo = explode('|', $request->input('customer_info'));
+    //     if (count($customerInfo) < 2) {
+    //         return redirect()->back()->with('error', 'Invalid customer information format.');
+    //     }
+
+    //     $customerId = $customerInfo[0]; // Customer ID
+    //     $customerName = $customerInfo[1]; // Customer Name
+    //     // dd($customerName);
+
+    //     // Prepare data for storage
+    //     $discount = (float) ($request->input('discount', 0));
+    //     $totalPrice = (float) $request->input('total_price', 0);
+    //     $netTotal = $totalPrice - $discount; // Calculate the net total amount
+
+    //     // Get the existing customer credit to retrieve previous balance
+    //     $customerCredit = CustomerCredit::where('customerId', $customerId)->first();
+
+    //     $previous_balance = $request->input('previous_balance');
+    //     $net_total = $request->input('net_total');
+    //     $closing_balance = $request->input('closing_balance');
+    //     // Initialize variables to hold balance details
+    //     $previousBalance = 0;
+    //     $closingBalance = 0;
+
+    //     if ($customerCredit) {
+    //         // If customer credit exists, get the previous balance
+    //         $previousBalance = $customerCredit->previous_balance;
+
+    //         // Update previous balance to include the new sale's payable amount
+    //         $closingBalance = $previousBalance + $netTotal;
+
+    //         // Update existing credit
+    //         $customerCredit->net_total = $netTotal; // Store the net total from the current sale
+    //         $customerCredit->closing_balance = $closingBalance; // Closing balance is now the updated previous balance
+    //         $customerCredit->previous_balance = $closingBalance; // Update to the new previous balance
+    //         $customerCredit->save();
+    //     } else {
+    //         // Create new credit entry for the customer
+    //         CustomerCredit::create([
+    //             'customerId' => $customerId,
+    //             'customer_name' => $customerName,
+    //             'previous_balance' => $netTotal, // Set previous balance to the net total for the first sale
+    //             'net_total' => $netTotal, // This is the first sale's amount
+    //             'closing_balance' => $netTotal, // Closing balance for first entry
+    //         ]);
+
+    //         // Set the balances for the first entry
+    //         $previousBalance = 0; // No previous balance exists for new customers
+    //         $closingBalance = $netTotal; // This will be the closing balance
+    //     }
+
+    //     // Step 2: Proceed to save the sale
+    //     $saleData = [
+    //         'userid' => $userId,
+    //         'user_type' => $usertype,
+    //         'invoice_no' => $invoiceNo,
+    //         'customerId' => $customerId,
+    //         'customer' => $customerName,
+    //         'sale_date' => $request->input('sale_date', ''),
+    //         'warehouse_id' => $request->input('warehouse_id', ''),
+    //         'item_category' => json_encode($request->input('item_category', [])),
+    //         'item_name' => json_encode($request->input('item_name', [])),
+    //         'quantity' => json_encode($request->input('quantity', [])),
+    //         'price' => json_encode($request->input('price', [])),
+    //         'total' => json_encode($request->input('total', [])),
+    //         'note' => $request->input('note', ''),
+    //         'total_price' => $totalPrice,
+    //         'discount' => $discount,
+    //         'Payable_amount' => $totalPrice - $discount,
+    //         'cash_received' => $cashReceived,
+    //         'change_return' => $changeToReturn,
+    //     ];
+
+    //     $sale = Sale::create($saleData);
+
+    //     // Step 3: Deduct stock after successfully saving the sale
+    //     foreach ($itemNames as $key => $item_name) {
+    //         $item_category = $itemCategories[$key] ?? '';
+    //         $quantity = $quantities[$key] ?? 0;
+
+    //         $product = Product::where('product_name', $item_name)
+    //             ->where('category', $item_category)
+    //             ->first();
+
+    //         if ($product) {
+    //             $product->stock -= $quantity;
+    //             $product->save();
+    //         }
+    //     }
+
+    //     return redirect()->route('sale-receipt', [
+    //         'id' => $sale->id,
+    //         'previous_balance' => $previousBalance, // Ensure this is the correct variable name
+    //         'closing_balance' => $closingBalance, // Ensure this is the correct variable name
+    //         'net_total' => $netTotal // Include this if needed
+    //     ])
+    //         ->with('success', 'Sale recorded successfully. Redirecting to receipt...');
+    // }
 
     public function all_sales()
     {
@@ -175,6 +356,22 @@ class SaleController extends Controller
         } else {
             return redirect()->back();
         }
+    }
+
+    public function get_customer_amount($id)
+    {
+        // Fetch the customer by customer_id (not id)
+        $customer = CustomerCredit::where('customerId', $id)->first();
+
+        // Check if the customer record is found
+        if (!$customer) {
+            return response()->json(['error' => 'Record not found'], 404);
+        }
+
+        // Return the previous amount as JSON
+        return response()->json([
+            'previous_balance' => $customer->previous_balance // Ensure this field exists in your model
+        ]);
     }
 
 
@@ -198,12 +395,19 @@ class SaleController extends Controller
         return $pdf->download('invoice-' . $sale->invoice_no . '.pdf');
     }
 
-    public function showReceipt($id)
+    public function showReceipt(Request $request, $id)
     {
+        // dd($request);
         // Fetch the sale data using the sale ID
         $sale = Sale::findOrFail($id);
         // dd($sale);
+        // Get customer credit details
+        $customerCredit = CustomerCredit::where('customerId', $sale->customerId)->latest()->first();
+        // dd($customerCredit);
+        // Initialize variables for previous and closing balance
+        $previous_balance = $customerCredit->previous_balance; // Get previous balance from customerCredit
+        $closing_balance = $customerCredit->closing_balance;
         // Pass sale data to the receipt view
-        return view('admin_panel.sale.receipt', compact('sale'));
+        return view('admin_panel.sale.receipt', compact('sale', 'customerCredit', 'previous_balance', 'closing_balance'));
     }
 }

@@ -60,7 +60,7 @@
                     <div class="col-lg-12 col-md-12 mb-30">
                         <div class="card">
                             <div class="card-body">
-                            @if (session()->has('error'))
+                                @if (session()->has('error'))
                                 <div class="alert alert-danger">
                                     <strong>Error!</strong> {{ session('error') }}.
                                 </div>
@@ -71,10 +71,12 @@
                                         <div class="col-xl-4 col-sm-6">
                                             <div class="form-group" id="supplier-wrapper">
                                                 <label class="form-label">Customers</label>
-                                                <select name="customer" class="select2-basic form-control" required>
+                                                <select name="customer_info" class="select2-basic form-control" id="customer-select" required>
                                                     <option selected disabled>Select One</option>
                                                     @foreach($Customers as $Customer)
-                                                    <option value="{{ $Customer->customer_name }}"> {{ $Customer->customer_name }} </option>
+                                                    <option value="{{ $Customer->id . '|' . $Customer->customer_name }}">
+                                                        {{ $Customer->customer_name }}
+                                                    </option>
                                                     @endforeach
                                                 </select>
                                             </div>
@@ -172,7 +174,23 @@
                                                     </div>
                                                 </div>
 
-                                                <!-- Cash Payment Fields Start -->
+                                                
+
+                                                <div class="col-xl-12 col-sm-12">
+                                                    <div class="form-group">
+                                                        <label class="form-label">Previous Balance</label>
+                                                        <input type="text" class="form-control" id="previous_balance" name="previous_balance" readonly>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-12">
+                                                    <div class="form-group">
+                                                        <label>Closing Balance</label>
+                                                        <div class="input-group">
+                                                            <input type="text" id="closing_balance" name="closing_balance" class="form-control" readonly>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
                                                 <div class="col-sm-12">
                                                     <div class="form-group">
                                                         <label>Cash Received</label>
@@ -182,16 +200,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-
-                                                <div class="col-sm-12">
-                                                    <div class="form-group">
-                                                        <label>Change to Return</label>
-                                                        <div class="input-group">
-                                                            <span class="input-group-text">Pkr</span>
-                                                            <input type="number" name="change_to_return" id="changeToReturn" class="form-control" readonly>
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                                
                                                 <!-- Cash Payment Fields End -->
 
                                             </div>
@@ -220,60 +229,74 @@
 
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const purchaseItems = document.getElementById('purchaseItems');
-            const totalPriceInput = document.querySelector('.total_price');
-            const discountInput = document.getElementById('discount');
-            const payableAmountInput = document.querySelector('.payable_amount');
-            const cashReceivedInput = document.getElementById('cashReceived');
-            const changeToReturnInput = document.getElementById('changeToReturn');
-
-            // Function to calculate payable amount after applying discount
-            function calculatePayableAmount() {
-                const totalPrice = parseFloat(totalPriceInput.value) || 0;
-                const discount = parseFloat(discountInput.value) || 0;
-                const payableAmount = totalPrice - discount;
-                payableAmountInput.value = payableAmount.toFixed(2);
-            }
-
-            // Function to calculate change to return
-            function calculateChangeToReturn() {
-                const payableAmount = parseFloat(payableAmountInput.value) || 0;
-                const cashReceived = parseFloat(cashReceivedInput.value) || 0;
-                const changeToReturn = cashReceived - payableAmount;
-                changeToReturnInput.value = changeToReturn > 0 ? changeToReturn.toFixed(2) : 0;
-            }
-
-            // Event listener for discount input
-            discountInput.addEventListener('input', function() {
-                calculatePayableAmount();
-                calculateChangeToReturn(); // Recalculate change in case cash was already entered
+        $(document).ready(function() {
+            // Customer selection change
+            $('#customer-select').change(function() {
+                const customerData = $(this).val().split('|');
+                const customerId = customerData[0];
+                // alert(customerId);
+                if (customerId) {
+                    $.ajax({
+                        url: "{{ route('get-customer-amount', ':id') }}".replace(':id', customerId),
+                        type: 'GET',
+                        success: function(response) {
+                            $('#previous_balance').val(response.previous_balance || 0);
+                            updateClosingBalance(); // Calculate closing balance initially
+                        },
+                        error: function(xhr) {
+                            console.error("Error fetching customer amount: ", xhr);
+                        }
+                    });
+                }
             });
 
-            // Event listener for cash received input
-            cashReceivedInput.addEventListener('input', function() {
-                calculateChangeToReturn();
-            });
+            // Update total price and payable amount on input change
+            $('input[name="total_price"]').on('input', calculateTotalPrice);
+            $('#discount').on('input', calculatePayableAmount);
+            $('#cashReceived').on('input', updateClosingBalance); // Trigger closing balance update on cash received input
 
-            // Function to calculate total price from items
+            // Function to calculate total price
             function calculateTotalPrice() {
-                let totalPrice = 0;
-                document.querySelectorAll('.total').forEach(function(input) {
-                    totalPrice += parseFloat(input.value) || 0;
+                let total = 0;
+                $('#purchaseItems tr').each(function() {
+                    const quantity = parseFloat($(this).find('.quantity').val()) || 0;
+                    const price = parseFloat($(this).find('.price').val()) || 0;
+                    total += quantity * price;
                 });
-                totalPriceInput.value = totalPrice.toFixed(2);
-                calculatePayableAmount();
+
+                $('.total_price').val(total.toFixed(2));
+                calculatePayableAmount(); // Update payable amount
             }
 
+            // Function to calculate payable amount
+            function calculatePayableAmount() {
+                const totalPrice = parseFloat($('.total_price').val()) || 0;
+                const discount = parseFloat($('#discount').val()) || 0;
+                const payableAmount = Math.max(0, totalPrice - discount);
 
-            // Add row button
-            const addRowButton = document.getElementById('addRow');
-            addRowButton.addEventListener('click', function() {
+                $('.payable_amount').val(payableAmount.toFixed(2));
+                updateClosingBalance(); // Update closing balance
+            }
+
+            // Function to update closing balance
+            function updateClosingBalance() {
+                const previousBalance = parseFloat($('#previous_balance').val()) || 0;
+                const payableAmount = parseFloat($('.payable_amount').val()) || 0;
+                const cashReceived = parseFloat($('#cashReceived').val()) || 0;
+
+                const closingBalance = Math.max(0, previousBalance + payableAmount - cashReceived);
+
+                $('#closing_balance').val(closingBalance.toFixed(2));
+            }
+
+            // Add a new row
+            $('#addRow').click(function() {
                 const newRow = createNewRow();
-                purchaseItems.insertAdjacentHTML('beforeend', newRow);
+                $('#purchaseItems').append(newRow);
+                calculateTotalPrice();
             });
 
-            // Create new row template
+            // Function to create a new row
             function createNewRow(category = '', productName = '', price = '') {
                 return `
             <tr>
@@ -281,7 +304,7 @@
                     <select name="item_category[]" class="form-control item-category" required>
                         <option value="" disabled ${category ? '' : 'selected'}>Select Category</option>
                         @foreach($Category as $Categories)
-                        <option value="{{ $Categories->category }}" ${category === '{{ $Categories->category }}' ? 'selected' : ''}>{{ $Categories->category }}</option>
+                            <option value="{{ $Categories->category }}" ${category === '{{ $Categories->category }}' ? 'selected' : ''}>{{ $Categories->category }}</option>
                         @endforeach
                     </select>
                 </td>
@@ -300,117 +323,100 @@
             </tr>`;
             }
 
-            // Remove row functionality
-            purchaseItems.addEventListener('click', function(e) {
-                if (e.target.classList.contains('remove-row')) {
-                    e.target.closest('tr').remove();
-                    calculateTotalPrice();
-                }
+            // Remove a row
+            $('#purchaseItems').on('click', '.remove-row', function() {
+                $(this).closest('tr').remove();
+                calculateTotalPrice();
             });
 
-            // Quantity and price input change
-            purchaseItems.addEventListener('input', function(e) {
-                if (e.target.classList.contains('quantity') || e.target.classList.contains('price')) {
-                    const row = e.target.closest('tr');
-                    const quantity = parseFloat(row.querySelector('.quantity').value) || 0;
-                    const price = parseFloat(row.querySelector('.price').value) || 0;
-                    const total = row.querySelector('.total');
-                    total.value = (quantity * price).toFixed(2);
-                    calculateTotalPrice();
-                }
+            // Update row total on quantity or price change
+            $('#purchaseItems').on('input', '.quantity, .price', function() {
+                const row = $(this).closest('tr');
+                const quantity = parseFloat(row.find('.quantity').val()) || 0;
+                const price = parseFloat(row.find('.price').val()) || 0;
+                row.find('.total').val((quantity * price).toFixed(2));
+                calculateTotalPrice();
             });
 
-            // Category selection event
-            purchaseItems.addEventListener('change', function(e) {
-                if (e.target.classList.contains('item-category')) {
-                    const categoryName = e.target.value;
-                    const row = e.target.closest('tr');
-                    const itemSelect = row.querySelector('.item-name');
+            // Fetch items based on category
+            $('#purchaseItems').on('change', '.item-category', function() {
+                const categoryName = $(this).val();
+                const row = $(this).closest('tr');
+                const itemSelect = row.find('.item-name');
 
-                    if (categoryName) {
-                        fetch(`{{ route('get-items-by-category', ':categoryId') }}`.replace(':categoryId', categoryName))
-                            .then(response => response.json())
-                            .then(items => {
-                                itemSelect.innerHTML = '<option value="" disabled selected>Select Item</option>';
-                                items.forEach(item => {
-                                    const option = document.createElement('option');
-                                    option.value = item.product_name;
-                                    option.textContent = item.product_name;
-                                    itemSelect.appendChild(option);
-                                });
-                            })
-                            .catch(error => console.error('Error fetching items:', error));
-                    }
-                }
-            });
-
-            // Product name selection event
-            purchaseItems.addEventListener('change', function(e) {
-                if (e.target.classList.contains('item-name')) {
-                    const productName = e.target.value;
-                    const row = e.target.closest('tr');
-                    const priceInput = row.querySelector('.price');
-
-                    if (productName) {
-                        fetch(`{{ route('get-product-details', ':productName') }}`.replace(':productName', productName))
+                if (categoryName) {
+                    fetch(`{{ route('get-items-by-category', ':categoryId') }}`.replace(':categoryId', categoryName))
                         .then(response => response.json())
-                            .then(product => {
-                                priceInput.value = product.retail_price;
-                            })
-                            .catch(error => console.error('Error fetching product details:', error));
-                    }
+                        .then(items => {
+                            itemSelect.html('<option value="" disabled selected>Select Item</option>');
+                            items.forEach(item => {
+                                itemSelect.append(`<option value="${item.product_name}">${item.product_name}</option>`);
+                            });
+                        })
+                        .catch(error => console.error('Error fetching items:', error));
+                }
+            });
+
+            // Fetch product details based on selected product
+            $('#purchaseItems').on('change', '.item-name', function() {
+                const productName = $(this).val();
+                const row = $(this).closest('tr');
+                const priceInput = row.find('.price');
+
+                if (productName) {
+                    fetch(`{{ route('get-product-details', ':productName') }}`.replace(':productName', productName))
+                        .then(response => response.json())
+                        .then(product => {
+                            priceInput.val(product.retail_price);
+                        })
+                        .catch(error => console.error('Error fetching product details:', error));
                 }
             });
 
             // Search product functionality
             $('#productSearch').on('keyup', function() {
                 const query = $(this).val();
-                searchProducts(query);
-            });
-
-            function searchProducts(query) {
                 if (query.length > 0) {
                     $.ajax({
-                        url: "{{ route('search-products') }}", // Using Laravel's route name
+                        url: "{{ route('search-products') }}",
                         type: 'GET',
                         data: {
                             q: query
                         },
-                        success: function(data) {
-                            displaySearchResults(data);
-                        },
+                        success: displaySearchResults,
                         error: function(error) {
-                            console.error('Error in AJAX request:', error);
+                            console.error('Error in product search:', error);
                         }
                     });
                 } else {
                     $('#searchResults').html('');
                 }
-            }
+            });
 
+            // Display search results
             function displaySearchResults(products) {
                 const searchResults = $('#searchResults');
                 searchResults.html('');
                 products.forEach(product => {
                     const listItem = `<li class="list-group-item search-result-item" data-category="${product.category}" data-product-name="${product.product_name}" data-price="${product.retail_price}">
-                ${product.category} - ${product.product_name} - ${product.retail_price}
-            </li>`;
+                    ${product.category} - ${product.product_name} - ${product.retail_price}
+                </li>`;
                     searchResults.append(listItem);
                 });
             }
 
-            // Click event for search results
+            // Add searched product as a new row
             $('#searchResults').on('click', '.search-result-item', function() {
                 const category = $(this).data('category');
                 const productName = $(this).data('product-name');
                 const price = $(this).data('price');
 
-                // Create a new row and insert it as the first row
                 const newRow = createNewRow(category, productName, price);
-                purchaseItems.insertAdjacentHTML('afterbegin', newRow);
-                $('#searchResults').html(''); // Clear search results after adding
-                calculateTotalPrice(); // Update total price after adding the new row
+                $('#purchaseItems').append(newRow);
+                $('#searchResults').html('');
+                calculateTotalPrice();
             });
         });
     </script>
+
 </body>

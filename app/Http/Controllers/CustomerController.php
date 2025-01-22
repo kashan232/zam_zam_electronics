@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Customer;
+use App\Models\CustomerCredit;
+use App\Models\CustomerRecovery;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -14,7 +16,10 @@ class CustomerController extends Controller
         if (Auth::id()) {
             $userId = Auth::id();
             // dd($userId);
-            $Customers = Customer::all();
+            $Customers = Customer::where('admin_or_user_id', $userId)
+                ->leftJoin('customer_credits', 'customers.id', '=', 'customer_credits.customerId')
+                ->select('customers.*', 'customer_credits.closing_balance')
+                ->get();
             return view('admin_panel.customers.customers', [
                 'Customers' => $Customers
             ]);
@@ -65,5 +70,91 @@ class CustomerController extends Controller
         } else {
             return redirect()->back();
         }
+    }
+
+    public function processRecovery(Request $request)
+    {
+        $request->validate([
+            'customer_id' => 'required|exists:customers,id',
+            'recovery_date' => 'required|date',
+            'recovery_amount' => 'required|numeric|min:0',
+        ]);
+
+        $customer_id = $request->customer_id;
+
+        // Fetch the customer record (use first() to get a single record)
+        $customer = CustomerCredit::where('customerId', $customer_id)->first();
+
+        // Check if the customer record exists
+        if (!$customer) {
+            return redirect()->back()->withErrors(['customer_id' => 'Customer credit record not found!']);
+        }
+
+        // Calculate new balances
+        $recoveryAmount = $request->recovery_amount;
+        $updatedClosingBalance = $customer->closing_balance - $recoveryAmount;
+
+        // Store recovery details in the CustomerRecovery table
+        CustomerRecovery::create([
+            'customer_id' => $customer->customerId, // Use customerId instead of id for CustomerCredit
+            'customer_name' => $customer->customer_name,
+            'recovery_date' => $request->recovery_date,
+            'recovery_amount' => $recoveryAmount,
+            'closing_balance' => $updatedClosingBalance,
+        ]);
+
+        // Update customer's balance in the CustomerCredit table
+        $customer->previous_balance -= $recoveryAmount;
+        $customer->closing_balance = $updatedClosingBalance;
+        $customer->save();
+
+        return redirect()->back()->with('success', 'Customer recovery details saved successfully!');
+    }
+
+    public function customer_recovires()
+    {
+        if (Auth::id()) {
+            $userId = Auth::id();
+            // dd($userId);
+            // Fetch customers along with their closing balance from customer_credits
+            $Customers = CustomerRecovery::get();
+
+            return view('admin_panel.customers.customers_recoveries', [
+                'Customers' => $Customers
+            ]);
+        } else {
+            return redirect()->back();
+        }
+    }
+
+    public function addCredit(Request $request)
+    {
+        $request->validate([
+            'customer_id' => 'required|exists:customers,id',
+            'credit_amount' => 'required|numeric|min:0',
+        ]);
+        // Get customer credit entry if it exists
+        $customerCredit = CustomerCredit::where('customerId', $request->customer_id)->first();
+
+        $creditAmount = $request->credit_amount;
+        $customer_name = $request->customer_name;
+
+        if ($customerCredit) {
+            // Update the existing entry if customer credit exists
+            $customerCredit->previous_balance += $creditAmount;
+            $customerCredit->closing_balance += $creditAmount;
+            $customerCredit->save();
+        } else {
+            // Create a new entry if customer credit does not exist
+            $customerCredit = CustomerCredit::create([
+                'customerId' => $request->customer_id,
+                'customer_name' => $customer_name,
+                'previous_balance' => $creditAmount,
+                'net_total' => '0',
+                'closing_balance' => $creditAmount, // Assuming the balance starts with the credit amount
+            ]);
+        }
+
+        return redirect()->back()->with('success', 'Credit added successfully to the customer.');
     }
 }

@@ -158,6 +158,21 @@
                     <td colspan="3">Change Returned</td>
                     <td>{{ $sale->change_return }}</td>
                 </tr>
+
+                <tr class="totals">
+                    <td colspan="3">Net Total</td>
+                    <td><strong>{{ $sale->Payable_amount }}</strong></td>
+                </tr>
+
+                <tr class="totals">
+                    <td colspan="3">Previous Balance</td>
+                    <td>{{ $previous_balance }}</td>
+                </tr>
+                <tr class="totals">
+                    <td colspan="3">Closing Balance</td>
+                    <td>{{ $closing_balance }}</td>
+                </tr>
+                
             </tfoot>
         </table>
 
