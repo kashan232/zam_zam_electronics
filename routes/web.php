@@ -30,6 +30,7 @@ use Illuminate\Support\Facades\Route;
 // pos start
 // Old Pos setup
 // Software deployed
+// Zam Zam Electronic Deployed
 Route::get('/', function () {
     return view('welcome');
 });
