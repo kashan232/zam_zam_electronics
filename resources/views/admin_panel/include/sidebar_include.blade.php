@@ -11,12 +11,12 @@
             <ul class="sidebar__menu">
                 <li class="sidebar-menu-item active">
                     <a href="{{ route('home') }}" class="nav-link ">
-                        <i class="menu-icon la la-home"></i>
+                        <i class="menu-icon fas fa-home"></i>
                         <span class="menu-title">Dashboard</span>
                     </a>
                 </li>
 
-                <li class="sidebar-menu-item sidebar-dropdown">
+                <!-- <li class="sidebar-menu-item sidebar-dropdown">
                     <a class="" href="javascript:void(0)">
                         <i class="menu-icon las la-users"></i>
                         <span class="menu-title">Manage Staff</span>
@@ -39,45 +39,38 @@
 
                         </ul>
                     </div>
-                </li>
+                </li> -->
 
-                <li class="sidebar-menu-item sidebar-dropdown">
-                    <a href="javascript:void(0)" class="">
-                        <i class="menu-icon lab la-product-hunt"></i>
-                        <span class="menu-title">Manage Product</span>
+
+                <li class="sidebar-menu-item ">
+                    <a href="{{ route('category') }}" class="nav-link ">
+                        <i class="menu-icon fas fa-boxes"></i>
+                        <span class="menu-title">Categories</span>
                     </a>
-                    <div class="sidebar-submenu  ">
-                        <ul>
-                            <li class="sidebar-menu-item  ">
-                                <a href="{{ route('category') }}" class="nav-link">
-                                    <i class="menu-icon la la-dot-circle"></i>
-                                    <span class="menu-title">Categories</span>
-                                </a>
-                            </li>
-                            <li class="sidebar-menu-item  ">
-                                <a href="{{ route('brand') }}" class="nav-link">
-                                    <i class="menu-icon la la-dot-circle"></i>
-                                    <span class="menu-title">Brands</span>
-                                </a>
-                            </li>
-                            <li class="sidebar-menu-item  ">
-                                <a href="{{ route('unit') }}" class="nav-link">
-                                    <i class="menu-icon la la-dot-circle"></i>
-                                    <span class="menu-title">Units</span>
-                                </a>
-                            </li>
-                            <li class="sidebar-menu-item  ">
-                                <a href="{{ route('all-product') }}"
-                                    class="nav-link">
-                                    <i class="menu-icon la la-dot-circle"></i>
-                                    <span class="menu-title">Products</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
                 </li>
 
                 <li class="sidebar-menu-item ">
+                    <a href="{{ route('brand') }}" class="nav-link ">
+                        <i class="menu-icon fas fa-building"></i>
+                        <span class="menu-title">Brands</span>
+                    </a>
+                </li>
+
+                <li class="sidebar-menu-item ">
+                    <a href="{{ route('unit') }}" class="nav-link ">
+                        <i class="menu-icon fas fa-palette"></i>
+                        <span class="menu-title">Models</span>
+                    </a>
+                </li>
+
+                <li class="sidebar-menu-item ">
+                    <a href="{{ route('all-product') }}" class="nav-link ">
+                        <i class="menu-icon fas fa-box-open"></i>
+                        <span class="menu-title">Products</span>
+                    </a>
+                </li>
+
+                <!-- <li class="sidebar-menu-item ">
                     <a href="{{ route('product-alerts') }}" class="nav-link ">
                         <i class="menu-icon las la-bell"></i>
                         <span class="menu-title">Stock Alerts</span>
@@ -92,26 +85,26 @@
                             <small>&nbsp;<i class="fa fa-circle text--danger" aria-hidden="true" aria-label="Returned" data-bs-original-title="Returned"></i></small>
                             @endif
                     </a>
-                </li>
+                </li> -->
 
-                <li class="sidebar-menu-item ">
+                <!-- <li class="sidebar-menu-item ">
                     <a href="{{ route('warehouse') }}" class="nav-link ">
                         <i class="menu-icon la la-warehouse"></i>
                         <span class="menu-title">Warehouse</span>
                     </a>
-                </li>
+                </li> -->
 
 
 
 
-                <li class="sidebar-menu-item">
+                <!-- <li class="sidebar-menu-item">
                     <a href="{{ route('supplier') }}" class="nav-link">
                         <i class="menu-icon la la-user-friends"></i>
                         <span class="menu-title">Supplier</span>
                     </a>
-                </li>
+                </li> -->
 
-                <li class="sidebar-menu-item sidebar-dropdown">
+                <!-- <li class="sidebar-menu-item sidebar-dropdown">
                     <a href="javascript:void(0)" class="">
                         <i class="menu-icon la la-shopping-bag"></i>
                         <span class="menu-title">Purchase</span>
@@ -134,31 +127,31 @@
                             </li>
                         </ul>
                     </div>
-                </li>
+                </li> -->
 
-                <li class="sidebar-menu-item  ">
+                <!-- <li class="sidebar-menu-item  ">
                     <a href="{{ route('all-purchase-return-damage-item') }}"
                         class="nav-link">
                         <i class="menu-icon la la-dot-circle"></i>
                         <span class="menu-title">Claim Returns</span>
                     </a>
-                </li>
+                </li> -->
 
-                <li class="sidebar-menu-item">
+                <!-- <li class="sidebar-menu-item">
                     <a href="{{ route('customer') }}" class="nav-link">
                         <i class="menu-icon la la-users"></i>
                         <span class="menu-title">Customer</span>
                     </a>
-                </li>
+                </li> -->
 
-                <li class="sidebar-menu-item">
+                <!-- <li class="sidebar-menu-item">
                     <a href="{{ route('customer-recovires') }}" class="nav-link">
                         <i class="menu-icon la la-users"></i>
                         <span class="menu-title">Customer Recoveries</span>
                     </a>
-                </li>
+                </li> -->
                 
-                <li class="sidebar-menu-item sidebar-dropdown">
+                <!-- <li class="sidebar-menu-item sidebar-dropdown">
                     <a href="javascript:void(0)" class="">
                         <i class="menu-icon la la-shopping-cart"></i>
                         <span class="menu-title">Sale</span>
@@ -180,7 +173,7 @@
                             </li>
                         </ul>
                     </div>
-                </li>
+                </li> -->
             </ul>
             @endif
 
