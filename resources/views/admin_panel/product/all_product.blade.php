@@ -31,12 +31,11 @@
                                     <table id="example" class="display  table table--light style--two bg--white" style="width:100%">
                                         <thead>
                                             <tr>
-                                                <th>Image</th>
-                                                <th>Name | SKU </th>
+                                                <th>Name | Color </th>
                                                 <th>Category | Brand</th>
                                                 <th>Stock </th>
                                                 <th>Alert Qty</th>
-                                                <th>Unit</th>
+                                                <th>Model</th>
                                                 <th>Wholesale Price</th>
                                                 <th>Retail Price</th>
                                                 <th>Action</th>
@@ -45,15 +44,10 @@
                                         <tbody>
                                             @foreach($all_product as $product)
                                             <tr>
-                                                <td>
-                                                    <img
-                                                        src="{{ asset('product_images/' . $product->image) }}"
-                                                        alt="Product Image" style="max-width: 100px;">
-                                                </td>
                                                 <td class="long-text">
                                                     <span class="fw-bold text--primary">{{ $product->product_name }}</span>
                                                     <br>
-                                                    <span class="text--small ">{{ $product->sku }}</span>
+                                                    <span class="text--small ">{{ $product->color }}</span>
                                                 </td>
                                                 <td>
                                                     {{ $product->category }}

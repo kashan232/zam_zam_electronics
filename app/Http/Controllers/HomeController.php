@@ -34,8 +34,6 @@ class HomeController extends Controller
                 return view('user_panel.user_dashboard', compact('categories', 'products', 'Customers','Warehouses'));
             } else if ($usertype == 'admin') {
                 $userId = Auth::id();
-                $totalPurchasesPrice = \App\Models\Purchase::sum('total_price');
-                $totalPurchaseReturnsPrice = \App\Models\PurchaseReturn::sum('total_price');
                 // Fetch all products for the logged-in admin
                 $all_product = Product::where('admin_or_user_id', '=', $userId)->get();
 
@@ -59,7 +57,7 @@ class HomeController extends Controller
 
                 // $lowStockProducts = Product::whereRaw('CAST(stock AS UNSIGNED) <= CAST(alert_quantity AS UNSIGNED)')->get();
                 // dd($lowStockProducts);
-                return view('admin_panel.admin_dashboard', compact('totalPurchasesPrice', 'totalPurchaseReturnsPrice', 'all_product', 'totalStockValue', 'categories', 'products', 'suppliers', 'customers','totalsales'));
+                return view('admin_panel.admin_dashboard', compact('all_product', 'totalStockValue', 'categories', 'products', 'suppliers', 'customers','totalsales'));
             }
         } else {
             return Redirect()->route('login');

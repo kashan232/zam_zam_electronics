@@ -33,25 +33,7 @@
                                 <form action="{{ route('update-product',['id'=> $product_details->id ]) }}" method="POST" enctype="multipart/form-data">
                                     @csrf
                                     <div class="row">
-                                        <div class="col-md-4 col-sm-6">
-                                            <div class="form-group">
-                                                <div class="image-upload">
-                                                    <div class="thumb">
-                                                        <div class="avatar-preview">
-                                                            <div class="profilePicPreview" style="background-image: url({{ asset('product_images/' . $product_details->image) }})">
-                                                                <button type="button" class="remove-image"><i class="fa fa-times"></i></button>
-                                                            </div>
-                                                        </div>
-                                                        <div class="avatar-edit">
-                                                            <input type="file" class="profilePicUpload" name="image" id="profilePicUpload1" accept=".png, .jpg, .jpeg">
-                                                            <label for="profilePicUpload1" class="bg--success">Upload Image</label>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="col-md-8 col-sm-12">
+                                        <div class="col-md-12 col-sm-12">
                                             <div class="row">
                                                 <div class="col-sm-6">
                                                     <div class="form-group">
@@ -90,14 +72,7 @@
 
                                                 <div class="col-sm-6">
                                                     <div class="form-group">
-                                                        <label class="form-label">SKU</label>
-                                                        <input type="text" class="form-control" name="sku" value="{{ $product_details->sku }}" required>
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-sm-6">
-                                                    <div class="form-group">
-                                                        <label>Unit (UoM)</label>
+                                                        <label>Models</label>
                                                         <select name="unit" class="form-control" required>
                                                             <option value="" disabled>Select One</option>
                                                             @foreach($all_unit as $unit)
@@ -109,6 +84,15 @@
                                                     </div>
                                                 </div>
 
+
+                                                <div class="col-sm-6">
+                                                    <div class="form-group">
+                                                        <label class="form-label">Color</label>
+                                                        <input type="text" class="form-control" name="color" value="{{ $product_details->color }}" required>
+                                                    </div>
+                                                </div>
+
+                                                
                                                 <div class="col-sm-6">
                                                     <div class="form-group">
                                                         <label>Alert Quantity</label>

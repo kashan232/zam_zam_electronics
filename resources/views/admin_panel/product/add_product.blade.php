@@ -34,33 +34,7 @@
                                 <form action="{{ route('store-product') }}" method="POST" enctype="multipart/form-data">
                                     @csrf
                                     <div class="row">
-                                        <div class="col-md-4 col-sm-6">
-                                            <div class="form-group">
-                                                <div class="image-upload">
-                                                    <div class="thumb">
-                                                        <div class="avatar-preview">
-                                                            <div class="profilePicPreview"
-                                                                style="background-image: url(https://script.viserlab.com/torylab/placeholder-image/400x400)">
-                                                                <button type="button" class="remove-image"><i
-                                                                        class="fa fa-times"></i></button>
-                                                            </div>
-                                                        </div>
-                                                        <div class="avatar-edit">
-                                                            <input type="file" class="profilePicUpload"
-                                                                name="image" id="profilePicUpload1"
-                                                                accept=".png, .jpg, .jpeg">
-                                                            <label for="profilePicUpload1" class="bg--success">Upload
-                                                                Image
-                                                            </label>
-                                                            <small class="mt-2">Supported files:
-                                                                <b>jpeg, jpg.</b> Image will be resized into 400x400px
-                                                            </small>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-8 col-sm-12">
+                                        <div class="col-md-12 col-sm-12">
                                             <div class="row">
                                                 <div class="col-sm-6">
                                                     <div class="form-group ">
@@ -100,12 +74,31 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-6">
+                                                    <div class="form-group">
+                                                        <label>Models</label>
+                                                        <select name="unit" class="select2-basic form-control" required>
+                                                            <option value="" selected disabled>Select One</option>
+                                                            @foreach($all_unit as $unit)
+                                                            <option value="{{ $unit->unit }}">
+                                                                {{ $unit->unit }}
+                                                            </option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-6">
                                                     <div class="form-group ">
                                                         <label class="form-label">Initial stock</label>
                                                         <input type="text" class="form-control " name="stock" value="0">
                                                     </div>
                                                 </div>
 
+                                                <div class="col-sm-6">
+                                                    <div class="form-group ">
+                                                        <label class="form-label">Color</label>
+                                                        <input type="text" class="form-control " name="color" value="Null">
+                                                    </div>
+                                                </div>
                                                 <div class="col-sm-6">
                                                     <div class="form-group ">
                                                         <label class="form-label">Wholesale Price</label>
@@ -120,32 +113,8 @@
                                                     </div>
                                                 </div>
 
-                                                <!-- Barcode Number -->
-                                                <div class="col-sm-6">
-                                                    <div class="form-group ">
-                                                        <label class="form-label">Barcode Number</label>
-                                                        <input type="text" class="form-control" name="barcode_number" id="barcodeInput" value="Null" autofocus>
-                                                    </div>
-                                                </div>
-                                                <div class="col-sm-6">
-                                                    <div class="form-group ">
-                                                        <label class="form-label">SKU</label>
-                                                        <input type="text" class="form-control " name="sku" value="Null">
-                                                    </div>
-                                                </div>
-                                                <div class="col-sm-6">
-                                                    <div class="form-group">
-                                                        <label>Unit(UoM)</label>
-                                                        <select name="unit" class="select2-basic form-control" required>
-                                                            <option value="" selected disabled>Select One</option>
-                                                            @foreach($all_unit as $unit)
-                                                            <option value="{{ $unit->unit }}">
-                                                                {{ $unit->unit }}
-                                                            </option>
-                                                            @endforeach
-                                                        </select>
-                                                    </div>
-                                                </div>
+                                                
+                                               
                                                 <div class="col-sm-6">
                                                     <div class="form-group">
                                                         <label>Alert Quantity</label>
@@ -163,7 +132,7 @@
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <button type="submit" class="btn btn--primary w-100 h-45">Submit</button>
+                                        <button type="submit" class="btn btn--primary w-25 h-45">Save Product</button>
                                     </div>
                                 </form>
                             </div>

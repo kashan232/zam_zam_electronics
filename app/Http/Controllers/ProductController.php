@@ -50,16 +50,6 @@ class ProductController extends Controller
             $usertype = Auth()->user()->usertype;
             $userId = Auth::id();
 
-            // Handle image upload if the image is provided
-            $imageName = null;  // Default to null if no image is uploaded
-            if ($request->hasFile('image')) {
-                $image = $request->file('image');
-                $imageName = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
-                $imagePath = 'product_images/' . $imageName;
-
-                // Save the original image to the public directory
-                $image->move(public_path('product_images'), $imageName);
-            }
 
             // Create the product with or without the image
             Product::create([
@@ -70,12 +60,10 @@ class ProductController extends Controller
                 'stock'            => $request->stock,
                 'wholesale_price'            => $request->wholesale_price,
                 'retail_price'            => $request->retail_price,
-                'barcode_number'   => $request->barcode_number,
-                'sku'              => $request->sku,
+                'color'              => $request->color,
                 'unit'             => $request->unit,
                 'alert_quantity'   => $request->alert_quantity,
                 'note'             => $request->note,
-                'image'            => $imageName,  // Store null if no image uploaded
                 'created_at'       => Carbon::now(),
                 'updated_at'       => Carbon::now(),
             ]);
@@ -114,30 +102,12 @@ class ProductController extends Controller
             // Find the product by ID
             $product = Product::findOrFail($id);
 
-            // Handle image upload if a new image is provided
-            if ($request->hasFile('image')) {
-                // Delete the old image if exists
-                if ($product->image) {
-                    $oldImagePath = public_path('product_images/' . $product->image);
-                    if (file_exists($oldImagePath)) {
-                        unlink($oldImagePath);
-                    }
-                }
-
-                // Upload new image
-                $image = $request->file('image');
-                $imageName = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
-                $image->move(public_path('product_images'), $imageName);
-
-                // Set the new image name in the product data
-                $product->image = $imageName;
-            }
 
             // Update product details
             $product->product_name   = $request->product_name;
             $product->category       = $request->category;
             $product->brand          = $request->brand;
-            $product->sku            = $request->sku;
+            $product->color            = $request->color;
             $product->unit           = $request->unit;
             $product->alert_quantity = $request->alert_quantity;
             $product->retail_price   = $request->retail_price;  // Including retail price update

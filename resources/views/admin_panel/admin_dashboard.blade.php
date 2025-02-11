@@ -37,44 +37,6 @@
 
                     <div class="col-xxl-3 col-sm-6">
                         <div class="widget-two box--shadow2 b-radius--5 bg--white">
-                            <i class="las la-shopping-bag overlay-icon text--success"></i>
-
-                            <div class="widget-two__icon b-radius--5   bg--success  ">
-                                <i class="las la-shopping-bag"></i>
-                            </div>
-
-                            <div class="widget-two__content">
-                                <h3>{{ $totalPurchasesPrice }}</h3>
-                                <p>Purchases</p>
-                            </div>
-
-                            <a href="#"
-                                class="widget-two__btn btn btn-outline--success">View All</a>
-                        </div>
-
-                    </div><!-- dashboard-w1 end -->
-
-                    <div class="col-xxl-3 col-sm-6">
-                        <div class="widget-two box--shadow2 b-radius--5 bg--white">
-                            <i class="las la-share overlay-icon text--danger"></i>
-
-                            <div class="widget-two__icon b-radius--5   bg--danger  ">
-                                <i class="las la-share"></i>
-                            </div>
-
-                            <div class="widget-two__content">
-                                <h3>{{ $totalPurchaseReturnsPrice }}</h3>
-                                <p>Purchases Return</p>
-                            </div>
-
-                            <a href="#"
-                                class="widget-two__btn btn btn-outline--danger">View All</a>
-                        </div>
-
-                    </div><!-- dashboard-w1 end -->
-
-                    <div class="col-xxl-3 col-sm-6">
-                        <div class="widget-two box--shadow2 b-radius--5 bg--white">
                             <i class="las la-shopping-cart overlay-icon text--primary"></i>
 
                             <div class="widget-two__icon b-radius--5   bg--primary  ">
@@ -117,7 +79,7 @@
                                                 <th>Category</th>
                                                 <th>Alert</th>
                                                 <th>Stock</th>
-                                                <th>Unit</th>
+                                                <th>Models</th>
                                                 <th>W.Price</th>
                                             </tr>
                                         </thead>
@@ -209,36 +171,6 @@
                             </div>
                             <a href="https://script.viserlab.com/torylab/admin/product/all" class="widget-two__btn">View
                                 All</a>
-                        </div>
-                    </div><!-- dashboard-w1 end -->
-
-                    <div class="col-xxl-3 col-sm-6">
-                        <div class="widget-two style--two box--shadow2 b-radius--5 bg--18">
-                            <div class="widget-two__icon b-radius--5 bg--18">
-                                <i class="las la-user-friends"></i>
-                            </div>
-
-                            <div class="widget-two__content">
-                                <h3 class="text-white">{{ $suppliers }}</h3>
-                                <p class="text-white">Suppliers</p>
-                            </div>
-                            <a href="https://script.viserlab.com/torylab/admin/supplier/all"
-                                class="widget-two__btn">View All</a>
-                        </div>
-                    </div><!-- dashboard-w1 end -->
-
-                    <div class="col-xxl-3 col-sm-6">
-                        <div class="widget-two style--two box--shadow2 b-radius--5 bg--19">
-                            <div class="widget-two__icon b-radius--5 bg--19">
-                                <i class="las la-users"></i>
-                            </div>
-
-                            <div class="widget-two__content">
-                                <h3 class="text-white">{{ $customers }}</h3>
-                                <p class="text-white">Customers</p>
-                            </div>
-                            <a href="https://script.viserlab.com/torylab/admin/customer/all"
-                                class="widget-two__btn">View All</a>
                         </div>
                     </div><!-- dashboard-w1 end -->
                 </div><!-- row end-->

@@ -76,58 +76,21 @@ class PurchaseController extends Controller
 
     public function store_Purchase(Request $request)
     {
-        // dd($request);
-        // Validate the request
-        $validatedData = $request->validate([
-            'supplier' => 'required|string',
-            'purchase_date' => 'required|date',
-            'warehouse_id' => 'required|string',
-            'item_category' => 'required|array',
-            'item_name' => 'required|array',
-            'quantity' => 'required|array',
-            'price' => 'required|array',  // This is an array of prices
-            'total' => 'required|array',
-            'note' => 'nullable|string',
-            'total_price' => 'required|numeric',
-            'discount' => 'nullable|numeric',  // Ensure it's numeric
-        ]);
-
         $invoiceNo = Purchase::generateInvoiceNo();
-
-        // Ensure discount is numeric and default to 0 if null
-        $discount = (float) $request->discount ?? 0;
-
-        // Ensure total_price is numeric as well
-        $totalPrice = (float) $request->total_price;
-
-        // Prepare data for storage
         $purchaseData = [
             'invoice_no' => $invoiceNo,
-            'supplier' => $request->supplier,
             'purchase_date' => $request->purchase_date,
             'warehouse_id' => $request->warehouse_id,
             'item_category' => json_encode($request->item_category),
             'item_name' => json_encode($request->item_name),
             'quantity' => json_encode($request->quantity),
-            'price' => json_encode($request->price),  // Array of prices
-            'total' => json_encode($request->total),
-            'note' => $request->note,
-            'total_price' => $totalPrice,
-            'discount' => $discount,
-            'Payable_amount' => $totalPrice - $discount, // Correct subtraction with numeric values
-            'paid_amount' => $request->paid_amount,
-            'due_amount' => $request->due_amount,
-
         ];
-
         // Save purchase data
         $purchase = Purchase::create($purchaseData);
-
         // Step 2: Update Product Stock and Wholesale Price
         foreach ($request->item_name as $key => $item_name) {
             $item_category = $request->item_category[$key];
             $quantity = $request->quantity[$key];
-            $purchase_price = $request->price[$key];  // Single price for the item
 
             // Find the product and update stock and wholesale price
             $product = Product::where('product_name', $item_name)
@@ -136,7 +99,6 @@ class PurchaseController extends Controller
 
             if ($product) {
                 $product->stock += $quantity; // Increase the stock
-                $product->wholesale_price = $purchase_price;  // Set wholesale price to purchase price
                 $product->save();
             }
         }

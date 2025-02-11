@@ -32,13 +32,12 @@
                                     <table id="example" class="display  table table--light style--two bg--white" style="width:100%">
                                         <thead>
                                             <tr>
-                                                <th>Invoice No. | Date</th>
-                                                <th>Customer | Warehouse </th>
+                                                <th>Invoice No</th>
+                                                <th>Date</th>
+                                                <th>Customer </th>
                                                 <th>Total Amount </th>
                                                 <th>Discount </th>
-                                                <th>Payable </th>
-                                                <th>Received </th>
-                                                <!-- <th>Recipt </th> -->
+                                                <th>Net Total </th>
                                                 <th>Action</th>
                                             </tr>
                                         </thead>
@@ -49,13 +48,15 @@
                                                     <span class="fw-bold">
                                                         {{ $Sale->invoice_no }}
                                                     </span>
-                                                    <br>
+                                                </td>
+                                                <td>
                                                     <small>{{ $Sale->sale_date }}</small>
                                                 </td>
 
+
                                                 <td>
                                                     <span class="text--primary fw-bold"> {{ $Sale->customer}} <br>
-                                                        {{ $Sale->warehouse_id }} </span>
+                                                       </span>
                                                 </td>
 
                                                 <td>
@@ -69,23 +70,8 @@
                                                     <span class="fw-bold">{{ $Sale->Payable_amount }}</span>
                                                 </td>
                                                 <td>
-                                                    <span class="fw-bold">{{ $Sale->cash_received }}</span>
-                                                </td>
-                                                <!-- <td>
-                                                    <a class="dropdown-item btn btn-sm btn-outline--primary ms-1 editBtn" href="#"> <i class="la la-pen"></i> Edit</a>
-                                                </td> -->
-                                                <td>
-                                                    <div class="dropdown">
-                                                        <button class="btn btn-sm btn-outline--info ms-1 dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                            <i class="la la-ellipsis-v"></i>More
-                                                        </button>
-                                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                                            <a class="dropdown-item btn btn-sm btn-outline--primary ms-1 editBtn" href="#"> <i class="la la-pen"></i> Edit</a>
-                                                            <a class="dropdown-item btn btn-sm btn-outline--primary ms-1 editBtn" href="#"> <i class="la la-eye"></i> View</a>
-                                                            <a class="dropdown-item btn btn-sm btn-outline--primary ms-1 editBtn" href="{{ route('invoice.download', ['id' => $Sale->id]) }}"> <i class="la la-undo"></i> Download Invoice</a>
-                                                            <a class="dropdown-item btn btn-sm btn-outline--primary ms-1 editBtn" href="{{ route('sale-receipt', ['id' => $Sale->id]) }}"> <i class="la la-print"></i> Print Receipt</a> <!-- New Print Receipt Link -->
-                                                        </div>
-                                                    </div>
+
+                                                    <a href="{{ route('sale-receipt', ['id' => $Sale->id]) }}" class="btn btn-sm btn-outline--primary"> Print Receipt</a>
                                                 </td>
 
                                             </tr>

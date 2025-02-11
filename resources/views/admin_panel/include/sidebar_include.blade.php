@@ -70,6 +70,83 @@
                     </a>
                 </li>
 
+                <li class="sidebar-menu-item ">
+                    <a href="{{ route('warehouse') }}" class="nav-link ">
+                        <i class="menu-icon fas fa-warehouse"></i>
+                        <span class="menu-title">Warehouse</span>
+                    </a>
+                </li>
+
+                <li class="sidebar-menu-item sidebar-dropdown">
+                    <a href="javascript:void(0)" class="">
+                        <i class="menu-icon fas fa-shopping-basket"></i>
+                        <span class="menu-title">Purchase</span>
+                    </a>
+                    <div class="sidebar-submenu ">
+                        <ul>
+                            <li class="sidebar-menu-item ">
+                                <a href="{{ route('add-purchase') }}"
+                                    class="nav-link">
+                                    <i class="menu-icon la la-dot-circle"></i>
+                                    <span class="menu-title">Add Purchases</span>
+                                </a>
+                            </li>
+                            <li class="sidebar-menu-item ">
+                                <a href="{{ route('Purchase') }}"
+                                    class="nav-link">
+                                    <i class="menu-icon la la-dot-circle"></i>
+                                    <span class="menu-title">All Purchases</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+
+                <li class="sidebar-menu-item sidebar-dropdown">
+                    <a href="javascript:void(0)" class="">
+                        <i class="menu-icon fas fa-shopping-cart"></i>
+                        <span class="menu-title">Sale</span>
+                    </a>
+                    <div class="sidebar-submenu">
+                        <ul>
+                            <li class="sidebar-menu-item">
+                                <a href="{{ route('add-Sale') }}" class="nav-link">
+                                    <i class="menu-icon la la-dot-circle"></i>
+                                    <span class="menu-title">Add Sales</span>
+                                </a>
+                            </li>
+
+                            <li class="sidebar-menu-item">
+                                <a href="{{ route('all-sales') }}" class="nav-link">
+                                    <i class="menu-icon la la-dot-circle"></i>
+                                    <span class="menu-title">All Sales</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+
+
+                <li class="sidebar-menu-item sidebar-dropdown">
+                    <a href="javascript:void(0)" class="">
+                        <i class="menu-icon fas fa-chart-pie"></i>
+                        <i class=""></i>
+                        <span class="menu-title">Reporting</span>
+                    </a>
+                    <div class="sidebar-submenu ">
+                        <ul>
+                            <li class="sidebar-menu-item ">
+                                <a href="{{ route('sale-report') }}"
+                                    class="nav-link">
+                                    <i class="menu-icon la la-dot-circle"></i>
+                                    <span class="menu-title">Sales Report</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                    </div>
+                </li>
+
                 <!-- <li class="sidebar-menu-item ">
                     <a href="{{ route('product-alerts') }}" class="nav-link ">
                         <i class="menu-icon las la-bell"></i>
@@ -87,12 +164,7 @@
                     </a>
                 </li> -->
 
-                <!-- <li class="sidebar-menu-item ">
-                    <a href="{{ route('warehouse') }}" class="nav-link ">
-                        <i class="menu-icon la la-warehouse"></i>
-                        <span class="menu-title">Warehouse</span>
-                    </a>
-                </li> -->
+
 
 
 
@@ -150,7 +222,7 @@
                         <span class="menu-title">Customer Recoveries</span>
                     </a>
                 </li> -->
-                
+
                 <!-- <li class="sidebar-menu-item sidebar-dropdown">
                     <a href="javascript:void(0)" class="">
                         <i class="menu-icon la la-shopping-cart"></i>
