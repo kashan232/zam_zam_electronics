@@ -77,6 +77,24 @@
                     </a>
                 </li>
 
+                <li class="sidebar-menu-item ">
+                    <a href="{{ route('product-alerts') }}" class="nav-link ">
+                        <i class="menu-icon fas fa-bell"></i>
+                        
+                        <span class="menu-title">Stock Alerts</span>
+                        @php
+                        $lowStockProductsCount = DB::table('products')
+                        ->whereRaw('CAST(stock AS UNSIGNED) <= CAST(alert_quantity AS UNSIGNED)')
+                            ->count();
+                            @endphp
+
+
+                            @if($lowStockProductsCount > 0)
+                            <small>&nbsp;<i class="fa fa-circle text--danger" aria-hidden="true" aria-label="Returned" data-bs-original-title="Returned"></i></small>
+                            @endif
+                    </a>
+                </li>
+
                 <li class="sidebar-menu-item sidebar-dropdown">
                     <a href="javascript:void(0)" class="">
                         <i class="menu-icon fas fa-shopping-basket"></i>
@@ -144,25 +162,20 @@
                             </li>
                             
                         </ul>
+                        <ul>
+                            <li class="sidebar-menu-item ">
+                                <a href="{{ route('purchase-report') }}"
+                                    class="nav-link">
+                                    <i class="menu-icon la la-dot-circle"></i>
+                                    <span class="menu-title"> Purchase Report </span>
+                                </a>
+                            </li>
+                            
+                        </ul>
                     </div>
                 </li>
 
-                <!-- <li class="sidebar-menu-item ">
-                    <a href="{{ route('product-alerts') }}" class="nav-link ">
-                        <i class="menu-icon las la-bell"></i>
-                        <span class="menu-title">Stock Alerts</span>
-                        @php
-                        $lowStockProductsCount = DB::table('products')
-                        ->whereRaw('CAST(stock AS UNSIGNED) <= CAST(alert_quantity AS UNSIGNED)')
-                            ->count();
-                            @endphp
-
-
-                            @if($lowStockProductsCount > 0)
-                            <small>&nbsp;<i class="fa fa-circle text--danger" aria-hidden="true" aria-label="Returned" data-bs-original-title="Returned"></i></small>
-                            @endif
-                    </a>
-                </li> -->
+                
 
 
 

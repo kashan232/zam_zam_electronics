@@ -144,6 +144,11 @@ Route::post('/customer/credit', [CustomerController::class, 'addCredit'])->name(
 Route::get('/sale-report', [ReportController::class, 'sale_report'])->name('sale-report');
 Route::get('/filter-sales', [ReportController::class, 'filterSales'])->name('filter.sales');
 
+Route::get('/purchase-report', [ReportController::class, 'purchase_report'])->name('purchase-report');
+
+Route::get('/filter-purchase', [ReportController::class, 'filterpurchase'])->name('filter.purchase');
+
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

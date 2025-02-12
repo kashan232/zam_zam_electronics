@@ -51,6 +51,15 @@
                                                 </select>
                                             </div>
                                         </div>
+
+                                        <div class="col-xl-4 col-sm-4">
+                                            <div class="form-group">
+                                                <label class="form-label">Supplier Name </label>
+                                                <input type="text" class="form-control" placeholder="Enter Name" name="supplier_name">
+                                            </div>
+                                        </div>
+
+
                                     </div>
 
                                     <div class="row mb-3">

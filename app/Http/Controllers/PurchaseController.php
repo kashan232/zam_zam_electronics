@@ -81,9 +81,11 @@ class PurchaseController extends Controller
             'invoice_no' => $invoiceNo,
             'purchase_date' => $request->purchase_date,
             'warehouse_id' => $request->warehouse_id,
+            'supplier_name' => $request->supplier_name,
             'item_category' => json_encode($request->item_category),
             'item_name' => json_encode($request->item_name),
             'quantity' => json_encode($request->quantity),
+
         ];
         // Save purchase data
         $purchase = Purchase::create($purchaseData);

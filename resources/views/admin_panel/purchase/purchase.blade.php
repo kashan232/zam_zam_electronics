@@ -42,6 +42,7 @@
                                                 <th>Warehouse</th>
                                                 <th>Category</th>
                                                 <th>Item Name</th>
+                                                <th>Supplier Name </th>
                                                 <th>Quantity</th>
                                             </tr>
                                         </thead>
@@ -53,6 +54,8 @@
                                                 <td>{{ $purchase->warehouse_id }}</td>
                                                 <td>{{ str_replace(['[', ']', '"'], '', $purchase->item_category) }}</td>
                                                 <td>{{ str_replace(['[', ']', '"'], '', $purchase->item_name) }}</td>
+                                                <td>{{ str_replace(['[', ']', '"'], '', $purchase->supplier_name ?? 'Null') }}</td>
+
                                                 <td>{{ str_replace(['[', ']', '"'], '', $purchase->quantity) }}</td>
                                             </tr>
                                             @endforeach

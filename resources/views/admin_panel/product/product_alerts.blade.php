@@ -24,7 +24,6 @@
                                     <table id="example" class="display  table table--light style--two bg--white" style="width:100%">
                                         <thead>
                                             <tr>
-                                                <th>Image</th>
                                                 <th>Product Name</th>
                                                 <th>Stock</th>
                                                 <th>Alert Quantity</th>
@@ -33,11 +32,6 @@
                                         <tbody>
                                             @foreach($lowStockProducts as $product)
                                             <tr>
-                                                <td>
-                                                    <img
-                                                        src="{{ asset('product_images/' . $product->image) }}"
-                                                        alt="Product Image" style="max-width: 100px;">
-                                                </td>
                                                 <td>{{ $product->product_name }}</td>
                                                 <td>
                                                     <span class="bg--danger px-2 rounded">
