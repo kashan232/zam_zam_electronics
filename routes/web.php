@@ -72,6 +72,7 @@ Route::post('/store-product', [ProductController::class, 'store_product'])->name
 Route::get('/edit-product/{id}', [ProductController::class, 'edit_product'])->middleware(['auth','admin'])->name('edit-product');
 Route::post('/update-product/{id}', [ProductController::class, 'update_product'])->name('update-product');
 Route::get('/product-alerts', [ProductController::class, 'product_alerts'])->name('product-alerts');
+Route::post('/delete-product', [ProductController::class, 'delete_product'])->name('delete.product');
 
 //warehouse
 Route::get('/warehouse', [WarehouseController::class, 'warehouse'])->middleware(['auth','admin'])->name('warehouse');

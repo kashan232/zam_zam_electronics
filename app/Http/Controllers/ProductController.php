@@ -111,6 +111,7 @@ class ProductController extends Controller
             $product->unit           = $request->unit;
             $product->alert_quantity = $request->alert_quantity;
             $product->retail_price   = $request->retail_price;  // Including retail price update
+            $product->wholesale_price   = $request->wholesale_price;  // Including retail price update
             $product->note           = $request->note;
             $product->updated_at     = Carbon::now();
 
@@ -159,4 +160,19 @@ class ProductController extends Controller
             return redirect()->back();
         }
     }
+    public function delete_product(Request $request)
+{
+    if (Auth::id()) {
+        $product = Product::find($request->id);
+
+        if ($product) {
+            $product->delete();
+            return response()->json(['success' => true, 'message' => 'Product deleted successfully.']);
+        } else {
+            return response()->json(['success' => false, 'message' => 'Product not found.']);
+        }
+    }
+    return response()->json(['success' => false, 'message' => 'Unauthorized request.']);
+}
+
 }

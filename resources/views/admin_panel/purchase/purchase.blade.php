@@ -72,3 +72,4 @@
 
     </div>
     @include('admin_panel.include.footer_include')
+   
