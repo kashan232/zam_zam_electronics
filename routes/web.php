@@ -14,6 +14,7 @@ use App\Http\Controllers\StaffSalaryController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\UnitController;
 use App\Http\Controllers\WarehouseController;
+use App\Http\Controllers\warehouseStockController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -78,6 +79,26 @@ Route::post('/delete-product', [ProductController::class, 'delete_product'])->na
 Route::get('/warehouse', [WarehouseController::class, 'warehouse'])->middleware(['auth','admin'])->name('warehouse');
 Route::post('/store-warehouse', [WarehouseController::class, 'store_warehouse'])->name('store-warehouse');
 Route::post('/update-warehouse', [WarehouseController::class, 'update_warehouse'])->name('update-warehouse');
+
+// warehouse stock manage
+Route::get('/warehouse-stock', [warehouseStockController::class, 'warehouse_stock'])->middleware(['auth','admin'])->name('warehouse-stock');
+Route::get('/add-warehouse-stock', [warehouseStockController::class, 'warehouse_stock'])->middleware(['auth','admin'])->name('add-warehouse-stock');
+// Route::post('/store-Purchase', [PurchaseController::class, 'store_Purchase'])->name('store-Purchase');
+// Route::post('/update-Purchase', [PurchaseController::class, 'update_Purchase'])->name('update-Purchase');
+// Route::post('/purchases-payment', [PurchaseController::class, 'purchases_payment'])->name('purchases-payment');
+// Route::get('/get-items-by-category/{categoryId}', [PurchaseController::class, 'getItemsByCategory'])->name('get-items-by-category');
+
+// Route::get('/purchase-view/{id}', [PurchaseController::class, 'view'])->name('purchase-view');
+// Route::get('/purchase-return/{id}', [PurchaseController::class, 'purchase_return'])->name('purchase-return');
+// Route::post('/store-purchase-return', [PurchaseController::class, 'store_purchase_return'])->name('store-purchase-return');
+// Route::get('/all-purchase-return', [PurchaseController::class, 'all_purchase_return'])->name('all-purchase-return');
+// Route::post('/purchase-return-payment', [PurchaseController::class, 'purchase_return_payment'])->name('purchase-return-payment');
+// Route::get('/get-unit-by-product/{productId}', [PurchaseController::class, 'getUnitByProduct'])->name('get-unit-by-product');
+
+
+// Route::get('/purchase-return-damage-item/{id}', [PurchaseController::class, 'purchase_return_damage_item'])->name('purchase-return-damage-item');
+// Route::post('/store-purchase-return-damage-item', [PurchaseController::class, 'store_purchase_return_damage_item'])->name('store-purchase-return-damage-item');
+// Route::get('/all-purchase-return-damage-item', [PurchaseController::class, 'all_purchase_return_damage_item'])->name('all-purchase-return-damage-item');
 
 //supplier
 Route::get('/supplier', [SupplierController::class, 'supplier'])->middleware(['auth','admin'])->name('supplier');

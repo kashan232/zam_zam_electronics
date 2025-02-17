@@ -77,6 +77,31 @@
                     </a>
                 </li>
 
+                <li class="sidebar-menu-item sidebar-dropdown">
+                    <a href="javascript:void(0)" class="">
+                        <i class="menu-icon fas fa-shopping-basket"></i>
+                        <span class="menu-title">Warehouse Stock</span>
+                    </a>
+                    <div class="sidebar-submenu ">
+                        <ul>
+                            <li class="sidebar-menu-item ">
+                                <a href="{{ route('warehouse-stock') }}"
+                                    class="nav-link">
+                                    <i class="menu-icon la la-dot-circle"></i>
+                                    <span class="menu-title">Add warehouse Stock</span>
+                                </a>
+                            </li>
+                            <li class="sidebar-menu-item ">
+                                <a href="{{ route('Purchase') }}"
+                                    class="nav-link">
+                                    <i class="menu-icon la la-dot-circle"></i>
+                                    <span class="menu-title">All Purchases</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+
                 <li class="sidebar-menu-item ">
                     <a href="{{ route('product-alerts') }}" class="nav-link ">
                         <i class="menu-icon fas fa-bell"></i>
