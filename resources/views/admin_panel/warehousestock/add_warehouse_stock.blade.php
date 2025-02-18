@@ -16,52 +16,47 @@
             <div class="bodywrapper__inner">
 
                 <div class="d-flex mb-30 flex-wrap gap-3 justify-content-between align-items-center">
-                    <h6 class="page-title">Add Warehouse</h6>
+                    <h6 class="page-title">Add Warehouse Stock</h6>
                 </div>
 
                 <div class="row gy-3">
                     <div class="col-lg-12 col-md-12 mb-30">
                         <div class="card">
                             <div class="card-body">
-                            @if (session()->has('success'))
+                                @if (session()->has('success'))
                                 <div class="alert alert-success">
                                     <strong>Success!</strong> {{ session('success') }}.
                                 </div>
                                 @endif
 
-                                <form action="{{ route('store-Purchase') }}" method="POST">
+                                <form action="{{ route('store-warehouse-stock') }}" method="POST">
                                     @csrf
                                     <div class="row mb-3">
                                         <div class="col-xl-4 col-sm-4">
                                             <div class="form-group">
                                                 <label>Date</label>
-                                                <input name="purchase_date" type="date" class="datepicker-here form-control bg--white" required>
+                                                <input name="stock_date" type="date" class="datepicker-here form-control bg--white" required>
                                             </div>
                                         </div>
 
                                         <div class="col-xl-4 col-sm-4">
                                             <div class="form-group">
-                                                <label class="form-label">Warehouse/Shop</label>
+                                                <label class="form-label">Warehouse</label>
                                                 <select name="warehouse_id" class="form-control" required>
                                                     <option selected disabled>Select One</option>
-                                                    <option value="Shop">Shop</option>
-                                                    {{-- @foreach($WarehouseStock as $WarehouseStock)
+                                                    @foreach($Warehouses as $Warehouse)
                                                     <option value="{{ $Warehouse->name }}">{{ $Warehouse->name }}</option>
-                                                    @endforeach --}}
+                                                    @endforeach
                                                 </select>
                                             </div>
                                         </div>
-
                                         <div class="col-xl-4 col-sm-4">
                                             <div class="form-group">
                                                 <label class="form-label">Supplier Name </label>
                                                 <input type="text" class="form-control" placeholder="Enter Name" name="supplier_name">
                                             </div>
                                         </div>
-
-
                                     </div>
-
                                     <div class="row mb-3">
                                         <div class="table-responsive">
                                             <table class="productTable table border">
@@ -76,14 +71,14 @@
                                                 </thead>
                                                 <tbody id="purchaseItems">
                                                     <tr>
-                                                        {{-- <td>
+                                                        <td>
                                                             <select name="item_category[]" class="form-control item-category" required>
                                                                 <option value="" disabled selected>Select Category</option>
                                                                 @foreach($Category as $Categories)
                                                                 <option value="{{ $Categories->category }}">{{ $Categories->category }}</option>
                                                                 @endforeach
                                                             </select>
-                                                        </td> --}}
+                                                        </td>
                                                         <td>
                                                             <select name="item_name[]" class="form-control item-name" required>
                                                                 <option value="" disabled selected>Select Item</option>
@@ -116,3 +111,93 @@
 
     </div>
     @include('admin_panel.include.footer_include')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const purchaseItems = document.getElementById('purchaseItems');
+
+            // Event delegation for category selection
+            purchaseItems.addEventListener('change', function(e) {
+                if (e.target.classList.contains('item-category')) {
+                    const categoryId = e.target.value;
+                    const row = e.target.closest('tr');
+                    const itemSelect = row.querySelector('.item-name');
+
+                    if (categoryId) {
+                        fetch(`{{ route('get-items-by-category', ':categoryId') }}`.replace(':categoryId', categoryId))
+                            .then(response => response.json())
+                            .then(items => {
+                                itemSelect.innerHTML = '<option value="" disabled selected>Select Item</option>';
+                                items.forEach(item => {
+                                    const option = document.createElement('option');
+                                    option.value = item.product_name;
+                                    option.textContent = item.product_name;
+                                    itemSelect.appendChild(option);
+                                });
+                                itemSelect.disabled = false; // Enable item selection
+                            })
+                            .catch(error => console.error('Error fetching items:', error));
+                    } else {
+                        itemSelect.innerHTML = '<option value="" disabled selected>Select Item</option>';
+                        itemSelect.disabled = true; // Disable item selection
+                    }
+                }
+            });
+
+            // Event delegation for product selection to populate Unit
+            purchaseItems.addEventListener('change', function(e) {
+                if (e.target.classList.contains('item-name')) {
+                    const productId = e.target.value;
+                    const row = e.target.closest('tr');
+                    const unitInput = row.querySelector('.unit');
+
+                    if (productId) {
+                        fetch(`{{ route('get-unit-by-product', ':productId') }}`.replace(':productId', productId))
+                            .then(response => response.json())
+                            .then(product => {
+                                unitInput.value = product.unit ? product.unit : ''; // Handle cases where the unit is not found
+                            })
+                            .catch(error => console.error('Error fetching unit:', error));
+                    }
+                }
+            });
+
+            // Adding a new row dynamically
+            const addRowButton = document.getElementById('addRow');
+            addRowButton.addEventListener('click', function() {
+                const newRow = `
+                <tr>
+                    <td>
+                        <select name="item_category[]" class="form-control item-category" required>
+                            <option value="" disabled selected>Select Category</option>
+                            @foreach($Category as $Categories)
+                                <option value="{{ $Categories->category }}">{{ $Categories->category }}</option>
+                            @endforeach
+                        </select>
+                    </td>
+                    <td>
+                        <select name="item_name[]" class="form-control item-name" required>
+                            <option value="" disabled selected>Select Item</option>
+                        </select>
+                    </td>
+                    <td>
+                        <input type="text" name="unit[]" class="form-control unit" readonly>
+                    </td>
+                    <td>
+                        <input type="number" name="quantity[]" class="form-control quantity" required>
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-danger remove-row">Delete</button>
+                    </td>
+                </tr>`;
+                purchaseItems.insertAdjacentHTML('beforeend', newRow);
+            });
+
+            // Event delegation for removing a row
+            purchaseItems.addEventListener('click', function(e) {
+                if (e.target.classList.contains('remove-row')) {
+                    e.target.closest('tr').remove();
+                }
+            });
+
+        });
+    </script>

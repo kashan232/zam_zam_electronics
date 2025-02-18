@@ -92,12 +92,20 @@
                                 </a>
                             </li>
                             <li class="sidebar-menu-item ">
-                                <a href="{{ route('Purchase') }}"
+                                <a href="{{ route('listing-warehouse-stock') }}"
                                     class="nav-link">
                                     <i class="menu-icon la la-dot-circle"></i>
-                                    <span class="menu-title">All Purchases</span>
+                                    <span class="menu-title">All warehouse Stock</span>
                                 </a>
                             </li>
+                            <li class="sidebar-menu-item ">
+                                <a href="{{ route('product-warehouse-stock') }}"
+                                    class="nav-link">
+                                    <i class="menu-icon la la-dot-circle"></i>
+                                    <span class="menu-title">Warehouse Prodct Stock</span>
+                                </a>
+                            </li>
+                            
                         </ul>
                     </div>
                 </li>

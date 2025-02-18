@@ -82,7 +82,12 @@ Route::post('/update-warehouse', [WarehouseController::class, 'update_warehouse'
 
 // warehouse stock manage
 Route::get('/warehouse-stock', [warehouseStockController::class, 'warehouse_stock'])->middleware(['auth','admin'])->name('warehouse-stock');
-Route::get('/add-warehouse-stock', [warehouseStockController::class, 'warehouse_stock'])->middleware(['auth','admin'])->name('add-warehouse-stock');
+Route::post('/store-warehouse-stock', [warehouseStockController::class, 'store_warehouse_stock'])->name('store-warehouse-stock');
+Route::get('/listing-warehouse-stock', [warehouseStockController::class, 'listing_warehouse_stock'])->middleware(['auth','admin'])->name('listing-warehouse-stock');
+Route::get('/product-warehouse-stock', [warehouseStockController::class, 'product_warehouse_stock'])->middleware(['auth','admin'])->name('product-warehouse-stock');
+Route::get('/get-products-by-category', [warehouseStockController::class, 'getProductsByCategory'])->name('get-products-by-category');
+Route::get('/filter-warehouse-stock', [warehouseStockController::class, 'filterWarehouseStock'])->name('filter-warehouse-stock');
+
 // Route::post('/store-Purchase', [PurchaseController::class, 'store_Purchase'])->name('store-Purchase');
 // Route::post('/update-Purchase', [PurchaseController::class, 'update_Purchase'])->name('update-Purchase');
 // Route::post('/purchases-payment', [PurchaseController::class, 'purchases_payment'])->name('purchases-payment');
