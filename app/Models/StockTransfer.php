@@ -6,15 +6,20 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class WarehouseProductStock extends Model
+class StockTransfer extends Model
 {
     use HasFactory;
     use SoftDeletes;
 
     protected $guarded = [];
 
-    public function warehouseStock()
+    public function product()
     {
-        return $this->hasMany(WarehouseProductStock::class, 'product_id', 'id');
+        return $this->belongsTo(Product::class);
+    }
+
+    public function warehouse()
+    {
+        return $this->belongsTo(Warehouse::class);
     }
 }

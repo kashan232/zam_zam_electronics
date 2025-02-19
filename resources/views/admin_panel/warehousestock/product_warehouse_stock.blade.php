@@ -53,6 +53,11 @@
                                                 </div>
 
                                                 <div class="col-lg-3">
+                                                    <label class="form-label">Model</label>
+                                                    <input type="text" class="form-control" name="model">
+                                                </div>
+
+                                                <div class="col-lg-3">
                                                     <button class="btn btn--primary h-45 w-100" type="button" id="filterSalesBtn">
                                                         <i class="la la-filter"></i> Filter
                                                     </button>
@@ -69,6 +74,7 @@
                                                 <th>Warehouse</th>
                                                 <th>Category</th>
                                                 <th>Product</th>
+                                                <th>Model</th>
                                                 <th>Quantity</th>
                                             </tr>
                                         </thead>
@@ -99,14 +105,18 @@
                         url: '{{ route("get-products-by-category") }}',
                         type: 'GET',
                         data: {
-                            categoryName: categoryName // Send categoryName as part of the request payload
+                            categoryName: categoryName
                         },
                         dataType: 'json',
                         success: function(data) {
                             var productSelect = $('#productSelect');
                             productSelect.empty().append('<option selected disabled>Select One</option>');
-                            $.each(data, function(key, value) {
-                                productSelect.append('<option value="' + value + '">' + value + '</option>'); // Assuming value is product_name
+
+                            $.each(data, function(index, product) {
+                                productSelect.append(
+                                    '<option value="' + product.product_name + '" data-unit="' + product.unit + '">' +
+                                    product.product_name + '</option>'
+                                );
                             });
                         },
                         error: function(xhr, status, error) {
@@ -118,6 +128,12 @@
                 }
             });
 
+            $('#productSelect').on('change', function() {
+                var selectedOption = $(this).find(':selected');
+                var unit = selectedOption.data('unit');
+
+                $('input[name="model"]').val(unit); // Assign unit to the model input
+            });
 
             $('#filterSalesBtn').on('click', function() {
                 var warehouseName = $('#warehouseSelect').val();
@@ -137,21 +153,23 @@
                         success: function(data) {
                             $('#stockTable tbody').empty();
 
-                            // Loop through the data array and access individual items
                             $.each(data, function(index, value) {
-                                // Access individual fields within the object
-                                var quantity = value.quantity ? value.quantity : '0'; // Default to '0' if quantity is not set
+                                var quantity = value.quantity ? value.quantity : '0'; // Default to '0' if not set
+                                var unit = value.unit ? value.unit : 'N/A'; // Handle missing unit
 
-                                // Append the data to the table
                                 $('#stockTable tbody').append(
                                     '<tr>' +
                                     '<td>' + warehouseName + '</td>' +
                                     '<td>' + categoryName + '</td>' +
-                                    '<td>' + value.product_name + '</td>' + // Correctly access product_name
-                                    '<td>' + quantity + '</td>' + // Correctly access quantity
+                                    '<td>' + value.product_name + '</td>' +
+                                    '<td>' + unit + '</td>' + // Display unit
+                                    '<td>' + quantity + '</td>' +
                                     '</tr>'
                                 );
                             });
+
+                            // Show modal after populating data (if applicable)
+                            $('#stockModal').modal('show');
                         },
                         error: function(xhr, status, error) {
                             console.error('Error fetching stock data:', error);

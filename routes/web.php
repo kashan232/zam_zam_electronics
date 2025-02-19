@@ -88,6 +88,12 @@ Route::get('/product-warehouse-stock', [warehouseStockController::class, 'produc
 Route::get('/get-products-by-category', [warehouseStockController::class, 'getProductsByCategory'])->name('get-products-by-category');
 Route::get('/filter-warehouse-stock', [warehouseStockController::class, 'filterWarehouseStock'])->name('filter-warehouse-stock');
 
+Route::get('/warehouse-to-shop-stock', [warehouseStockController::class, 'warehouse_to_shop_stock'])->name('warehouse-to-shop-stock');
+Route::get('/get-stock', [warehouseStockController::class, 'getStock'])->name('get-stock');
+Route::post('/store-warehouse-to-shop', [warehouseStockController::class, 'store_warehouse_to_shop'])->name('store-warehouse-to-shop');
+Route::post('/transfer-warehouse-stock', [warehouseStockController::class, 'transfer_warehouse_stock'])->name('transfer-warehouse-stock');
+Route::get('/All-Stock-Transfer', [warehouseStockController::class, 'All_Stock_Transfer'])->name('All-Stock-Transfer');
+
 // Route::post('/store-Purchase', [PurchaseController::class, 'store_Purchase'])->name('store-Purchase');
 // Route::post('/update-Purchase', [PurchaseController::class, 'update_Purchase'])->name('update-Purchase');
 // Route::post('/purchases-payment', [PurchaseController::class, 'purchases_payment'])->name('purchases-payment');

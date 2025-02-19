@@ -12,4 +12,9 @@ class Product extends Model
     use SoftDeletes;
 
     protected $guarded = [];
+
+    public function warehouseStock()
+    {
+        return $this->hasMany(WarehouseProductStock::class, 'product_name', 'product_name');
+    }
 }
