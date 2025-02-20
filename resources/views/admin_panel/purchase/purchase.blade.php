@@ -44,6 +44,7 @@
                                                 <th>Item Name</th>
                                                 <th>Supplier Name </th>
                                                 <th>Quantity</th>
+                                                <th>Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -57,6 +58,9 @@
                                                 <td>{{ str_replace(['[', ']', '"'], '', $purchase->supplier_name ?? 'Null') }}</td>
 
                                                 <td>{{ str_replace(['[', ']', '"'], '', $purchase->quantity) }}</td>
+                                                <td>
+                                                    <a href="{{ route('purchase-return',['id' => $purchase->id ]) }}" class="btn btn-sm btn-outline--primary ms-1 editBtn">Purchase Return</a>
+                                                </td>
                                             </tr>
                                             @endforeach
                                         </tbody>

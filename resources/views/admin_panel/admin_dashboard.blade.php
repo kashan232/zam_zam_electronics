@@ -84,7 +84,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach($all_product as $product)
+                                            @foreach($all_product->take(8) as $product)
                                             <tr>
                                                 <td class="fw-bold"> {{ $product->product_name }} </td>
                                                 <td> {{ $product->category }} </td>
@@ -127,7 +127,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach ($all_product as $product)
+                                            @foreach ($all_product->take(8) as $product)
                                             <tr>
                                                 <td>{{ $product->product_name }}</td>
                                                 <td>{{ $product->stock }}</td>

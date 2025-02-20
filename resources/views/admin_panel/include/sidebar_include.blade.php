@@ -174,6 +174,13 @@
                                     <span class="menu-title">All Purchases</span>
                                 </a>
                             </li>
+                            <li class="sidebar-menu-item  ">
+                                <a href="{{ route('all-purchase-return') }}"
+                                    class="nav-link">
+                                    <i class="menu-icon la la-dot-circle"></i>
+                                    <span class="menu-title">Purchases Return</span>
+                                </a>
+                            </li>
                         </ul>
                     </div>
                 </li>

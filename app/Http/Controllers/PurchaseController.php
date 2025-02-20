@@ -218,14 +218,11 @@ class PurchaseController extends Controller
 
             // Fetch the specific purchase by ID and make sure we get the item details
             $purchase = Purchase::where('id', $id)->first();
-
+            // dd($purchase);
             if ($purchase) {
                 // Decode JSON fields from the purchase table for items, quantities, and prices
                 $itemNames = json_decode($purchase->item_name, true);
                 $quantities = json_decode($purchase->quantity, true);
-                $prices = json_decode($purchase->price, true);
-                $totals = json_decode($purchase->total, true);
-
                 // Initialize an array to store stock quantities
                 $stocks = [];
 
@@ -252,8 +249,6 @@ class PurchaseController extends Controller
                     'purchase' => $purchase,
                     'itemNames' => $itemNames,
                     'quantities' => $quantities,
-                    'prices' => $prices,
-                    'totals' => $totals,
                     'stocks' => $stocks // Pass the stock quantities to the view
                 ]);
             } else {
@@ -268,11 +263,12 @@ class PurchaseController extends Controller
         // Retrieve inputs from the request
         $itemNames = $request->input('item_name', []);
         $returnQuantities = array_map('floatval', $request->input('return_qty', [])); // Convert quantities to float
-        $unitPrices = array_map('floatval', $request->input('price', [])); // Convert unit prices to float
-        $purchaseId = $request->input('purchase_id');
+        $purchaseDate = $request->input('purchase_date');
+        $warehouse = $request->input('warehouse_id');
+        $supplierName = $request->input('supplier_name');
 
-        // Ensure item names, return quantities, and unit prices are arrays
-        if (!is_array($itemNames) || !is_array($returnQuantities) || !is_array($unitPrices)) {
+        // Ensure item names and return quantities are arrays
+        if (!is_array($itemNames) || !is_array($returnQuantities)) {
             return redirect()->back()->with('error', 'Invalid data provided.');
         }
 
@@ -288,70 +284,18 @@ class PurchaseController extends Controller
             }
         }
 
-        // Fetch the purchase record to update quantities
-        $purchase = Purchase::where('id', $purchaseId)->first();
-        if ($purchase) {
-            $itemNamesInPurchase = json_decode($purchase->item_name, true);
-            $quantitiesInPurchase = json_decode($purchase->quantity, true);
-
-            // Update quantities in the purchase record
-            foreach ($itemNames as $index => $itemName) {
-                $returnQty = $returnQuantities[$index] ?? 0;
-                $itemIndex = array_search($itemName, $itemNamesInPurchase);
-
-                if ($itemIndex !== false) {
-                    // Subtract the return quantity from the existing quantity
-                    $quantitiesInPurchase[$itemIndex] -= $returnQty;
-
-                    // Ensure quantity does not go below zero
-                    if ($quantitiesInPurchase[$itemIndex] < 0) {
-                        $quantitiesInPurchase[$itemIndex] = 0;
-                    }
-                }
-            }
-
-            // Save updated quantities and item names as strings
-            $purchase->quantity = json_encode(array_map('strval', $quantitiesInPurchase));
-            $purchase->item_name = json_encode($itemNamesInPurchase);
-            $purchase->save();
-        }
-
-        // Update purchase record to set is_return flag
-        Purchase::where('id', $purchaseId)->update(['is_return' => 1]);
-
-        // Calculate totals
-        $totals = [];
-        $subtotal = 0;
-        foreach ($returnQuantities as $index => $quantity) {
-            $price = $unitPrices[$index] ?? 0;
-            $total = $quantity * $price;
-            $totals[] = strval($total);  // Convert total to string
-            $subtotal += $total;
-        }
-
-        // Prepare data for storage and ensure all numeric arrays are saved as strings
-        $purchaseReturnData = [
-            'purchase_id' => $purchaseId,
-            'return_date' => $request->input('return_date'),
-            'supplier' => $request->input('supplier'),
-            'warehouse_id' => $request->input('warehouse'),
+        // Save purchase return data
+        PurchaseReturn::create([
+            'purchase_date' => $purchaseDate,
+            'supplier_name' => $supplierName,
+            'warehouse_id' => $warehouse,
             'item_name' => json_encode($itemNames),
-            'return_quantity' => json_encode(array_map('strval', $returnQuantities)),  // Convert quantities to strings
-            'price' => json_encode(array_map('strval', $unitPrices)),  // Convert prices to strings
-            'total' => json_encode($totals),  // Totals are already converted to strings above
-            'note' => $request->input('note'),
-            'discount' => $request->input('discount') ?? 0,
-            'subtotal' => strval($subtotal),  // Subtotal as string
-            'total_price' => strval($subtotal),  // Assuming total_price should be the subtotal
-            'payable_amount' => strval($request->input('payable_amount'))
-        ];
+            'return_quantity' => json_encode(array_map('strval', $returnQuantities)), // Convert quantities to strings
+        ]);
 
-        // Save purchase return to the database
-        PurchaseReturn::create($purchaseReturnData);
-
-        // Redirect back with a success message
-        return redirect()->back()->with('success', 'Purchase return saved, stock updated, and purchase marked as returned successfully.');
+        return redirect()->back()->with('success', 'Purchase return saved, and stock updated successfully.');
     }
+
 
     public function all_purchase_return()
     {
@@ -359,8 +303,7 @@ class PurchaseController extends Controller
             $userId = Auth::id();
 
             // Retrieve all PurchaseReturns with their related Purchase data (including invoice_no)
-            $PurchaseReturns = PurchaseReturn::with('purchase')->get();
-            // dd($PurchaseReturns);
+            $PurchaseReturns = PurchaseReturn::get();
             return view('admin_panel.purchase_return.purchase_return', [
                 'PurchaseReturns' => $PurchaseReturns,
             ]);
