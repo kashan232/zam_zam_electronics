@@ -21,8 +21,8 @@
                                 <h5 class="card-title">Stock Transfer List</h5>
                             </div>
                             <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table table-striped">
+                                <div class="table-responsive--md table-responsive">
+                                    <table id="example" class="display  table table--light style--two bg--white" style="width:100%">
                                         <thead>
                                             <tr>
                                                 <th>#</th>
