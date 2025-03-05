@@ -7,7 +7,7 @@
             </a>
         </div>
         <div class="sidebar__menu-wrapper" id="sidebar__menuWrapper">
-            @if(Auth::check() && Auth::user()->usertype == 'admin')
+      
             <ul class="sidebar__menu">
                 <li class="sidebar-menu-item active">
                     <a href="{{ route('home') }}" class="nav-link ">
@@ -105,7 +105,7 @@
                                     <span class="menu-title">Warehouse Prodct Stock</span>
                                 </a>
                             </li>
-                            
+
                         </ul>
                     </div>
                 </li>
@@ -138,7 +138,7 @@
                 <li class="sidebar-menu-item ">
                     <a href="{{ route('product-alerts') }}" class="nav-link ">
                         <i class="menu-icon fas fa-bell"></i>
-                        
+
                         <span class="menu-title">Stock Alerts</span>
                         @php
                         $lowStockProductsCount = DB::table('products')
@@ -225,7 +225,7 @@
                                     <span class="menu-title">Sales Report</span>
                                 </a>
                             </li>
-                            
+
                         </ul>
                         <ul>
                             <li class="sidebar-menu-item ">
@@ -235,12 +235,12 @@
                                     <span class="menu-title"> Purchase Report </span>
                                 </a>
                             </li>
-                            
+
                         </ul>
                     </div>
                 </li>
 
-                
+
 
 
 
@@ -325,34 +325,7 @@
                     </div>
                 </li> -->
             </ul>
-            @endif
 
-
-
-            @if(Auth::check() && Auth::user()->usertype == 'staff')
-            <ul class="sidebar__menu">
-                <li class="sidebar-menu-item active">
-                    <a href="{{ route('home') }}" class="nav-link ">
-                        <i class="menu-icon la la-home"></i>
-                        <span class="menu-title">Dashboard</span>
-                    </a>
-                </li>
-
-                <li class="sidebar-menu-item">
-                    <a href="{{ route('all-sales') }}" class="nav-link">
-                        <i class="menu-icon la la-dot-circle"></i>
-                        <span class="menu-title">All Sales</span>
-                    </a>
-                </li>
-
-                <li class="sidebar-menu-item">
-                    <a href="{{ route('customer') }}" class="nav-link">
-                        <i class="menu-icon la la-users"></i>
-                        <span class="menu-title">Customer</span>
-                    </a>
-                </li>
-            </ul>
-            @endif
             <div class="text-center mb-3 text-uppercase">
                 <span class="text--primary">POS</span>
                 <span class="text--success">System </span>

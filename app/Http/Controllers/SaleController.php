@@ -8,10 +8,12 @@ use App\Models\CustomerCredit;
 use App\Models\Product;
 use App\Models\Purchase;
 use App\Models\Sale;
+use App\Models\SaleReturn;
 use App\Models\Warehouse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Barryvdh\DomPDF\Facade\Pdf; // If using barryvdh/laravel-dompdf
+use Illuminate\Support\Facades\DB;
 
 class SaleController extends Controller
 {
@@ -205,6 +207,66 @@ class SaleController extends Controller
         ]);
     }
 
+    public function sale_return(Request $request, $id)
+    {
+        // Fetch the sale data using the sale ID
+        $sale = Sale::findOrFail($id);
+        // dd($sale);
+        $categories = Category::get();
+
+        // Pass sale data to the receipt view
+        return view('admin_panel.sale.sale_return', compact('sale', 'categories'));
+    }
+
+    public function store_sale_return(Request $request)
+    {
+        DB::beginTransaction();
+        try {
+            $sale = Sale::findOrFail($request->sale_id);
+            $action = $request->input('action');
+
+            foreach ($request->item_name as $index => $productName) {
+                $product = Product::where('product_name', $productName)->first();
+                if (!$product) {
+                    return back()->with('error', "Product $productName not found");
+                }
+                
+                if ($action == 'return') {
+                    $returnQty = $request->return_quantity[$index];
+                    $product->stock += $returnQty; // Add only returned quantity
+                    $product->save();
+                } elseif ($action == 'exchange') {
+                    $exchangeProduct = Product::where('product_name', $request->exchange_product)->first();
+                    if (!$exchangeProduct) {
+                        return back()->with('error', "Exchange product not found");
+                    }
+                    $exchangeProduct->stock -= 1; // Deduct exchanged product
+                    $exchangeProduct->save();
+                }
+            }
+
+            SaleReturn::create([
+                'sale_id' => $sale->id,
+                'customer' => $request->customer,
+                'sale_date' => $request->sale_date,
+                'action' => $action,
+                'deduct_amount' => $request->deduct_amount ?? 0,
+                'exchange_product' => $request->exchange_product ?? null,
+                'item_category' => json_encode($request->item_category),
+                'item_name' => json_encode($request->item_name),
+                'quantity' => json_encode($request->quantity),
+                'return_quantity' => json_encode($request->return_quantity), // Store return qty
+                'price' => json_encode($request->price),
+                'total' => json_encode($request->return_total), // Use return_total instead of total
+            ]);
+
+            DB::commit();
+            return back()->with('success', 'Sale return processed successfully');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', $e->getMessage());
+        }
+    }
 
     public function downloadInvoice($id)
     {

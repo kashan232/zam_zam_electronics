@@ -161,18 +161,17 @@ class ProductController extends Controller
         }
     }
     public function delete_product(Request $request)
-{
-    if (Auth::id()) {
-        $product = Product::find($request->id);
+    {
+        if (Auth::id()) {
+            $product = Product::find($request->id);
 
-        if ($product) {
-            $product->delete();
-            return response()->json(['success' => true, 'message' => 'Product deleted successfully.']);
-        } else {
-            return response()->json(['success' => false, 'message' => 'Product not found.']);
+            if ($product) {
+                $product->delete();
+                return response()->json(['success' => true, 'message' => 'Product deleted successfully.']);
+            } else {
+                return response()->json(['success' => false, 'message' => 'Product not found.']);
+            }
         }
+        return response()->json(['success' => false, 'message' => 'Unauthorized request.']);
     }
-    return response()->json(['success' => false, 'message' => 'Unauthorized request.']);
-}
-
 }
