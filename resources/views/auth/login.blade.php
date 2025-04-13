@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -152,28 +153,28 @@
             background-color: #f8d7da;
             border-color: #f5c6cb;
         }
-    </style> 
+    </style>
     <div class="wrapper">
         <div style="width:100%; text-align:center;">
-            <img src="assets/admin/images/login_logo.png" alt="image">
+            <!-- <img src="assets/admin/images/login_logo.png" alt="image"> -->
         </div>
         <!-- <h2>Admin Login</h2> -->
         <form method="POST" action="{{ route('login') }}">
             @csrf
             @if ($errors->any())
-                    <div class="alert alert-danger">
-                        @foreach ($errors->all() as $error)
-                        <p>{{ $error }}</p>
-                        @endforeach
-                    </div>
-                    @endif
+            <div class="alert alert-danger">
+                @foreach ($errors->all() as $error)
+                <p>{{ $error }}</p>
+                @endforeach
+            </div>
+            @endif
 
             <div class="input-box">
-                <x-input-label for="email"/>
+                <x-input-label for="email" />
                 <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" placeholder="Email" required autofocus autocomplete="username" />
             </div>
-            <div class="input-box"> 
-                <x-input-label for="password"/>
+            <div class="input-box">
+                <x-input-label for="password" />
                 <x-text-input id="password" class="block mt-1 w-full" type="password" name="password" placeholder="Password" required autocomplete="current-password" />
             </div>
             <div class="input-box button">
@@ -183,5 +184,6 @@
     </div>
     <script src="https://code.jquery.com/jquery-3.7.0.js" integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM="
         crossorigin="anonymous"></script>
-</body>
+    </body>
+
 </html>

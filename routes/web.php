@@ -157,6 +157,7 @@ Route::get('/get-customer-amount/{id}', [SaleController::class, 'get_customer_am
 Route::get('/sale-return/{id}', [SaleController::class, 'sale_return'])->name('sale-return');
 Route::post('/store-sale-return', [SaleController::class, 'store_sale_return'])->name('store-sale-return');
 
+Route::get('/all-sales-return', [SaleController::class, 'all_sales_return'])->name('all-sales-return');
 
 // Route for downloading invoice
 Route::get('/invoice/download/{id}', [SaleController::class, 'downloadInvoice'])->name('invoice.download');

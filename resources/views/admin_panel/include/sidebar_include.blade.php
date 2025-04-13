@@ -205,6 +205,14 @@
                                     <span class="menu-title">All Sales</span>
                                 </a>
                             </li>
+
+                            <li class="sidebar-menu-item">
+                                <a href="{{ route('all-sales-return') }}" class="nav-link">
+                                    <i class="menu-icon la la-dot-circle"></i>
+                                    <span class="menu-title"> Sale Return</span>
+                                </a>
+                            </li>
+
                         </ul>
                     </div>
                 </li>

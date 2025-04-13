@@ -296,4 +296,21 @@ class SaleController extends Controller
         // Pass sale data to the receipt view
         return view('admin_panel.sale.receipt', compact('sale'));
     }
+
+    public function all_sales_return()
+    {
+
+        if (Auth::id()) {
+            $userId = Auth::id();
+            $usertype = Auth()->user()->usertype;
+
+            // Retrieve all Sales with their related Purchase data (including invoice_no)
+            $SaleReturns = SaleReturn::get();
+            return view('admin_panel.sale.all_sales_return', [
+                'SaleReturns' => $SaleReturns,
+            ]);
+        } else {
+            return redirect()->back();
+        }
+    }
 }
