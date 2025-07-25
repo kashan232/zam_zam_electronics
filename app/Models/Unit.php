@@ -11,15 +11,16 @@ class Unit extends Model
     use HasFactory;
     use SoftDeletes;
 
-     // In Brand model
-     public function products()
-     {
-         return $this->hasMany(Product::class, 'unit', 'unit');
-     }
-     
-    protected $fillable = [
-        'admin_or_user_id',
-        'unit'
-    ];
+    // In Brand model
+    public function products()
+    {
+        return $this->hasMany(Product::class, 'unit', 'unit');
+    }
 
+    public function category()
+    {
+        return $this->belongsTo(Category::class, 'category_id');
+    }
+
+    protected $guarded = [];
 }

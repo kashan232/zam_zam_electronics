@@ -39,7 +39,6 @@
                                             <tr>
                                                 <th>S.N.</th>
                                                 <th>Name</th>
-                                                <th>Products</th>
                                                 <th>Action</th>
                                             </tr>
                                         </thead>
@@ -48,26 +47,12 @@
                                             <tr>
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $categories->category }}</td>
-                                                <td>{{ $categories->products_count }}</td>
                                                 <td>
                                                     <div class="button--group">
-
-                                                        {{-- <button type="button"
-                                                            class="btn btn-sm btn-outline-primary cuModalBtn"
-                                                            data-modal_title="Edit Category">
-                                                            <i class="la la-pencil"></i>Edit </button> --}}
-
                                                         <button type="button" class="btn btn-sm btn-outline-primary editCategoryBtn"  data-toggle="modal" 
                                                         data-target="#editcategory" data-category-id="{{ $categories->id }}" data-category-name="{{ $categories->category }}">
                                                             <i class="la la-pencil"></i>Edit
                                                         </button>
-
-
-                                                        {{-- <button type="button"
-                                                            class="btn btn-sm btn-outline-danger  disabled  confirmationBtn"
-                                                            data-question="Are you sure to delete this category?"
-                                                            data-action="https://script.viserlab.com/torylab/admin/category/delete/6">
-                                                            <i class="la la-trash"></i>Delete </button> --}}
                                                     </div>
                                                 </td>
                                             </tr>

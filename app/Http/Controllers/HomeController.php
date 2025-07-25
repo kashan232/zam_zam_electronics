@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CashTransfer;
 use App\Models\Category;
 use App\Models\Customer;
 use App\Models\Product;
+use App\Models\Sale;
 use App\Models\Warehouse;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -21,33 +24,34 @@ class HomeController extends Controller
             $usertype = Auth()->user()->usertype;
 
             if ($usertype == 'staff') {
+                $userId = Auth::id();
 
-                // Fetch all categories for the dropdown
-                $categories = Category::all();
+                // Get today's sales
+                $today = now()->toDateString();
+                $todaySalesTotal = Sale::where('userid', $userId)
+                    ->whereDate('created_at', $today)
+                    ->sum('Payable_amount');
 
-                // Initially, load all products for display (optional, can be removed if you prefer to only load products on category change)
-                $products = Product::all();
-                $Customers = Customer::all();
-                $Warehouses = Warehouse::get();
+                // Get transferred total for today
+                $alreadyTransferred = CashTransfer::where('staff_id', $userId)
+                    ->whereDate('transfer_date', $today)
+                    ->sum('amount');
 
+                $transferableAmount = $todaySalesTotal - $alreadyTransferred;
 
-                return view('user_panel.user_dashboard', compact('categories', 'products', 'Customers','Warehouses'));
+                return view('user_panel.user_dashboard', compact('transferableAmount'));
             } else if ($usertype == 'admin') {
                 $userId = Auth::id();
-                // Fetch all products for the logged-in admin
+
                 $all_product = Product::where('admin_or_user_id', '=', $userId)->get();
 
-                // Calculate total stock value for all products
                 $totalStockValue = $all_product->sum(function ($product) {
                     return $product->stock * $product->wholesale_price;
                 });
 
-
-                // Calculate total stock value for each product
                 foreach ($all_product as $product) {
                     $product->total_stock_value = $product->stock * $product->wholesale_price;
                 }
-
 
                 $categories = DB::table('categories')->count();
                 $products = DB::table('products')->count();
@@ -55,9 +59,32 @@ class HomeController extends Controller
                 $customers = DB::table('customers')->count();
                 $totalsales = DB::table('sales')->sum('Payable_amount');
 
-                // $lowStockProducts = Product::whereRaw('CAST(stock AS UNSIGNED) <= CAST(alert_quantity AS UNSIGNED)')->get();
-                // dd($lowStockProducts);
-                return view('admin_panel.admin_dashboard', compact('all_product', 'totalStockValue', 'categories', 'products', 'suppliers', 'customers','totalsales'));
+                // 💰 Today's Cash Box
+                $cashBox = DB::table('sales')
+                    ->whereDate('created_at', Carbon::today())
+                    ->sum('Payable_amount');
+
+                // 📦 Today’s Staff Cash Transfers
+                $todayCashTransfers = DB::table('cash_transfers')
+                    ->whereDate('transfer_date', Carbon::today())
+                    ->sum('amount');
+
+               $staffTransfers = CashTransfer::latest()
+                    ->limit(10)
+                    ->get();
+
+                return view('admin_panel.admin_dashboard', compact(
+                    'all_product',
+                    'totalStockValue',
+                    'categories',
+                    'products',
+                    'suppliers',
+                    'customers',
+                    'totalsales',
+                    'cashBox',
+                    'todayCashTransfers',
+                    'staffTransfers' // 👈 pass to blade
+                ));
             }
         } else {
             return Redirect()->route('login');
@@ -145,5 +172,30 @@ class HomeController extends Controller
         } else {
             return response()->json(null, 404);
         }
+    }
+
+    public function transferCash(Request $request)
+    {
+        $userId = Auth::id();
+        $amount = $request->amount;
+
+        CashTransfer::create([
+            'staff_id' => $userId,
+            'amount' => $amount,
+            'transfer_date' => now()->toDateString(),
+        ]);
+
+        return redirect()->back()->with('success', 'Amount successfully transferred to admin.');
+    }
+
+    public function cash_transfser(Request $request)
+    {
+        
+        $staffTransfers = CashTransfer::latest()
+            ->get();
+
+        return view('admin_panel.cash_transfer', compact(
+            'staffTransfers'
+        ));
     }
 }

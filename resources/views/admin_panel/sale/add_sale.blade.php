@@ -1,357 +1,324 @@
 @include('admin_panel.include.header_include')
 
 <style>
-    .search-container {
-        position: relative;
-        width: 100%;
-        /* Adjust width as needed */
-    }
-
-    #productSearch {
-        width: 100%;
-        padding: 8px;
-    }
-
-    #searchResults {
-        position: absolute;
-        width: 100%;
-        max-height: 200px;
+    .product-list {
+        height: 600px;
         overflow-y: auto;
+        padding-right: 10px;
+    }
+
+    .product-card {
+        border: 1px solid #dcdcdc;
+        border-radius: 10px;
+        padding: 12px;
         background-color: #fff;
-        border: 1px solid #ddd;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        z-index: 1000;
-    }
-
-    .search-result-item {
-        padding: 10px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
         cursor: pointer;
+        height: 100%;
+        transition: 0.3s;
     }
 
-    .search-result-item:hover {
-        background-color: #f0f0f0;
+    .product-card:hover {
+        background-color: #f3faff;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    .product-name {
+        font-size: 16px;
+        font-weight: 600;
+        margin-bottom: 5px;
+    }
+
+    .product-info small {
+        font-size: 13px;
+        color: #777;
+    }
+
+
+    .bill-section {
+        height: 600px;
+        overflow-y: auto;
+        padding-right: 10px;
+        background: #fdfdfd;
+        border-left: 1px solid #ddd;
     }
 </style>
 
 <body>
-    <!-- page-wrapper start -->
     <div class="page-wrapper default-version">
-
-        <!-- sidebar start -->
         @include('admin_panel.include.sidebar_include')
-        <!-- sidebar end -->
-
-        <!-- navbar-wrapper start -->
         @include('admin_panel.include.navbar_include')
-        <!-- navbar-wrapper end -->
+
         <div class="body-wrapper">
             <div class="bodywrapper__inner">
-
-                <div class="d-flex mb-30 flex-wrap gap-3 justify-content-between align-items-center">
-                    <h6 class="page-title">Add Sale</h6>
-                    <div class="d-flex flex-wrap justify-content-end gap-2 align-items-center breadcrumb-plugins">
-                        <a href="https://script.viserlab.com/torylab/admin/purchase/all"
-                            class="btn btn-sm btn-outline--primary">
-                            <i class="la la-undo"></i> Back</a>
-                    </div>
+                <div class="text-center">
+                    <h1 class="fw-bold" style="font-size: 32px; color: #2c3e50; letter-spacing: 1px;">
+                        🛒 POS Sale Screen
+                    </h1>
+                    <p style="font-size: 14px; color: #7f8c8d;">Easily add and manage your sales below</p>
                 </div>
 
-                <div class="row gy-3">
-                    <div class="col-lg-12 col-md-12 mb-30">
-                        <div class="card">
-                            <div class="card-body">
-                                @if (session()->has('error'))
-                                <div class="alert alert-danger">
-                                    <strong>Error!</strong> {{ session('error') }}.
+                <form action="{{ route('store-Sale') }}" method="POST">
+                    @csrf
+
+                    <div class="row mt-2 mb-2">
+                        <!-- Left: Product Filters & List -->
+                        <div class="col-md-6">
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label>Category</label>
+                                    <select id="categorySelect" class="form-control">
+                                        <option value="">Select Category</option>
+                                        @foreach($categories as $category)
+                                        <option value="{{ $category->id }}">{{ $category->category }}</option>
+                                        @endforeach
+                                    </select>
                                 </div>
-                                @endif
-                                <form action="{{ route('store-Sale') }}" method="POST">
-                                    @csrf
-                                    <div class="row mb-3">
-                                        <div class="col-xl-4 col-sm-6">
-                                            <div class="form-group" id="supplier-wrapper">
-                                                <label class="form-label">Customers</label>
-                                                <input type="text" name="customer" class="form-control">
-                                            </div>
-                                        </div>
+                                <div class="col-md-6">
+                                    <label>Size</label>
+                                    <select id="sizeSelect" class="form-control">
+                                        <option value="">Select Size</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-12 pt-2 pb-2">
+                                    <label>Search Product</label>
+                                    <input type="text" id="searchProduct" class="form-control" placeholder="Search by name">
+                                </div>
+                            </div>
 
-                                        <div class="col-xl-4 col-sm-6">
-                                            <div class="form-group">
-                                                <label>Date</label>
-                                                <input name="sale_date" type="date" data-language="en"
-                                                    class="datepicker-here form-control bg--white"
-                                                    required>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- Product Items List -->
-                                    <div class="row mt-2 mb-2">
-                                        <div class="search-container">
-                                            <label class="form-label" style="font-size: 20px;">Search Products</label>
-                                            <input type="text" id="productSearch" placeholder="Search Products..." class="form-control">
-                                            <ul id="searchResults" class="list-group"></ul>
-                                        </div>
-                                    </div>
-                                    <div class="row mb-3">
-                                        <div class="table-responsive">
-                                            <table class="productTable table border">
-                                                <thead class="border bg--dark">
-                                                    <tr>
-                                                        <th>Category</th>
-                                                        <th>Name</th>
-                                                        <th>Quantity<span class="text--danger">*</span></th>
-                                                        <th>Price<span class="text--danger">*</span></th>
-                                                        <th>Total</th>
-                                                        <th>Action</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody id="purchaseItems">
-                                                </tbody>
+                            <div class="product-list">
+                                <div class="row" id="productList"></div>
+                            </div>
+                        </div>
 
-                                            </table>
-                                            <button type="button" class="btn btn-primary mt-4 mb-4" id="addRow">Add More</button>
-                                        </div>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="col-md-8 col-sm-6">
-                                        </div>
-
-                                        <div class="col-md-4 col-sm-6">
-                                            <div class="row">
-                                                <div class="col-sm-12">
-                                                    <div class="form-group">
-                                                        <label>Total Price</label>
-                                                        <div class="input-group">
-                                                            <span class="input-group-text">Pkr</span>
-                                                            <input type="number" name="total_price" class="form-control total_price" required readonly>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-sm-12">
-                                                    <div class="form-group">
-                                                        <label>Discount</label>
-                                                        <div class="input-group">
-                                                            <span class="input-group-text">Pkr</span>
-                                                            <input type="number" id="discount" name="discount" class="form-control" step="any">
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-sm-12">
-                                                    <div class="form-group">
-                                                        <label>Payable Amount</label>
-                                                        <div class="input-group">
-                                                            <span class="input-group-text">Pkr</span>
-                                                            <input type="number" name="payable_amount" class="form-control payable_amount" readonly>
-                                                        </div>
-                                                    </div>
+                        <!-- Right: Bill / Selected Items -->
+                        <div class="col-md-6">
+                            <h5>🧾 Bill / Selected Items</h5>
+                            <div class="bill-section">
+                                <div class="card mb-4">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <!-- Customer Name -->
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="customer_name" class="form-label">Customer Name</label>
+                                                    <input type="text" id="customer_name" name="customer_name" class="form-control"
+                                                        placeholder="Enter customer name" value="Walking Customer">
                                                 </div>
                                             </div>
+
+                                            <!-- Sale Date -->
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="sale_date" class="form-label">Sale Date</label>
+                                                    <input type="date" id="sale_date" name="sale_date" class="form-control"
+                                                        value="{{ \Carbon\Carbon::now()->format('Y-m-d') }}">
+                                                </div>
+                                            </div>
+
                                         </div>
                                     </div>
-                                    <button type="submit" class="btn btn--primary w-100 h-45">Submit</button>
-                                </form>
+                                </div>
+
+
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Qty</th>
+                                            <th>Total</th>
+                                            <th>X</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="selectedItems"></tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td colspan="2" class="text-end"><strong>Grand Total</strong></td>
+                                            <td colspan="2"><input type="text" id="grandTotal" class="form-control" readonly value="0.00"></td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2" class="text-end"><strong>Discount (PKR)</strong></td>
+                                            <td colspan="2">
+                                                <input type="number" step="0.01" min="0" id="discount" name="discount" class="form-control" value="0">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2" class="text-end"><strong>Net Total</strong></td>
+                                            <td colspan="2">
+                                                <input type="text" id="netTotal" name="Payable_amount" class="form-control" readonly value="0.00">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2" class="text-end"><strong>Cash Received</strong></td>
+                                            <td colspan="2">
+                                                <input type="number" step="0.01" min="0" id="cashReceived" class="form-control" placeholder="Enter cash received">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2" class="text-end"><strong>Cash Return</strong></td>
+                                            <td colspan="2">
+                                                <input type="text" id="cashReturn" class="form-control" readonly value="0.00">
+                                            </td>
+                                        </tr>
+
+
+                                    </tfoot>
+                                </table>
+                                <button type="submit" class="btn btn-success w-100 mt-2">🧾 Submit Sale</button>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div><!-- bodywrapper__inner end -->
-        </div><!-- body-wrapper end -->
+                </form>
 
+            </div>
+        </div>
     </div>
+
     @include('admin_panel.include.footer_include')
 
-
     <script>
+        let allProducts = @json($products);
+
         $(document).ready(function() {
-            // Customer selection change
-            $('#customer-select').change(function() {
-                const customerData = $(this).val().split('|');
-                const customerId = customerData[0];
-                // alert(customerId);
-                if (customerId) {
-                    $.ajax({
-                        url: "{{ route('get-customer-amount', ':id') }}".replace(':id', customerId),
-                        type: 'GET',
-                        success: function(response) {
-                            $('#previous_balance').val(response.previous_balance || 0);
-                            updateClosingBalance(); // Calculate closing balance initially
-                        },
-                        error: function(xhr) {
-                            console.error("Error fetching customer amount: ", xhr);
-                        }
-                    });
+            const sizeSelect = $('#sizeSelect');
+            const productList = $('#productList');
+
+            // 👇 Category change handler
+            $('#categorySelect').change(function() {
+                const categoryId = $(this).val();
+                if (!categoryId) {
+                    sizeSelect.html('<option value="">Select Size</option>');
+                    renderProducts();
+                    return;
                 }
+
+                // ✅ Route-based call
+                const url = `{{ route('get.units.by.category', ':id') }}`.replace(':id', categoryId);
+
+                $.get(url, function(units) {
+                    let options = '<option value="">Select Size</option>';
+                    units.forEach(unit => {
+                        options += `<option value="${unit.id}">${unit.unit}</option>`;
+                    });
+                    sizeSelect.html(options);
+
+                    // ✅ Size change triggers render
+                    sizeSelect.off('change').on('change', renderProducts);
+
+                    renderProducts(); // re-render products after units are loaded
+                });
             });
 
-            // Update total price and payable amount on input change
-            $('input[name="total_price"]').on('input', calculateTotalPrice);
-            $('#discount').on('input', calculatePayableAmount);
-            $('#cashReceived').on('input', updateClosingBalance); // Trigger closing balance update on cash received input
+            // Search input triggers product re-filter
+            $('#searchProduct').on('input', renderProducts);
 
-            // Function to calculate total price
-            function calculateTotalPrice() {
-                let total = 0;
-                $('#purchaseItems tr').each(function() {
-                    const quantity = parseFloat($(this).find('.quantity').val()) || 0;
-                    const price = parseFloat($(this).find('.price').val()) || 0;
-                    total += quantity * price;
+            function renderProducts() {
+                const filter = {
+                    category: $('#categorySelect').val(),
+                    size: $('#sizeSelect').val(),
+                    search: $('#searchProduct').val()?.toLowerCase()
+                };
+
+                const filtered = allProducts.filter(p => {
+                    return (!filter.category || p.category_id == filter.category) &&
+                        (!filter.size || p.unit_id == filter.size) &&
+                        (!filter.search || p.product_name.toLowerCase().includes(filter.search));
                 });
 
-                $('.total_price').val(total.toFixed(2));
-                calculatePayableAmount(); // Update payable amount
+                const container = $('#productList');
+                container.empty();
+
+                filtered.forEach(product => {
+                    const card = `
+                <div class="col-md-4 mb-3">
+                    <div class="product-card"
+                        data-id="${product.id}" 
+                        data-name="${product.product_name}" 
+                        data-price="${product.retail_price}" 
+                        data-unit="${product.unit?.unit}">
+                        <div class="product-name">${product.product_name}</div>
+                        <div class="product-info">
+                            <small>${product.unit?.unit}</small>
+                            <div style="font-weight: bold; font-size: 18px; color: red;">Rs. ${product.retail_price}</div>
+                        </div>
+                    </div>
+                </div>
+                `;
+                    container.append(card);
+                });
             }
 
-            // Function to calculate payable amount
-            function calculatePayableAmount() {
-                const totalPrice = parseFloat($('.total_price').val()) || 0;
-                const discount = parseFloat($('#discount').val()) || 0;
-                const payableAmount = Math.max(0, totalPrice - discount);
+            renderProducts(); // initial call
 
-                $('.payable_amount').val(payableAmount.toFixed(2));
-                updateClosingBalance(); // Update closing balance
-            }
+            // 👉 Product card clicked — Add to bill
+            $('#productList').on('click', '.product-card', function() {
+                const id = $(this).data('id');
+                const name = $(this).data('name');
+                const price = parseFloat($(this).data('price')).toFixed(2);
 
-            // Function to update closing balance
-            function updateClosingBalance() {
-                const previousBalance = parseFloat($('#previous_balance').val()) || 0;
-                const payableAmount = parseFloat($('.payable_amount').val()) || 0;
-                const cashReceived = parseFloat($('#cashReceived').val()) || 0;
+                // Prevent duplicate
+                if ($(`#selectedItems input[value="${id}"]`).length) return;
 
-                const closingBalance = Math.max(0, previousBalance + payableAmount - cashReceived);
-
-                $('#closing_balance').val(closingBalance.toFixed(2));
-            }
-
-            // Add a new row
-            $('#addRow').click(function() {
-                const newRow = createNewRow();
-                $('#purchaseItems').append(newRow);
-                calculateTotalPrice();
-            });
-
-            // Function to create a new row
-            function createNewRow(category = '', productName = '', price = '') {
-                return `
+                const row = `
             <tr>
-                <td>
-                    <select name="item_category[]" class="form-control item-category" required>
-                        <option value="" disabled ${category ? '' : 'selected'}>Select Category</option>
-                        @foreach($Category as $Categories)
-                            <option value="{{ $Categories->category }}" ${category === '{{ $Categories->category }}' ? 'selected' : ''}>{{ $Categories->category }}</option>
-                        @endforeach
-                    </select>
-                </td>
-                <td>
-                    <select name="item_name[]" class="form-control item-name" required>
-                        <option value="" disabled ${productName ? '' : 'selected'}>Select Item</option>
-                        <option value="${productName}" selected>${productName}</option>
-                    </select>
-                </td>
-                <td><input type="number" name="quantity[]" class="form-control quantity" required></td>
-                <td><input type="number" name="price[]" class="form-control price" value="${price}" required></td>
-                <td><input type="number" name="total[]" class="form-control total" readonly></td>
-                <td>
-                    <button type="button" class="btn btn-danger remove-row">Delete</button>
-                </td>
+                <td>${name}<input type="hidden" name="product_ids[]" value="${id}"></td>
+                <td><input type="number" class="form-control quantity" name="quantity[]" value="1" min="1" data-price="${price}"></td>
+                <td><input type="text" class="form-control total" value="${price}"></td>
+                <td><button type="button" class="btn btn-sm btn-danger remove">X</button></td>
             </tr>`;
-            }
+                $('#selectedItems').append(row);
+                updateGrandTotal();
+            });
 
-            // Remove a row
-            $('#purchaseItems').on('click', '.remove-row', function() {
+            // 👉 Quantity change = total update
+            $('#selectedItems').on('input', '.quantity', function() {
+                let qty = parseInt($(this).val()) || 1;
+                if (qty < 1) qty = 1;
+                $(this).val(qty);
+
+                const price = parseFloat($(this).data('price'));
+                const total = (qty * price).toFixed(2);
+                $(this).closest('tr').find('.total').val(total);
+                updateGrandTotal();
+            });
+
+            // 👉 Remove item from bill
+            $('#selectedItems').on('click', '.remove', function() {
                 $(this).closest('tr').remove();
-                calculateTotalPrice();
+                updateGrandTotal();
             });
-
-            // Update row total on quantity or price change
-            $('#purchaseItems').on('input', '.quantity, .price', function() {
-                const row = $(this).closest('tr');
-                const quantity = parseFloat(row.find('.quantity').val()) || 0;
-                const price = parseFloat(row.find('.price').val()) || 0;
-                row.find('.total').val((quantity * price).toFixed(2));
-                calculateTotalPrice();
-            });
-
-            // Fetch items based on category
-            $('#purchaseItems').on('change', '.item-category', function() {
-                const categoryName = $(this).val();
-                const row = $(this).closest('tr');
-                const itemSelect = row.find('.item-name');
-
-                if (categoryName) {
-                    fetch(`{{ route('get-items-by-category', ':categoryId') }}`.replace(':categoryId', categoryName))
-                        .then(response => response.json())
-                        .then(items => {
-                            itemSelect.html('<option value="" disabled selected>Select Item</option>');
-                            items.forEach(item => {
-                                itemSelect.append(`<option value="${item.product_name}">${item.product_name}</option>`);
-                            });
-                        })
-                        .catch(error => console.error('Error fetching items:', error));
-                }
-            });
-
-            // Fetch product details based on selected product
-            $('#purchaseItems').on('change', '.item-name', function() {
-                const productName = $(this).val();
-                const row = $(this).closest('tr');
-                const priceInput = row.find('.price');
-
-                if (productName) {
-                    fetch(`{{ route('get-product-details', ':productName') }}`.replace(':productName', productName))
-                        .then(response => response.json())
-                        .then(product => {
-                            priceInput.val(product.retail_price);
-                        })
-                        .catch(error => console.error('Error fetching product details:', error));
-                }
-            });
-
-            // Search product functionality
-            $('#productSearch').on('keyup', function() {
-                const query = $(this).val();
-                if (query.length > 0) {
-                    $.ajax({
-                        url: "{{ route('search-products') }}",
-                        type: 'GET',
-                        data: {
-                            q: query
-                        },
-                        success: displaySearchResults,
-                        error: function(error) {
-                            console.error('Error in product search:', error);
-                        }
-                    });
-                } else {
-                    $('#searchResults').html('');
-                }
-            });
-
-            // Display search results
-            function displaySearchResults(products) {
-                const searchResults = $('#searchResults');
-                searchResults.html('');
-                products.forEach(product => {
-                    const listItem = `<li class="list-group-item search-result-item" data-category="${product.category}" data-product-name="${product.product_name}" data-price="${product.retail_price}">
-                    ${product.category} - ${product.product_name} - ${product.retail_price}
-                </li>`;
-                    searchResults.append(listItem);
+            $('#discount').on('input', updateGrandTotal);
+            $('#selectedItems').on('input', '.total', updateGrandTotal);
+            // 👉 Calculate grand total
+            function updateGrandTotal() {
+                let grand = 0;
+                $('#selectedItems .total').each(function() {
+                    grand += parseFloat($(this).val()) || 0;
                 });
+
+                $('#grandTotal').val(grand.toFixed(2));
+
+                const discount = parseFloat($('#discount').val()) || 0;
+                const net = Math.max(grand - discount, 0);
+                $('#netTotal').val(net.toFixed(2));
             }
 
-            // Add searched product as a new row
-            $('#searchResults').on('click', '.search-result-item', function() {
-                const category = $(this).data('category');
-                const productName = $(this).data('product-name');
-                const price = $(this).data('price');
-
-                const newRow = createNewRow(category, productName, price);
-                $('#purchaseItems').append(newRow);
-                $('#searchResults').html('');
-                calculateTotalPrice();
+            $('#cashReceived').on('input', function() {
+                const received = parseFloat($(this).val()) || 0;
+                const netTotal = parseFloat($('#netTotal').val()) || 0;
+                const change = Math.max(received - netTotal, 0);
+                $('#cashReturn').val(change.toFixed(2));
             });
+
+            // 🔁 Update cash return whenever net total changes too
+            $('#discount').on('input', function() {
+                $('#cashReceived').trigger('input');
+            });
+            $('#selectedItems').on('input', '.quantity, .total', function() {
+                $('#cashReceived').trigger('input');
+            });
+
         });
     </script>
 

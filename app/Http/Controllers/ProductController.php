@@ -16,27 +16,34 @@ class ProductController extends Controller
     {
         if (Auth::id()) {
             $userId = Auth::id();
-            // $all_unit = Unit::where('admin_or_user_id', '=', $userId)->get();
-            $all_product = Product::where('admin_or_user_id', '=', $userId)->get();
+
+            $all_product = Product::with(['category', 'unit'])
+                ->where('admin_or_user_id', $userId)
+                ->get();
+
+            $categories = Category::all(); // Add this
+            $units = Unit::all(); // Add this
+
             return view('admin_panel.product.all_product', [
-                // 'all_unit' => $all_unit
                 'all_product' => $all_product,
+                'categories' => $categories,
+                'units' => $units,
             ]);
         } else {
             return redirect()->back();
         }
     }
+
+
     public function add_product()
     {
         if (Auth::id()) {
             $userId = Auth::id();
             $all_category = Category::where('admin_or_user_id', '=', $userId)->get();
-            $all_brand = Brand::where('admin_or_user_id', '=', $userId)->get();
             $all_unit = Unit::where('admin_or_user_id', '=', $userId)->get();
 
             return view('admin_panel.product.add_product', [
                 'all_category' => $all_category,
-                'all_brand' => $all_brand,
                 'all_unit' => $all_unit,
 
             ]);
@@ -44,84 +51,56 @@ class ProductController extends Controller
             return redirect()->back();
         }
     }
-    public function store_product(Request $request)
+
+
+
+    public function getUnitsByCategory(Request $request)
     {
-        if (Auth::id()) {
-            $usertype = Auth()->user()->usertype;
-            $userId = Auth::id();
+        $units = Unit::where('category_id', $request->category_id)->get();
+        return response()->json(['units' => $units]);
+    }
+
+    public function getUnitsByproduct($categoryId)
+    {
+        $units = Unit::where('category_id', $categoryId)->get();
+        return response()->json($units);
+    }
 
 
-            // Create the product with or without the image
+    public function storeMultipleProducts(Request $request)
+    {
+        $category_id = $request->input('category_id');
+        $unit_id = $request->input('unit_id');
+        $products = $request->input('products');
+
+        $userId = Auth::id();
+
+        foreach ($products as $product) {
             Product::create([
                 'admin_or_user_id' => $userId,
-                'product_name'     => $request->product_name,
-                'category'         => $request->category,
-                'brand'            => $request->brand,
-                'stock'            => $request->stock,
-                'wholesale_price'            => $request->wholesale_price,
-                'retail_price'            => $request->retail_price,
-                'color'              => $request->color,
-                'unit'             => $request->unit,
-                'alert_quantity'   => $request->alert_quantity,
-                'note'             => $request->note,
-                'created_at'       => Carbon::now(),
-                'updated_at'       => Carbon::now(),
+                'category_id' => $category_id,
+                'unit_id'     => $unit_id,
+                'product_name' => $product['name'],
+                'retail_price' => $product['price'],
+                'created_at'  => now(),
+                'updated_at'  => now(),
             ]);
-
-            return redirect()->back()->with('success', 'Product Added Successfully');
-        } else {
-            return redirect()->back();
         }
-    }
-    public function edit_product($id)
-    {
-        if (Auth::id()) {
-            $userId = Auth::id();
-            $all_category = Category::where('admin_or_user_id', '=', $userId)->get();
-            $all_brand = Brand::where('admin_or_user_id', '=', $userId)->get();
-            $all_unit = Unit::where('admin_or_user_id', '=', $userId)->get();
-            $product_details = Product::findOrFail($id);
-            // dd($product_details);
-            return view('admin_panel.product.edit_product', [
-                'all_category' => $all_category,
-                'all_brand' => $all_brand,
-                'all_unit' => $all_unit,
-                'product_details' => $product_details,
 
-            ]);
-        } else {
-            return redirect()->back();
-        }
+        return redirect()->back()->with('success', 'Products Added Successfully!');
     }
 
-    public function update_product(Request $request, $id)
+
+    public function update(Request $request)
     {
-        if (Auth::id()) {
-            $userId = Auth::id();
+        $product = Product::findOrFail($request->product_id);
+        $product->product_name = $request->product_name;
+        $product->category_id = $request->category_id;
+        $product->unit_id = $request->unit_id;
+        $product->retail_price = $request->retail_price;
+        $product->save();
 
-            // Find the product by ID
-            $product = Product::findOrFail($id);
-
-
-            // Update product details
-            $product->product_name   = $request->product_name;
-            $product->category       = $request->category;
-            $product->brand          = $request->brand;
-            $product->color            = $request->color;
-            $product->unit           = $request->unit;
-            $product->alert_quantity = $request->alert_quantity;
-            $product->retail_price   = $request->retail_price;  // Including retail price update
-            $product->wholesale_price   = $request->wholesale_price;  // Including retail price update
-            $product->note           = $request->note;
-            $product->updated_at     = Carbon::now();
-
-            // Save updated product
-            $product->save();
-
-            return redirect()->route('all-product')->with('success', 'Product updated successfully');
-        } else {
-            return redirect()->back();
-        }
+        return back()->with('success', 'Product updated successfully.');
     }
 
     public function getProductDetails($productName)

@@ -15,13 +15,13 @@
             <div class="bodywrapper__inner">
 
                 <div class="d-flex mb-30 flex-wrap gap-3 justify-content-between align-items-center">
-                    <h6 class="page-title">Models</h6>
+                    <h6 class="page-title">Sizes</h6>
                     <div class="d-flex flex-wrap justify-content-end gap-2 align-items-center breadcrumb-plugins">
-                       
+
                         <button type="button" class="btn btn-sm btn-outline--primary cuModalBtn"
-                            data-modal_title="Add New Models">
+                            data-modal_title="Add New Sizes">
                             <i class="las la-plus"></i>Add New </button>
-                     
+
                     </div>
                 </div>
 
@@ -29,9 +29,9 @@
                     <div class="col-lg-12">
                         <div class="card b-radius--10">
                             <div class="card-body p-0">
-                            @if (session()->has('success'))
-                                        <div class="alert alert-success">
-                                            <strong>Success!</strong> {{ session('success') }}.
+                                @if (session()->has('success'))
+                                <div class="alert alert-success">
+                                    <strong>Success!</strong> {{ session('success') }}.
                                 </div>
                                 @endif
                                 <div class="table-responsive--sm table-responsive">
@@ -39,8 +39,8 @@
                                         <thead>
                                             <tr>
                                                 <th>S.N.</th>
+                                                <th>Category</th>
                                                 <th>Name</th>
-                                                <th>Prodcuts</th>
                                                 <th>Action</th>
                                             </tr>
                                         </thead>
@@ -48,19 +48,19 @@
                                             @foreach ($all_unit as $unit)
                                             <tr>
                                                 <td>{{ $loop->iteration }}</td>
+                                                <td>{{ $unit->category ? $unit->category->category : 'N/A' }}</td>
                                                 <td>{{ $unit->unit }}</td>
-                                                <td>{{ $unit->products_count }}</td>
                                                 <td>
                                                     <div class="button--group">
                                                         <button type="button"
-                                                            class="btn btn-sm btn-outline--primary editunitBtn" data-toggle="modal" data-modal_title="Edit Unit"
-                                                             data-has_status="1" data-target="#editunit" data-unit-id="{{ $unit->id }}" data-unit-name="{{ $unit->unit }}">
-                                                            <i class="la la-pencil"></i>Edit </button>
-                                                        {{-- <button type="button"
-                                                            class="btn btn-sm btn-outline-danger  disabled  confirmationBtn"
-                                                            data-question="Are you sure to delete this unit?"
-                                                            data-action="https://script.viserlab.com/torylab/admin/unit/delete/9">
-                                                            <i class="la la-trash"></i>Delete </button> --}}
+                                                            class="btn btn-sm btn-outline--primary editunitBtn"
+                                                            data-toggle="modal" data-modal_title="Edit Unit"
+                                                            data-has_status="1"
+                                                            data-target="#editunit"
+                                                            data-unit-id="{{ $unit->id }}"
+                                                            data-unit-name="{{ $unit->unit }}"
+                                                            data-category-id="{{ $unit->category_id }}">Edit</button>
+
                                                     </div>
                                                 </td>
                                             </tr>
@@ -85,7 +85,17 @@
                             </div>
                             <form action="{{ route('store-unit') }}" method="POST">
                                 @csrf
+
                                 <div class="modal-body">
+                                    <div class="form-group">
+                                        <label>Category</label>
+                                        <select name="category_id" class="form-control" required>
+                                            <option value="">Select Category</option>
+                                            @foreach($all_categories as $cat)
+                                            <option value="{{ $cat->id }}">{{ $cat->category }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
                                     <div class="form-group">
                                         <label>Name</label>
                                         <input type="text" name="unit" class="form-control" required>
@@ -99,33 +109,43 @@
                     </div>
                 </div>
 
-                 <!-- Edit Unit -->
-            <div class="modal fade" id="editunit" tabindex="-1" aria-labelledby="editunitLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="editunitLabel">Edit Brand</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <form action="{{ route('update-unit') }}" method="POST">
-                            @csrf
-                            <div class="modal-body">
-                                <div class="form-group">
-                                    <label>Name</label>
-                                    <input type="hidden" id="editUnitId" name="unit_id" class="form-control" required>
-                                    <input type="text" id="editUnitName" name="unit_name" class="form-control">
-                                </div>
+                <!-- Edit Unit -->
+                <div class="modal fade" id="editunit" tabindex="-1" aria-labelledby="editunitLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="editunitLabel">Edit Brand</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
                             </div>
+                            <form action="{{ route('update-unit') }}" method="POST">
+                                @csrf
+                                <div class="modal-body">
+                                    <div class="form-group">
+                                        <label>Category</label>
+                                        <select name="edit_category_id" id="editCategoryId" class="form-control" required>
+                                            <option value="">Select Category</option>
+                                            @foreach($all_categories as $cat)
+                                            <option value="{{ $cat->id }}">{{ $cat->category }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
 
-                            <div class="modal-footer">
-                                <button type="submit" class="btn btn--primary h-45 w-100">Update</button>
-                            </div>
-                        </form>
+                                    <div class="form-group">
+                                        <label>Name</label>
+                                        <input type="hidden" id="editUnitId" name="unit_id" class="form-control" required>
+                                        <input type="text" id="editUnitName" name="unit_name" class="form-control">
+                                    </div>
+                                </div>
+
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn--primary h-45 w-100">Update</button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
-            </div>
 
                 <div class="modal fade" id="importModal" tabindex="-1" role="dialog">
                     <div class="modal-dialog modal-lg">
@@ -208,12 +228,14 @@
         $(document).ready(function() {
             // Edit category button click event
             $('.editunitBtn').click(function() {
-                // Extract category ID and name from data attributes
                 var unitId = $(this).data('unit-id');
                 var unitName = $(this).data('unit-name');
-                // Set the extracted values in the modal fields
+                var categoryId = $(this).data('category-id');
+
                 $('#editUnitId').val(unitId);
                 $('#editUnitName').val(unitName);
+                $('#editCategoryId').val(categoryId); // set selected category
             });
+
         });
     </script>

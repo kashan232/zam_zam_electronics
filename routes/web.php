@@ -49,6 +49,8 @@ Route::post('/updte-change-Password', [HomeController::class, 'updte_change_Pass
 // staff dashboard work 
 Route::get('/get-products-by-category', [HomeController::class, 'getProductsByCategory'])->name('get.products.by.category');
 Route::get('/get-product-by-barcode', [HomeController::class, 'getProductByBarcode'])->name('get.product.by.barcode');
+Route::post('/staff/transfer-cash', [HomeController::class, 'transferCash'])->name('staff.transfer.cash');
+Route::get('/cash-transfser', [HomeController::class, 'cash_transfser'])->name('cash-transfser');
 
 
 //category
@@ -69,9 +71,11 @@ Route::post('/update-unit', [UnitController::class, 'update_unit'])->name('updat
 //product
 Route::get('/all-product', [ProductController::class, 'all_product'])->middleware(['auth','admin'])->name('all-product');
 Route::get('/add-product', [ProductController::class, 'add_product'])->middleware(['auth','admin'])->name('add-product');
-Route::post('/store-product', [ProductController::class, 'store_product'])->name('store-product');
-Route::get('/edit-product/{id}', [ProductController::class, 'edit_product'])->middleware(['auth','admin'])->name('edit-product');
-Route::post('/update-product/{id}', [ProductController::class, 'update_product'])->name('update-product');
+Route::get('/get-units-by-category', [ProductController::class, 'getUnitsByCategory'])->name('get-units-by-category');
+Route::post('/store-multi-product', [ProductController::class, 'storeMultipleProducts'])->name('store-multi-product');
+Route::post('/update-product', [ProductController::class, 'update'])->name('update-product');
+Route::get('/get-units/{categoryId}', [ProductController::class, 'getUnitsByproduct'])->name('get.units.by.category');
+
 Route::get('/product-alerts', [ProductController::class, 'product_alerts'])->name('product-alerts');
 Route::post('/delete-product', [ProductController::class, 'delete_product'])->name('delete.product');
 
@@ -153,6 +157,7 @@ Route::get('/Sale', [SaleController::class, 'Sale'])->name('Sale');
 Route::get('/add-Sale', [SaleController::class, 'add_Sale'])->name('add-Sale');
 Route::post('/store-Sale', [SaleController::class, 'store_Sale'])->name('store-Sale');
 Route::get('/all-sales', [SaleController::class, 'all_sales'])->name('all-sales');
+Route::get('/staff-sales', [SaleController::class, 'staff_sales'])->name('staff-sales');
 Route::get('/get-customer-amount/{id}', [SaleController::class, 'get_customer_amount'])->name('get-customer-amount');
 Route::get('/sale-return/{id}', [SaleController::class, 'sale_return'])->name('sale-return');
 Route::post('/store-sale-return', [SaleController::class, 'store_sale_return'])->name('store-sale-return');

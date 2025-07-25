@@ -19,132 +19,47 @@
                     </div>
                 </div>
 
-
-                <div class="row gy-4 mb-30">
-
-                    <div class="col-xxl-3 col-sm-6">
-                        <div class="widget-two box--shadow2 b-radius--5 bg--white">
-                            <i class="las la-shopping-bag overlay-icon text--success"></i>
-                            <div class="widget-two__icon b-radius--5   bg--info  ">
-                                <i class="las la-shopping-bag"></i>
-                            </div>
-                            <div class="widget-two__content">
-                                <h3>{{ number_format($totalStockValue, 2) }}</h3>
-                                <p>Total Stock Value</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-xxl-3 col-sm-6">
-                        <div class="widget-two box--shadow2 b-radius--5 bg--white">
-                            <i class="las la-shopping-cart overlay-icon text--primary"></i>
-
-                            <div class="widget-two__icon b-radius--5   bg--primary  ">
-                                <i class="las la-shopping-cart"></i>
-                            </div>
-
-                            <div class="widget-two__content">
-                                <h3>{{$totalsales }}</h3>
-                                <p>Sales</p>
-                            </div>
-
-                            <a href="#"
-                                class="widget-two__btn btn btn-outline--primary">View All</a>
-                        </div>
-
-                    </div><!-- dashboard-w1 end -->
-
-                    
-
-
-                </div><!-- row end-->
-
-
-
-
-                <div class="row gy-4 mb-30">
-                    <div class="col-xl-6">
-                        <div class="d-flex justify-content-between align-items-center flex-wrap mb-3">
-                            <h5>Product Alert Items </h5>
-                            <a href="#"
-                                class="btn btn-sm btn-outline--primary">View All</a>
-                        </div>
-                        <div class="card">
-                            <div class="card-body p-0">
-                                <div class="table-responsive--sm table-responsive">
-                                    <table class="table table--light">
-                                        <thead>
-                                            <tr>
-                                                <th>Product</th>
-                                                <th>Category</th>
-                                                <th>Alert</th>
-                                                <th>Stock</th>
-                                                <th>Models</th>
-                                                <th>W.Price</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach($all_product->take(8) as $product)
-                                            <tr>
-                                                <td class="fw-bold"> {{ $product->product_name }} </td>
-                                                <td> {{ $product->category }} </td>
-                                                <td>
-                                                    <span class="bg--danger px-2 rounded">
-                                                        {{ $product->alert_quantity }}
-                                                    </span>
-                                                </td>
-                                                <td>
-                                                    <span class="bg--warning px-2 rounded">
-                                                        {{ $product->stock }}
-                                                    </span>
-                                                </td>
-                                                <td>{{ $product->unit }}</td>
-                                                <td>{{ $product->wholesale_price }}</td>
-                                            </tr>
-                                            @endforeach
-
-                                        </tbody>
-                                    </table><!-- table end -->
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-xl-6">
-                        <div class="d-flex justify-content-between align-items-center flex-wrap mb-3">
-                            <h5>Total Stock Value </h5>
-                        </div>
-                        <div class="card">
-                            <div class="card-body p-0">
-                                <div class="table-responsive--sm table-responsive">
-                                    <table class="table table--light">
-                                        <thead>
-                                            <tr>
-                                                <th>Product</th>
-                                                <th>Stock </th>
-                                                <th>W.Price</th>
-                                                <th>Stock Value</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach ($all_product->take(8) as $product)
-                                            <tr>
-                                                <td>{{ $product->product_name }}</td>
-                                                <td>{{ $product->stock }}</td>
-                                                <td>{{ $product->wholesale_price }}</td>
-                                                <td>{{ $product->total_stock_value }}</td>
-                                            </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table><!-- table end -->
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-
                 <div class="row gy-4">
+
+                    <div class="col-xxl-3 col-sm-6">
+                        <div class="widget-two style--two box--shadow2 b-radius--5 bg--success">
+                            <div class="widget-two__icon b-radius--5 bg--success">
+                                <i class="las la-cash-register"></i>
+                            </div>
+
+                            <div class="widget-two__content">
+                                <h3 class="text-white">Rs. {{ number_format($cashBox, 2) }}</h3>
+                                <p class="text-white">Cash Box (Today)</p>
+                            </div>
+                            <a href="#" class="widget-two__btn">Detail</a>
+                        </div>
+                    </div>
+
+                    <div class="col-xxl-3 col-sm-6">
+                        <div class="card bg-info text-white">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">Today’s Staff Transfers</h5>
+                                <p class="card-text fs-4">
+                                    Rs. {{ number_format($todayCashTransfers, 2) }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xxl-3 col-sm-6">
+                        <div class="widget-two style--two box--shadow2 b-radius--5 bg--1">
+                            <div class="widget-two__icon b-radius--5 bg--1">
+                                <i class="lab la-buffer"></i>
+                            </div>
+
+                            <div class="widget-two__content">
+                                <h3 class="text-white">{{$totalsales }}</h3>
+                                <p class="text-white">Total Sales</p>
+                            </div>
+                            <a href="#" class="widget-two__btn">View
+                                All</a>
+                        </div>
+                    </div><!-- dashboard-w1 end -->
                     <div class="col-xxl-3 col-sm-6">
                         <div class="widget-two style--two box--shadow2 b-radius--5 bg--1">
                             <div class="widget-two__icon b-radius--5 bg--1">
@@ -155,7 +70,7 @@
                                 <h3 class="text-white">{{ $categories }}</h3>
                                 <p class="text-white">Categories</p>
                             </div>
-                            <a href="https://script.viserlab.com/torylab/admin/category" class="widget-two__btn">View
+                            <a href="#" class="widget-two__btn">View
                                 All</a>
                         </div>
                     </div><!-- dashboard-w1 end -->
@@ -169,11 +84,47 @@
                                 <h3 class="text-white">{{ $products }}</h3>
                                 <p class="text-white">Products</p>
                             </div>
-                            <a href="https://script.viserlab.com/torylab/admin/product/all" class="widget-two__btn">View
+                            <a href="#" class="widget-two__btn">View
                                 All</a>
                         </div>
                     </div><!-- dashboard-w1 end -->
                 </div><!-- row end-->
+
+                <div class="row mt-5">
+                    <div class="col-12">
+                        <div class="card box--shadow2">
+                            <div class="card-header bg--primary text-white">
+                                <h5 class="mb-0 text-white">Staff Cash Transfer History</h5>
+                            </div>
+                            <div class="card-body table-responsive">
+                                <table class="table table-bordered table-striped">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Staff Name</th>
+                                            <th>Amount (Rs.)</th>
+                                            <th>Transfer Date</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @forelse($staffTransfers as $key => $transfer)
+                                        <tr>
+                                            <td>{{ $key + 1 }}</td>
+                                            <td>Staff</td>
+                                            <td>{{ number_format($transfer->amount, 2) }}</td>
+                                            <td>{{ $transfer->created_at->format('d-M-Y h:i A') }}</td>
+                                        </tr>
+                                        @empty
+                                        <tr>
+                                            <td colspan="4" class="text-center">No transfers found.</td>
+                                        </tr>
+                                        @endforelse
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
 
 

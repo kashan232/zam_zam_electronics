@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cash Memo - Zam Zam Electronic</title>
+    <title>Receipt</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -24,6 +24,14 @@
             text-align: center;
             font-size: 14px;
             font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .shop-info {
+            text-align: center;
+            font-size: 11px;
+            margin-bottom: 10px;
+            line-height: 1.3;
         }
 
         .details {
@@ -41,7 +49,8 @@
             margin-top: 5px;
         }
 
-        th, td {
+        th,
+        td {
             padding: 3px;
             text-align: left;
             border-bottom: 1px dashed #000;
@@ -81,12 +90,17 @@
     <div class="receipt-container">
         <!-- Receipt Header -->
         <div class="receipt-header">
-            <p>ZAM ZAM ELECTRONIC</p>
+            <p>CHILLI DELIGHT BAKERY</p>
+        </div>
+
+        <!-- Shop Info -->
+        <div class="shop-info">
+            <p><strong>Contact:</strong> +92 324 2627917</p>
         </div>
 
         <!-- Sale Details -->
         <div class="details">
-            <p><strong>Memo No:</strong> {{ $sale->invoice_no }}</p>
+            <p><strong>Invoice No:</strong> {{ $sale->invoice_no }}</p>
             <p><strong>Customer:</strong> {{ $sale->customer }}</p>
             <p><strong>Date:</strong> {{ \Carbon\Carbon::parse($sale->created_at)->format('d/m/Y h:i A') }}</p>
         </div>
@@ -134,15 +148,6 @@
             <p><strong>0317-3836223 | 0317-3859647</strong></p>
         </div>
     </div>
-
-    <script>
-        window.onload = function () {
-            window.print();
-            setTimeout(function () {
-                window.location.href = "{{ route('all-sales') }}";
-            }, 1000);
-        };
-    </script>
 </body>
 
 </html>

@@ -9,18 +9,14 @@ use Illuminate\Support\Facades\Auth;
 
 class CategoryController extends Controller
 {
-   
+
     public function category()
     {
         if (Auth::id()) {
             $userId = Auth::id();
             $all_categories = Category::where('admin_or_user_id', '=', $userId)
-                ->get()
-                ->map(function ($category) {
-                    $category->products_count = $category->products()->count();
-                    return $category;
-                });
-    
+                ->get();
+
             return view('admin_panel.category.category', [
                 'all_categories' => $all_categories
             ]);
@@ -62,5 +58,4 @@ class CategoryController extends Controller
             return redirect()->back();
         }
     }
-
 }

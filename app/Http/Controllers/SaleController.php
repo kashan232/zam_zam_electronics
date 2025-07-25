@@ -38,15 +38,13 @@ class SaleController extends Controller
         if (Auth::id()) {
             $userId = Auth::id();
             // dd($userId);
-            $Customers = Customer::get();
-            $Warehouses = Warehouse::get();
-            $Category = Category::get();
 
+            $categories = Category::all();
+            $products = Product::all();
             // dd($Customers);
             return view('admin_panel.sale.add_sale', [
-                'Customers' => $Customers,
-                'Warehouses' => $Warehouses,
-                'Category' => $Category,
+                'categories' => $categories,
+                'products' => $products,
             ]);
         } else {
             return redirect()->back();
@@ -79,98 +77,56 @@ class SaleController extends Controller
 
     public function store_Sale(Request $request)
     {
-        $invoiceNo = Sale::generateInvoiceNo();
-        \Log::info('Request Data:', $request->all());
-
-        $discount = (float)($request->input('discount', 0));
-        $totalPrice = (float)$request->input('total_price', 0);
-        $cashReceived = (float)$request->input('cash_received', 0);
-        $changeToReturn = (float)$request->input('change_to_return', 0);
-
-        \Log::info('Processed Values:', [
-            'discount' => $discount,
-            'total_price' => $totalPrice,
-            'cash_received' => $cashReceived,
-            'change_to_return' => $changeToReturn,
+        $request->validate([
+            'customer_name' => 'required|string|max:255',
+            'product_ids' => 'required|array',
+            'product_ids.*' => 'exists:products,id',
+            'quantity' => 'required|array',
+            'quantity.*' => 'integer|min:1',
+            'sale_date' => 'required|date',
         ]);
-
         $usertype = Auth()->user()->usertype;
         $userId = Auth::id();
+        $productIds = $request->product_ids;
+        $quantities = $request->quantity;
 
-        $itemNames = $request->input('item_name', []);
-        $itemCategories = $request->input('item_category', []);
-        $quantities = $request->input('quantity', []);
+        $productData = Product::whereIn('id', $productIds)->get()->keyBy('id');
 
-        // Step 1: Validate stock for all products
-        foreach ($itemNames as $key => $item_name) {
-            $item_category = $itemCategories[$key] ?? '';
-            $quantity = $quantities[$key] ?? 0;
+        $itemNames = [];
+        $prices = [];
+        $totals = [];
+        $grandTotal = 0;
 
-            $product = Product::where('product_name', $item_name)
-                ->where('category', $item_category)
-                ->first();
+        foreach ($productIds as $index => $productId) {
+            $qty = (int) $quantities[$index];
+            $price = (float) $productData[$productId]->retail_price;
+            $total = $qty * $price;
 
-            if (!$product) {
-                return redirect()->back()->with('error', "Product $item_name in category $item_category not found.");
-            }
-
-            if ($product->stock < $quantity) {
-                return redirect()->back()->with('error', "Insufficient stock for product $item_name. Available: {$product->stock}, Required: $quantity.");
-            }
+            $itemNames[] = $productData[$productId]->product_name;
+            $prices[] = $price;
+            $totals[] = $total;
+            $grandTotal += $total;
         }
 
-        // Prepare data for storage
-        $discount = (float) ($request->input('discount', 0));
-        $totalPrice = (float) $request->input('total_price', 0);
-        $netTotal = $totalPrice - $discount; // Calculate the net total amount
+        $sale = new Sale();
+        $sale->invoice_no = Sale::generateInvoiceNo(); // ✅ Fix applied here
+        $sale->userid = $userId;
+        $sale->user_type = $usertype;
+        $sale->customer = $request->customer_name;
+        $sale->sale_date = $request->sale_date;
+        $sale->item_name = json_encode($itemNames);
+        $sale->quantity = json_encode($quantities);
+        $sale->price = json_encode($prices);
+        $sale->total = json_encode($totals);
+        $sale->total_price = $grandTotal;
+        $sale->discount = $request->discount ?? 0;
+        $sale->Payable_amount = $grandTotal - $sale->discount;
+        $sale->save();
 
-        $previous_balance = $request->input('previous_balance');
-        $net_total = $request->input('net_total');
-        $closing_balance = $request->input('closing_balance');
-        // Step 2: Proceed to save the sale
-        $saleData = [
-            'userid' => $userId,
-            'user_type' => $usertype,
-            'invoice_no' => $invoiceNo,
-            'customer' => $request->input('customer'),
-            'sale_date' => $request->input('sale_date', ''),
-            'warehouse_id' => $request->input('warehouse_id', ''),
-            'item_category' => json_encode($request->input('item_category', [])),
-            'item_name' => json_encode($request->input('item_name', [])),
-            'quantity' => json_encode($request->input('quantity', [])),
-            'price' => json_encode($request->input('price', [])),
-            'total' => json_encode($request->input('total', [])),
-            'note' => $request->input('note', ''),
-            'total_price' => $totalPrice,
-            'discount' => $discount,
-            'Payable_amount' => $totalPrice - $discount,
-            'cash_received' => $cashReceived,
-            'change_return' => $changeToReturn,
-        ];
-
-        $sale = Sale::create($saleData);
-
-        // Step 3: Deduct stock after successfully saving the sale
-        foreach ($itemNames as $key => $item_name) {
-            $item_category = $itemCategories[$key] ?? '';
-            $quantity = $quantities[$key] ?? 0;
-
-            $product = Product::where('product_name', $item_name)
-                ->where('category', $item_category)
-                ->first();
-
-            if ($product) {
-                $product->stock -= $quantity;
-                $product->save();
-            }
-        }
-
-        return redirect()->route('sale-receipt', [
-            'id' => $sale->id,
-            'net_total' => $netTotal // Include this if needed
-        ])
+        return redirect()->route('sale-receipt', $sale->id)
             ->with('success', 'Sale recorded successfully. Redirecting to receipt...');
     }
+
 
 
     public function all_sales()
@@ -184,6 +140,24 @@ class SaleController extends Controller
             $Sales = Sale::where('userid', $userId)->where('user_type', $usertype)->get();
             // dd($Sales);
             return view('admin_panel.sale.sales', [
+                'Sales' => $Sales,
+            ]);
+        } else {
+            return redirect()->back();
+        }
+    }
+
+    public function staff_sales()
+    {
+
+        if (Auth::id()) {
+            $userId = Auth::id();
+            $usertype = Auth()->user()->usertype;
+
+            // Retrieve all Sales with their related Purchase data (including invoice_no)
+            $Sales = Sale::where('user_type','staff')->get();
+            // dd($Sales);
+            return view('admin_panel.sale.staff_sales', [
                 'Sales' => $Sales,
             ]);
         } else {
@@ -230,7 +204,7 @@ class SaleController extends Controller
                 if (!$product) {
                     return back()->with('error', "Product $productName not found");
                 }
-                
+
                 if ($action == 'return') {
                     $returnQty = $request->return_quantity[$index];
                     $product->stock += $returnQty; // Add only returned quantity

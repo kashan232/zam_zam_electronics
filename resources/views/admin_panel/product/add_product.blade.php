@@ -31,110 +31,55 @@
                                 </div>
                                 @endif
 
-                                <form action="{{ route('store-product') }}" method="POST" enctype="multipart/form-data">
+                                <form action="{{ route('store-multi-product') }}" method="POST">
                                     @csrf
-                                    <div class="row">
-                                        <div class="col-md-12 col-sm-12">
-                                            <div class="row">
-                                                <div class="col-sm-6">
-                                                    <div class="form-group ">
-                                                        <label>Name</label>
-                                                        <input type="text" name="product_name" class="form-control" required>
-                                                    </div>
-                                                </div>
-                                                <div class="col-sm-6">
-                                                    <div class="form-group">
-                                                        <div class="form-group" id="category-wrapper">
-                                                            <label class="form-label">Category</label>
-                                                            <select name="category" class="select2-basic form-control" required>
-                                                                <option value="" selected disabled>Select One</option>
-                                                                @foreach($all_category as $category)
-                                                                <option value="{{ $category->category }}">
-                                                                    {{ $category->category }}
-                                                                </option>
-                                                                @endforeach
-                                                            </select>
-                                                        </div>
 
-                                                    </div>
-                                                </div>
-                                                <div class=" col-sm-6">
-                                                    <div class="form-group">
-                                                        <div class="form-group" id="brand-wrapper">
-                                                            <label class="form-label">Brand</label>
-                                                            <select name="brand" class="select2-basic form-control" required>
-                                                                <option value="" selected disabled>Select One</option>
-                                                                @foreach($all_brand as $brand)
-                                                                <option value="{{ $brand->brand }}">
-                                                                    {{ $brand->brand }}
-                                                                </option>
-                                                                @endforeach
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-sm-6">
-                                                    <div class="form-group">
-                                                        <label>Models</label>
-                                                        <select name="unit" class="select2-basic form-control" required>
-                                                            <option value="" selected disabled>Select One</option>
-                                                            @foreach($all_unit as $unit)
-                                                            <option value="{{ $unit->unit }}">
-                                                                {{ $unit->unit }}
-                                                            </option>
-                                                            @endforeach
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <div class="col-sm-6">
-                                                    <div class="form-group ">
-                                                        <label class="form-label">Initial stock</label>
-                                                        <input type="text" class="form-control " name="stock" value="0">
-                                                    </div>
-                                                </div>
+                                    <div class="row mb-3">
+                                        <div class="col-md-6">
+                                            <label>Category</label>
+                                            <select name="category_id" id="category_id" class="form-control" required>
+                                                <option value="">Select Category</option>
+                                                @foreach ($all_category as $cat)
+                                                <option value="{{ $cat->id }}">{{ $cat->category }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
 
-                                                <div class="col-sm-6">
-                                                    <div class="form-group ">
-                                                        <label class="form-label">Color</label>
-                                                        <input type="text" class="form-control " name="color" value="Null">
-                                                    </div>
-                                                </div>
-                                                <div class="col-sm-6">
-                                                    <div class="form-group ">
-                                                        <label class="form-label">Wholesale Price</label>
-                                                        <input type="number" class="form-control " name="wholesale_price" value="Null">
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-sm-6">
-                                                    <div class="form-group ">
-                                                        <label class="form-label">Retail Price</label>
-                                                        <input type="number" class="form-control " name="retail_price" value="Null">
-                                                    </div>
-                                                </div>
-
-                                                
-                                               
-                                                <div class="col-sm-6">
-                                                    <div class="form-group">
-                                                        <label>Alert Quantity</label>
-                                                        <input type="number" name="alert_quantity"
-                                                            class="form-control" value="0">
-                                                    </div>
-                                                </div>
-                                                <div class="col-sm-12">
-                                                    <div class="form-group">
-                                                        <label>Note</label>
-                                                        <textarea name="note" class="form-control"></textarea>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                        <div class="col-md-6">
+                                            <label>Size</label>
+                                            <select name="unit_id" id="unit_id" class="form-control" required>
+                                                <option value="">Select Size</option>
+                                                {{-- Will be filled via JS --}}
+                                            </select>
                                         </div>
                                     </div>
-                                    <div class="form-group">
-                                        <button type="submit" class="btn btn--primary w-25 h-45">Save Product</button>
+
+                                    <hr>
+
+                                    <table class="table table-bordered" id="product-entry-table">
+                                        <thead class="thead-light">
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Product Name</th>
+                                                <th>Price</th>
+                                                <th><button type="button" class="btn btn-sm btn-success" id="add-row">+</button></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td class="row-index">1</td>
+                                                <td><input type="text" name="products[0][name]" class="form-control" required></td>
+                                                <td><input type="number" name="products[0][price]" class="form-control" required></td>
+                                                <td><button type="button" class="btn btn-sm btn-danger remove-row">x</button></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+
+                                    <div class="form-group text-end">
+                                        <button type="submit" class="btn btn-primary mt-3">Save Products</button>
                                     </div>
                                 </form>
+
                             </div>
                         </div>
                     </div>
@@ -145,19 +90,52 @@
     @include('admin_panel.include.footer_include')
 
     <script>
-        // Barcode input field ko target kar rahe hain
-        const barcodeInput = document.getElementById('barcodeInput');
+        let rowIndex = 1;
 
-        // Event listener jab barcode scanner se koi value aaye
-        barcodeInput.addEventListener('input', function(event) {
-            const barcodeValue = event.target.value;
+        $('#add-row').click(function() {
+            rowIndex++;
+            $('#product-entry-table tbody').append(`
+            <tr>
+                <td class="row-index">${rowIndex}</td>
+                <td><input type="text" name="products[${rowIndex}][name]" class="form-control" required></td>
+                <td><input type="number" name="products[${rowIndex}][price]" class="form-control" required></td>
+                <td><button type="button" class="btn btn-sm btn-danger remove-row">x</button></td>
+            </tr>
+        `);
+        });
 
-            // Jab barcode ki length sufficient ho (tumhare barcode ki length pe depend karega)
-            if (barcodeValue.length >= 6) { // 6 ko tum adjust kar sakte ho barcode length ke hisaab se
-                console.log("Barcode scanned: " + barcodeValue);
+        // Remove row
+        $(document).on('click', '.remove-row', function() {
+            $(this).closest('tr').remove();
+            updateRowIndexes();
+        });
 
-                // Tum yahan koi additional action bhi kar sakte ho
-                // Jaise form submit ya barcode ko validate karna
-            }
+        // Reorder row numbers
+        function updateRowIndexes() {
+            rowIndex = 0;
+            $('#product-entry-table tbody tr').each(function() {
+                $(this).find('.row-index').text(++rowIndex);
+            });
+        }
+
+        // Auto load sizes (units) based on category
+        $('#category_id').change(function() {
+            let categoryId = $(this).val();
+            $('#unit_id').html('<option>Loading...</option>');
+
+            $.ajax({
+                url: "{{ route('get-units-by-category') }}",
+                method: "GET",
+                data: {
+                    category_id: categoryId
+                },
+                success: function(res) {
+                    let html = '<option value="">Select Size</option>';
+                    res.units.forEach(unit => {
+                        html += `<option value="${unit.id}">${unit.unit}</option>`;
+                    });
+                    $('#unit_id').html(html);
+                }
+            });
         });
     </script>
